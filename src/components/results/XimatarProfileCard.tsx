@@ -47,10 +47,10 @@ export const XimatarProfileCard: React.FC<XimatarProfileCardProps> = ({ ximatar,
           
           <div className="flex-1 text-center md:text-left">
             <h3 className="text-2xl font-bold mb-2 capitalize font-heading">
-              {String(t(`ximatar.${ximatar.label}.name`, { defaultValue: ximatar.label }))}
+              {String(t(`ximatar.${ximatar.label?.toLowerCase()}.name`, { defaultValue: ximatar.label }))}
             </h3>
             <p className="text-muted-foreground font-medium">
-              {translations?.title || String(t(`ximatar.${ximatar.label}.title`, { defaultValue: '' }))}
+              {translations?.title || String(t(`ximatar.${ximatar.label?.toLowerCase()}.title`, { defaultValue: '' }))}
             </p>
           </div>
         </div>

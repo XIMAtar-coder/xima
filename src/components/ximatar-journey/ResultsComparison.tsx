@@ -428,7 +428,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
   const translations = ximatarData?.translations;
   const ximatarName = ximatarData
-    ? String(t(`ximatar.${ximatarData.label}.name`, { defaultValue: ximatarData.label }))
+    ? String(t(`ximatar.${ximatarData.label?.toLowerCase()}.name`, { defaultValue: ximatarData.label }))
     : '';
   const traits = splitTraits(translations?.core_traits);
   const lowEvidence = openAnswerChars !== null && openAnswerChars < 150;

@@ -7228,5 +7228,43 @@
     "body": "To use XIMA we need your agreement to the privacy policy and the terms of service.",
     "continue": "Accept and continue",
     "decline": "Not now, sign out"
+  },
+  "ximatar": {
+    "bear": {
+      "name": "Bear"
+    },
+    "bee": {
+      "name": "Bee"
+    },
+    "cat": {
+      "name": "Cat"
+    },
+    "chameleon": {
+      "name": "Chameleon"
+    },
+    "dolphin": {
+      "name": "Dolphin"
+    },
+    "elephant": {
+      "name": "Elephant"
+    },
+    "fox": {
+      "name": "Fox"
+    },
+    "horse": {
+      "name": "Horse"
+    },
+    "lion": {
+      "name": "Lion"
+    },
+    "owl": {
+      "name": "Owl"
+    },
+    "parrot": {
+      "name": "Parrot"
+    },
+    "wolf": {
+      "name": "Wolf"
+    }
   }
 }

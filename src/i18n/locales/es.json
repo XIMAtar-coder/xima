@@ -7527,5 +7527,43 @@
     "body": "Para usar XIMA necesitamos que aceptes la política de privacidad y los términos del servicio.",
     "continue": "Aceptar y continuar",
     "decline": "Ahora no, cerrar sesión"
+  },
+  "ximatar": {
+    "bear": {
+      "name": "Oso"
+    },
+    "bee": {
+      "name": "Abeja"
+    },
+    "cat": {
+      "name": "Gato"
+    },
+    "chameleon": {
+      "name": "Camaleón"
+    },
+    "dolphin": {
+      "name": "Delfín"
+    },
+    "elephant": {
+      "name": "Elefante"
+    },
+    "fox": {
+      "name": "Zorro"
+    },
+    "horse": {
+      "name": "Caballo"
+    },
+    "lion": {
+      "name": "León"
+    },
+    "owl": {
+      "name": "Búho"
+    },
+    "parrot": {
+      "name": "Loro"
+    },
+    "wolf": {
+      "name": "Lobo"
+    }
   }
 }
