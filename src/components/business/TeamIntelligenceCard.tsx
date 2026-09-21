@@ -1,28 +1,21 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent } from '@/components/ui/card';
+import { Panel } from '@/components/layout/PageHeader';
 import { supabase } from '@/integrations/supabase/client';
+import { cn } from '@/lib/utils';
 
 interface TeamIntelligenceCardProps {
   businessId: string | undefined;
-  teamCulture: string | null | undefined;
   recommendedXimatars: string[];
+  /** Counts across the active challenges: invited, responded, challenges completed. */
+  pipeline: { invited: number; responded: number; completed: number };
 }
 
-const CULTURE_INSIGHT: Record<string, string> = {
-  high_performance: 'Wolves and Lions thrive in high-performance environments with clear targets.',
-  collaborative: 'Dolphins and Elephants excel in trust-based, team-oriented cultures.',
-  innovation_first: 'Foxes and Cats bring the creative disruption innovation cultures need.',
-  people_centered: 'Bears and Horses flourish where growth and balance are prioritized.',
-  mission_driven: 'Bees and Elephants align naturally with purpose-driven organizations.',
-};
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-export const TeamIntelligenceCard: React.FC<TeamIntelligenceCardProps> = ({
-  businessId,
-  teamCulture,
-  recommendedXimatars,
-}) => {
+/** "Composizione del percorso": from invitation to evaluation, plus the split by XIMAtar. */
+export const TeamIntelligenceCard: React.FC<TeamIntelligenceCardProps> = ({ businessId, recommendedXimatars, pipeline }) => {
   const { t } = useTranslation();
 
   const { data: pipelineByArchetype = [] } = useQuery({
@@ -59,80 +52,69 @@ export const TeamIntelligenceCard: React.FC<TeamIntelligenceCardProps> = ({
   });
 
   const maxCount = Math.max(...pipelineByArchetype.map((i) => i.count), 1);
+  const archetypeName = (id: string) => t(`about.archetypes.name_${id}`, capitalize(id));
+  const recommendedNames = recommendedXimatars.slice(0, 3).map(archetypeName);
+
+  const cells = [
+    { label: t('businessPortal.overview_stat_invited', 'Invited'), value: pipeline.invited },
+    { label: t('businessPortal.overview_stat_responded', 'Responded'), value: pipeline.responded },
+    { label: t('businessPortal.overview_stat_completed', 'Challenges completed'), value: pipeline.completed },
+  ];
 
   return (
-    <Card className="border-border/50">
-      <CardContent className="p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <h3 className="text-lg font-semibold text-foreground">Team Intelligence</h3>
-        </div>
+    <Panel>
+      <h2 className="text-[19px] font-semibold tracking-[-0.45px] text-foreground">{t('businessPortal.overview_pipeline_title', 'Pipeline composition')}</h2>
+      <p className="mt-1 text-xs text-muted-foreground">{t('businessPortal.overview_pipeline_subtitle', 'From invitation to evaluation')}</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Pipeline by XIMAtar */}
-          <div>
-            <p className="text-sm text-muted-foreground mb-3">Pipeline by XIMAtar</p>
-            {pipelineByArchetype.length > 0 ? (
-              <div className="space-y-2">
-                {pipelineByArchetype.slice(0, 8).map((item) => (
-                  <div key={item.archetype} className="flex items-center gap-2">
-                    <img
-                      src={`/ximatars/${item.archetype}.webp`}
-                      className="w-5 h-5"
-                      alt=""
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                    />
-                    <span className="text-sm w-20 capitalize text-foreground truncate">{item.archetype}</span>
-                    <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-primary rounded-full transition-all"
-                        style={{ width: `${(item.count / maxCount) * 100}%` }}
-                      />
-                    </div>
-                    <span className="text-sm text-muted-foreground w-6 text-right">{item.count}</span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground italic">
-                Create challenges to see your pipeline composition
-              </p>
-            )}
+      <div className="my-5 grid grid-cols-3">
+        {cells.map((cell, i) => (
+          <div key={cell.label} className={cn('min-w-0', i > 0 && 'border-l border-[hsl(var(--xs-line))] pl-4')}>
+            <p className="font-mono text-[26px] leading-tight tabular-nums text-foreground">{cell.value}</p>
+            <p className="text-[11px] text-muted-foreground">{cell.label}</p>
           </div>
+        ))}
+      </div>
 
-          {/* Culture fit insights */}
-          <div>
-            <p className="text-sm text-muted-foreground mb-3">Culture Fit Insights</p>
-            <div className="space-y-3">
-              {recommendedXimatars.length > 0 && (
-                <div className="p-3 rounded-lg bg-green-500/10 dark:bg-green-950/20 border border-green-500/20">
-                  <p className="text-sm font-medium text-green-700 dark:text-green-400">
-                    Best fit for your culture
-                  </p>
-                  <div className="flex gap-2 mt-1 flex-wrap">
-                    {recommendedXimatars.slice(0, 3).map((x) => (
-                      <span key={x} className="text-sm capitalize text-foreground">{x}</span>
-                    ))}
-                  </div>
-                  {teamCulture && CULTURE_INSIGHT[teamCulture] && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {CULTURE_INSIGHT[teamCulture]}
-                    </p>
-                  )}
-                </div>
-              )}
+      {recommendedNames.length > 0 && (
+        <div className="border-l-2 border-primary bg-[hsl(var(--xs-page))] px-3.5 py-3 text-xs leading-relaxed text-muted-foreground">
+          <p className="font-semibold text-foreground">{t('businessPortal.overview_insight_title', 'Affinity and different perspectives')}</p>
+          <p className="mt-0.5">
+            {t('businessPortal.overview_insight_body', {
+              names: recommendedNames.join(', '),
+              defaultValue: '{{names}} are close to the company profile. Consider other archetypes too, to widen the points of view in the team.',
+            })}
+          </p>
+        </div>
+      )}
 
-              <div className="p-3 rounded-lg bg-blue-500/10 dark:bg-blue-950/20 border border-blue-500/20">
-                <p className="text-sm font-medium text-blue-700 dark:text-blue-400">
-                  Diversity opportunity
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Consider adding archetypes different from your natural fit — they bring perspectives your team might be missing.
-                </p>
+      {pipelineByArchetype.length > 0 ? (
+        <div className="mt-4 space-y-2">
+          <p className="text-xs text-muted-foreground">{t('businessPortal.overview_by_ximatar', 'Candidates in the pipeline by XIMAtar')}</p>
+          {pipelineByArchetype.slice(0, 8).map((item) => (
+            <div key={item.archetype} className="flex items-center gap-2 text-xs">
+              <img
+                src={`/ximatars/${item.archetype}.webp`}
+                className="h-5 w-5 object-contain"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+              <span className="w-24 truncate text-foreground">{archetypeName(item.archetype)}</span>
+              <div className="h-[5px] flex-1 overflow-hidden rounded-sm bg-[hsl(var(--xs-line))]">
+                <div className="h-full rounded-sm bg-primary" style={{ width: `${(item.count / maxCount) * 100}%` }} />
               </div>
+              <span className="w-6 text-right font-mono tabular-nums text-muted-foreground">{item.count}</span>
             </div>
-          </div>
+          ))}
         </div>
-      </CardContent>
-    </Card>
+      ) : (
+        <p className="mt-3 text-xs text-muted-foreground">
+          {pipeline.invited > 0
+            ? t('businessPortal.overview_by_ximatar_pending', { count: pipeline.invited, defaultValue: '{{count}} candidate(s) in the pipeline. The split by XIMAtar is not available yet.' })
+            : t('businessPortal.overview_by_ximatar_empty', 'Invite candidates to a challenge to see the split by XIMAtar.')}
+        </p>
+      )}
+    </Panel>
   );
 };

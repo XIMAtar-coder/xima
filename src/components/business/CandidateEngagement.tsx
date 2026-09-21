@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Users, TrendingUp, Award } from 'lucide-react';
+import { Panel } from '@/components/layout/PageHeader';
+import { Chip } from '@/components/business/XsBits';
 import { log } from '@/lib/log';
+import { cn } from '@/lib/utils';
 
 interface CandidateEngagementData {
   totalViews: number;
@@ -20,6 +19,7 @@ interface CandidateEngagementData {
   }>;
 }
 
+/** "Attività dei candidati": three totals and the recent activity, or an honest empty state. */
 export const CandidateEngagement = () => {
   const { t } = useTranslation();
   const [data, setData] = useState<CandidateEngagementData>({
@@ -96,99 +96,55 @@ export const CandidateEngagement = () => {
     }
   };
 
-  if (loading) {
-    return <div className="text-muted-foreground">Loading engagement data...</div>;
-  }
+  const cells = [
+    { label: t('businessPortal.engagement_profile_views_title'), value: data.totalViews },
+    { label: t('businessPortal.engagement_applications_title'), value: data.totalApplications },
+    { label: t('businessPortal.engagement_active_challenges_body'), value: data.totalChallenges },
+  ];
 
   return (
-    <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('businessPortal.engagement_profile_views_title')}</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{data.totalViews}</div>
-            <p className="text-xs text-muted-foreground">
-              {t('businessPortal.engagement_profile_views_body')}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('businessPortal.engagement_applications_title')}</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{data.totalApplications}</div>
-            <p className="text-xs text-muted-foreground">
-              {t('businessPortal.engagement_applications_body')}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('businessPortal.engagement_active_challenges_title')}</CardTitle>
-            <Award className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{data.totalChallenges}</div>
-            <p className="text-xs text-muted-foreground">
-              {t('businessPortal.engagement_active_challenges_body')}
-            </p>
-          </CardContent>
-        </Card>
+    <Panel aria-busy={loading}>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-[19px] font-semibold tracking-[-0.45px] text-foreground">{t('businessPortal.candidate_engagement_title')}</h2>
+        <span className="text-xs text-muted-foreground">{t('businessPortal.overview_total', 'Total')}</span>
       </div>
 
-      {/* Recent Candidates */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('businessPortal.recent_activity_title')}</CardTitle>
-          <CardDescription>
-            {t('businessPortal.recent_activity_subtitle')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {data.recentCandidates.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4">
-              {t('businessPortal.recent_activity_empty')}
-            </p>
-          ) : (
-            <div className="space-y-4">
-              {data.recentCandidates.map((candidate) => (
-                <div
-                  key={candidate.id}
-                  className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <Avatar>
-                      <AvatarImage src={candidate.avatar} loading="lazy" decoding="async" />
-                      <AvatarFallback>
-                        {candidate.name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium">{candidate.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        XIMAtar: {candidate.ximatar}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Badge>
-                      {candidate.status}
-                    </Badge>
+      <div className="mt-5 grid grid-cols-3 gap-3">
+        {cells.map((cell) => (
+          <div key={cell.label} className="min-w-0">
+            <p className={cn('font-mono text-[24px] leading-tight tabular-nums text-foreground', loading && 'animate-pulse text-muted-foreground')}>{loading ? '–' : cell.value}</p>
+            <p className="text-[11px] leading-snug text-muted-foreground">{cell.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-5 border-t border-[hsl(var(--xs-line))] pt-4">
+        {data.recentCandidates.length === 0 ? (
+          <div className="flex items-start gap-3">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[hsl(var(--xs-line))] text-muted-foreground" aria-hidden="true">↳</span>
+            <div>
+              <p className="text-xs font-semibold text-foreground">{t('businessPortal.overview_no_recent_activity', 'No recent activity')}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{t('businessPortal.overview_recent_activity_hint', 'New candidate updates will appear here.')}</p>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <p className="text-xs font-semibold text-foreground">{t('businessPortal.recent_activity_title')}</p>
+            {data.recentCandidates.map((candidate) => (
+              <div key={candidate.id} className="xs-row !py-2.5 text-sm">
+                <div className="flex min-w-0 items-center gap-3">
+                  <img src={`/ximatars/${candidate.ximatar}.webp`} alt="" className="h-8 w-8 shrink-0 object-contain" loading="lazy" decoding="async" onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = 'hidden'; }} />
+                  <div className="min-w-0">
+                    <p className="truncate font-medium text-foreground">{candidate.name}</p>
+                    <p className="text-xs text-muted-foreground">XIMAtar: {candidate.ximatar}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+                {candidate.status && <Chip>{candidate.status}</Chip>}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </Panel>
   );
 };

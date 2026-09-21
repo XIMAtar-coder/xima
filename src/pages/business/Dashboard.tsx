@@ -2,19 +2,18 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { PageHeader, Panel, Eyebrow } from '@/components/layout/PageHeader';
+import { Chip } from '@/components/business/XsBits';
 import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useBusinessProfile } from '@/hooks/useBusinessProfile';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, CheckCircle, Plus, Briefcase, Bug, Info, ChevronDown } from 'lucide-react';
+import { Plus, Bug } from 'lucide-react';
 import { CandidateEngagement } from '@/components/business/CandidateEngagement';
-
-import { HiringGoalOverviewCard } from '@/components/business/HiringGoalOverviewCard';
 import { ActiveChallengesOverview } from '@/components/business/ActiveChallengesOverview';
-import { BusinessCommandCenter } from '@/components/business/BusinessCommandCenter';
+import { BusinessCommandCenter, BusinessQuickActions } from '@/components/business/BusinessCommandCenter';
 import { CompanyIdentityCard } from '@/components/business/CompanyIdentityCard';
 import { TeamIntelligenceCard } from '@/components/business/TeamIntelligenceCard';
 import { RecommendationDebugPanel } from '@/components/business/RecommendationDebugPanel';
@@ -23,10 +22,10 @@ import BusinessEntryPointsCard from '@/components/business/BusinessEntryPointsCa
 import XimaHrRequestModal from '@/components/business/XimaHrRequestModal';
 import { DiscoveredPositionsBanner } from '@/components/business/DiscoveredPositionsBanner';
 import ChallengeContextSelector from '@/components/business/ChallengeContextSelector';
-import { useHiringGoals } from '@/hooks/useHiringGoals';
+import { useHiringGoals, type HiringGoal } from '@/hooks/useHiringGoals';
 import { useChallengeStatsMap } from '@/hooks/useChallengeResponsesData';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { HowXimaWorksExplainer } from '@/components/business/HowXimaWorksExplainer';
+import { CCNL_OPTIONS, labelForCcnl } from '@/lib/business/ccnl';
 import { log } from '@/lib/log';
 
 const isDev = import.meta.env.DEV;
@@ -44,9 +43,87 @@ interface ActiveChallengeWithStats {
   status: string;
 }
 
+const WORK_MODEL_KEYS: Record<string, string> = { onsite: 'hiring_goal.onsite', remote: 'hiring_goal.remote', hybrid: 'hiring_goal.hybrid' };
+
+/** "25.000–35.000 €" from the goal's RAL (or gross salary) range; null when neither end is set. */
+const formatSalaryRange = (min: number | null | undefined, max: number | null | undefined, currency: string | null | undefined, language: string) => {
+  if (!min && !max) return null;
+  const fmt = new Intl.NumberFormat(language, { style: 'currency', currency: currency || 'EUR', maximumFractionDigits: 0 });
+  if (min && max) return `${fmt.format(min)}–${fmt.format(max)}`;
+  return fmt.format((min || max) as number);
+};
+
+/** The active hiring goal panel: role, place, RAL, contract, and the way to its shortlist. */
+const ActiveGoalPanel: React.FC<{ goal: HiringGoal | null; draftGoal: HiringGoal | null; shortlisted: number }> = ({ goal, draftGoal, shortlisted }) => {
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+
+  if (!goal) {
+    const draft = draftGoal;
+    return (
+      <Panel>
+        <Eyebrow>{t('businessPortal.overview_active_goal', 'Active goal')}</Eyebrow>
+        <h3 className="mt-3 text-[19px] font-semibold tracking-[-0.45px] text-foreground">
+          {draft
+            ? (draft.role_title || t('business.goals.untitled'))
+            : t('business.goals.no_active_title')}
+        </h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {draft ? t('businessPortal.overview_goal_draft_hint', 'Saved as a draft. Complete it to build the shortlist.') : t('businessPortal.overview_create_goal_hint')}
+        </p>
+        <Button variant="outline" className="mt-5" onClick={() => navigate(draft ? `/business/hiring-goals/${draft.id}/edit` : '/business/hiring-goals/new')}>
+          {draft ? t('businessPortal.overview_goal_complete_draft', 'Complete the goal') : t('businessPortal.overview_create_goal_cta')} <span aria-hidden="true">↗</span>
+        </Button>
+      </Panel>
+    );
+  }
+
+  const workModel = goal.work_model && WORK_MODEL_KEYS[goal.work_model] ? t(WORK_MODEL_KEYS[goal.work_model]) : goal.work_model;
+  const placeLine = [goal.city_region, workModel].filter(Boolean).join(' · ');
+  const ral = formatSalaryRange(goal.ral_min ?? goal.salary_min, goal.ral_max ?? goal.salary_max, goal.salary_currency, i18n.language);
+  const ccnlOption = goal.ccnl ? CCNL_OPTIONS.find((o) => o.value === goal.ccnl) : undefined;
+  const contract = goal.ccnl
+    ? [labelForCcnl(goal.ccnl), ccnlOption?.months ? t('businessPortal.overview_goal_months', { count: ccnlOption.months, defaultValue: '{{count}} monthly payments' }) : null].filter(Boolean).join(' · ')
+    : null;
+
+  return (
+    <Panel>
+      <div className="flex items-center justify-between gap-3">
+        <Eyebrow>{t('businessPortal.overview_active_goal', 'Active goal')}</Eyebrow>
+        <Chip>{t(`business.goals.status_${goal.status || 'active'}`, goal.status || '')}</Chip>
+      </div>
+      <h3 className="mt-3 text-[19px] font-semibold tracking-[-0.45px] text-foreground">{goal.role_title || t('business.goals.untitled')}</h3>
+      {placeLine && <p className="mt-1 text-sm text-muted-foreground">{placeLine}</p>}
+
+      {(ral || contract) && (
+        <dl className="mt-4 flex flex-wrap gap-x-6 gap-y-3 border-t border-[hsl(var(--xs-line))] pt-4 text-xs">
+          {ral && (
+            <div>
+              <dt className="text-muted-foreground">{t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL')}</dt>
+              <dd className="font-medium text-foreground">{ral}</dd>
+            </div>
+          )}
+          {contract && (
+            <div>
+              <dt className="text-muted-foreground">{t('businessPortal.overview_goal_contract', 'Contract')}</dt>
+              <dd className="font-medium text-foreground">{contract}</dd>
+            </div>
+          )}
+        </dl>
+      )}
+
+      <Button variant="outline" className="mt-5 gap-2" onClick={() => navigate(`/business/hiring-goals/${goal.id}/shortlist`)}>
+        {t('businessPortal.overview_open_shortlist', 'Open shortlist')}
+        {shortlisted > 0 && <Chip>{shortlisted}</Chip>}
+        <span aria-hidden="true">↗</span>
+      </Button>
+    </Panel>
+  );
+};
+
 const BusinessDashboard = () => {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: businessLoading } = useBusinessRole();
@@ -59,7 +136,7 @@ const BusinessDashboard = () => {
   });
   const [companyProfile, setCompanyProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
-  const { businessProfile, isLoading: businessProfileLoading } = useBusinessProfile();
+  const { businessProfile } = useBusinessProfile();
   const [hiringGoalStatus, setHiringGoalStatus] = useState<'none' | 'draft' | 'active'>('none');
   const [hiringGoalDraftId, setHiringGoalDraftId] = useState<string | null>(null);
   const [hiringGoalLoading, setHiringGoalLoading] = useState(true);
@@ -68,8 +145,8 @@ const BusinessDashboard = () => {
   const [showImportModal, setShowImportModal] = useState(false);
   const [showXimaHrModal, setShowXimaHrModal] = useState(false);
   const [contextSelectorOpen, setContextSelectorOpen] = useState(false);
-  
-  const { goals: hiringGoals, loading: hiringGoalsLoading, updateGoalStatus, createGoal, refetch: refetchGoals } = useHiringGoals();
+
+  const { goals: hiringGoals } = useHiringGoals();
 
   const challengeIds = useMemo(() => activeChallengesBase.map(c => c.id), [activeChallengesBase]);
   const { statsMap, loading: statsLoading, debug: statsDebug } = useChallengeStatsMap(user?.id, challengeIds);
@@ -222,6 +299,22 @@ const BusinessDashboard = () => {
   const pendingReviewsCount = useMemo(() => activeChallengesWithStats.reduce((sum, c) => sum + c.responses_count, 0), [activeChallengesWithStats]);
   const candidatesInPipelineCount = useMemo(() => activeChallengesWithStats.reduce((sum, c) => sum + c.invited_count, 0), [activeChallengesWithStats]);
 
+  // The goal shown in the "active goal" panel: the one the active challenge
+  // belongs to, otherwise the most recent active goal; a draft as fallback.
+  const activeGoal = useMemo(() => {
+    const byChallenge = activeChallengesBase[0]?.hiring_goal_id
+      ? hiringGoals.find(g => g.id === activeChallengesBase[0].hiring_goal_id)
+      : undefined;
+    return byChallenge
+      || hiringGoals.find(g => g.status === 'active')
+      || (hiringGoalStatus === 'active' ? hiringGoals.find(g => g.id === hiringGoalDraftId) : undefined)
+      || null;
+  }, [activeChallengesBase, hiringGoals, hiringGoalStatus, hiringGoalDraftId]);
+  const draftGoal = useMemo(
+    () => (hiringGoalStatus === 'draft' ? hiringGoals.find(g => g.id === hiringGoalDraftId) || null : null),
+    [hiringGoals, hiringGoalStatus, hiringGoalDraftId],
+  );
+
   const attentionItems = useMemo(() => {
     const items: { type: 'review' | 'expiring' | 'followup'; count: number; label: string; link: string }[] = [];
     if (pendingReviewsCount > 0) {
@@ -254,7 +347,21 @@ const BusinessDashboard = () => {
   return (
     <BusinessLayout>
       <div className="space-y-6">
-        {/* Entry points card — visible only when no active hiring goal */}
+        <PageHeader
+          eyebrow={t('businessPortal.overview_eyebrow', 'Your selection space')}
+          title={t('businessPortal.overview_title', 'At a glance.')}
+          subtitle={businessProfile?.company_name
+            ? t('businessPortal.overview_subtitle', { company: businessProfile.company_name, defaultValue: '{{company}}, here is where we are.' })
+            : t('businessPortal.overview_subtitle_anonymous', 'Here is where we are.')}
+          actions={
+            <Button variant="outline" onClick={() => navigate('/business/hiring-goals/new')} className="gap-1.5">
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              {t('businessPortal.hiring_goals_new_cta')}
+            </Button>
+          }
+        />
+
+        {/* Entry points — visible only when no active hiring goal */}
         {!hiringGoalLoading && !hasActiveWork && (hiringGoalStatus === 'none' || hiringGoalStatus === 'draft') && (
           <BusinessEntryPointsCard onXimaHrClick={() => setShowXimaHrModal(true)} />
         )}
@@ -271,14 +378,24 @@ const BusinessDashboard = () => {
         {/* Discovered positions from website scan */}
         <DiscoveredPositionsBanner businessId={user?.id} />
 
-        {/* Current work first: the challenge and who responded. */}
-        {/* Active Challenges Overview */}
-        <ActiveChallengesOverview 
-          challenges={activeChallengesWithStats} 
-          loading={activeChallengesLoading || statsLoading} 
-        />
+        {/* Work area: the selection in progress on the left, who you are on the right. */}
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(310px,1fr)]">
+          <div className="min-w-0 space-y-6">
+            <ActiveChallengesOverview
+              challenges={activeChallengesWithStats}
+              loading={activeChallengesLoading || statsLoading}
+            />
+            <ActiveGoalPanel goal={activeGoal} draftGoal={draftGoal} shortlisted={stats.shortlisted} />
+          </div>
+          <CompanyIdentityCard
+            businessProfile={businessProfile ?? null}
+            companyProfile={companyProfile}
+            profileStatus={profileLoading ? 'loading' : 'ready'}
+            onGenerate={handleGenerateProfile}
+          />
+        </div>
 
-        {/* Section 2: Hiring Pipeline */}
+        {/* Counter strip */}
         <BusinessCommandCenter
           stats={{
             activeChallenges: activeChallengesCount,
@@ -290,6 +407,20 @@ const BusinessDashboard = () => {
           loading={loading || statsLoading}
           hiringGoalId={hiringGoalDraftId}
           responsesLink={responsesLink}
+        />
+
+        {/* Pipeline composition + candidate activity side by side */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <TeamIntelligenceCard
+            businessId={user?.id}
+            recommendedXimatars={companyProfile?.recommended_ximatars || []}
+            pipeline={{ invited: candidatesInPipelineCount, responded: pendingReviewsCount, completed: stats.completedChallenges }}
+          />
+          <CandidateEngagement />
+        </div>
+
+        <BusinessQuickActions
+          hiringGoalId={hiringGoalDraftId}
           onImportJob={() => setShowImportModal(true)}
           onCreateChallenge={() => setContextSelectorOpen(true)}
         />
@@ -303,67 +434,29 @@ const BusinessDashboard = () => {
           companyName={businessProfile?.company_name || ''}
         />
 
-        {/* Section 1: Company Identity Card (with collapsible AI profile) */}
-        <CompanyIdentityCard
-          businessProfile={businessProfile ?? null}
-          companyProfile={companyProfile}
-          profileStatus={profileLoading ? 'loading' : 'ready'}
-          onGenerate={handleGenerateProfile}
-        />
-
-        {/* Section 3: Team Intelligence + Candidate Engagement side by side */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <TeamIntelligenceCard
-            businessId={user?.id}
-            teamCulture={businessProfile?.team_culture || (businessProfile?.metadata as any)?.team_culture}
-            recommendedXimatars={companyProfile?.recommended_ximatars || []}
-          />
-          <div>
-            <h3 className="text-lg font-semibold text-foreground mb-3">{t('businessPortal.candidate_engagement_title', 'Candidate Engagement')}</h3>
-            <CandidateEngagement />
-          </div>
-        </div>
-
         {/* DEV Debug Panel */}
         {isDev && activeChallengesBase.length > 0 && (
-          <Card className="border-dashed border-amber-500/50 bg-amber-500/5">
-            <CardContent className="py-3">
-              <div className="flex items-center gap-2 text-xs font-mono text-amber-600 flex-wrap">
-                <Bug className="h-3 w-3" />
-                <span>DEV Challenge Stats:</span>
-                {activeChallengesBase.slice(0, 3).map(c => {
-                  const s = statsDebug[c.id];
-                  return (
-                    <span key={c.id} className="bg-amber-500/10 px-1 rounded">
-                      {c.title.slice(0, 15)}... inv={s?.invCount || 0} sub={s?.subCount || 0}
-                    </span>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Single CTA → Hiring Goals page */}
-        <Card>
-          <CardContent className="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-1">{t('businessPortal.overview_create_goal_cta')}</h3>
-              <p className="text-sm text-muted-foreground">{t('businessPortal.overview_create_goal_hint')}</p>
+          <Panel className="border-dashed border-amber-500/50 bg-amber-500/5 py-3">
+            <div className="flex items-center gap-2 text-xs font-mono text-amber-600 flex-wrap">
+              <Bug className="h-3 w-3" />
+              <span>DEV Challenge Stats:</span>
+              {activeChallengesBase.slice(0, 3).map(c => {
+                const s = statsDebug[c.id];
+                return (
+                  <span key={c.id} className="bg-amber-500/10 px-1 rounded">
+                    {c.title.slice(0, 15)}... inv={s?.invCount || 0} sub={s?.subCount || 0}
+                  </span>
+                );
+              })}
             </div>
-            <Button className="gap-2" onClick={() => navigate('/business/hiring-goals')}>
-              <Plus className="h-4 w-4" />
-              {t('businessPortal.overview_create_goal_cta')}
-            </Button>
-          </CardContent>
-        </Card>
-
+          </Panel>
+        )}
 
         {/* Recommendation Debug Panel — DEV only */}
         {isDev && <RecommendationDebugPanel businessId={user?.id} hiringGoalId={hiringGoalDraftId} />}
 
-        {/* How XIMA Works — interactive explainer */}
-        {!hasActiveWork && <HowXimaWorksExplainer />}
+        {/* How XIMA works — collapsed at the end */}
+        <HowXimaWorksExplainer />
         <ChallengeContextSelector open={contextSelectorOpen} onOpenChange={setContextSelectorOpen} />
       </div>
     </BusinessLayout>

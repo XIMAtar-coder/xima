@@ -1,78 +1,36 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { TrendingUp, MapPin, Clock, Activity, Send, User, CheckCircle2, Loader2 } from 'lucide-react';
+import { Panel, Eyebrow } from '@/components/layout/PageHeader';
+import { Chip, PillarBars } from '@/components/business/XsBits';
 import { PillarScoreBar, formatRoundedScore } from './PillarScoreBar';
 import { MemberCodeBadge } from './MemberCodeBadge';
-
-interface ShortlistCandidate {
-  id?: string;
-  candidate_user_id: string;
-  anonymous_label?: string | null;
-  total_score: number;
-  identity_score: number;
-  trajectory_score: number;
-  engagement_score: number;
-  location_score: number;
-  credential_score: number | null;
-  performance_score?: number | null;
-  match_narrative?: string | null;
-  ximatar_archetype: string;
-  ximatar_level: number;
-  pillar_scores: Record<string, number>;
-  trajectory_summary: string;
-  engagement_level: string;
-  location_match: string;
-  availability: string;
-  status: string;
-  identity_revealed?: boolean;
-  pipeline_stage?: string;
-  subscriber_code?: string | null;
-}
+import { parseReasons, reasonGlyph, reasonText, getArchetypeImageUrl, archetypeDisplayName, type ShortlistCandidate } from './shortlistHelpers';
 
 interface ShortlistCardProps {
   candidate: ShortlistCandidate;
   rank: number;
-  locked?: boolean;
   invited?: boolean;
-  inviting?: boolean;
-  /** No active XIMA Core challenge for this goal yet: inviting would fail. */
-  needsChallenge?: boolean;
-  onInviteToChallenge: (candidateUserId: string) => void;
+  /** The company's five-pillar profile, drawn as tick marks on the candidate's bars. */
+  companyPillars?: Record<string, unknown> | null;
   onViewProfile: (candidateUserId: string) => void;
 }
 
-type Reason = { k: string; v?: string | number };
+const glyphClass = { up: 'text-emerald-700 dark:text-emerald-400', warn: 'text-amber-700 dark:text-amber-400', none: 'text-muted-foreground' } as const;
+const glyphChar = { up: '↗', warn: '!', none: '—' } as const;
 
-// match_narrative holds the scoring reasons as JSON codes (written by
-// generate-shortlist). Older rows hold nothing or free text: show no reasons.
-const parseReasons = (raw?: string | null): Reason[] => {
-  if (!raw) return [];
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((r) => r && typeof r.k === 'string') : [];
-  } catch {
-    return [];
-  }
-};
-
-const getArchetypeImageUrl = (archetype: string) =>
-  `/ximatars/${(archetype || 'chameleon').toLowerCase()}.webp`;
-
-export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, locked = false, invited = false, inviting = false, needsChallenge = false, onInviteToChallenge, onViewProfile }) => {
+/**
+ * The selected candidate's card in the shortlist context column: identity,
+ * compatibility score, the reasons, the five pillars against the company
+ * profile, and the evidence available.
+ */
+export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, invited = false, companyPillars, onViewProfile }) => {
   const { t } = useTranslation();
-  const imageUrl = getArchetypeImageUrl(candidate.ximatar_archetype);
   const reasons = parseReasons(candidate.match_narrative);
-  const pillarName = (key: string) => t(`shortlist.pillar.${key}`, key);
-  const reasonText = (r: Reason) => t(`shortlist.reason.${r.k}`, {
-    defaultValue: '',
-    value: r.k.startsWith('pillar_') && r.k !== 'pillar_fit' ? pillarName(String(r.v)) : r.v,
-    location: r.k === 'location' ? t(`shortlist.location.${r.v === 'willing_to_relocate' ? 'relocate' : r.v}`, String(r.v)) : undefined,
-  });
   const unavailable = t('shortlist.not_available', 'Not available');
-  const archetypeName = candidate.ximatar_archetype.charAt(0).toUpperCase() + candidate.ximatar_archetype.slice(1);
+  const archetypeName = archetypeDisplayName(t, candidate.ximatar_archetype);
+  const recommended = reasons.some((r) => r.k === 'archetype_recommended');
+  const challengesDone = reasons.find((r) => r.k === 'challenges_done');
+  const challengesCount = challengesDone ? Number(challengesDone.v) : reasons.some((r) => r.k === 'no_challenges') ? 0 : null;
 
   const engagementLabel = {
     highly_active: t('shortlist.engagement.highly_active', 'Highly active'),
@@ -96,43 +54,91 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, l
     '3_months': t('shortlist.availability.3_months', 'In 3 months'),
   }[candidate.availability];
 
+  const chips = [
+    candidate.trajectory_summary && candidate.trajectory_summary !== 'No recent growth' && candidate.trajectory_summary !== 'New to platform' ? candidate.trajectory_summary : null,
+    engagementLabel,
+    locationLabel && candidate.location_match !== 'no_match' ? locationLabel : null,
+    availabilityLabel,
+  ].filter(Boolean) as string[];
+
   return (
-    <Card className="hover:shadow-lg transition-all duration-200 relative overflow-hidden">
-      <CardContent className={`p-5 space-y-4 ${locked ? 'blur-sm pointer-events-none select-none' : ''}`}>
-        {/* Header: rank + archetype + score */}
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
-              #{rank}
-            </div>
-            <div className="flex items-center gap-2">
-              <img
-                src={imageUrl}
-                alt={candidate.ximatar_archetype}
-                className="h-10 w-10 object-contain shrink-0"
-                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-              />
-              <div className="space-y-1">
-                <p className="font-semibold text-sm text-foreground">
-                  {candidate.anonymous_label
-                    ? `${t('shortlist.candidate_label', { label: candidate.anonymous_label, defaultValue: 'Candidate #{{label}}' })} — ${archetypeName}`
-                    : archetypeName}
-                </p>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-xs text-muted-foreground">L{candidate.ximatar_level}</p>
-                  <MemberCodeBadge code={candidate.subscriber_code} />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="text-right">
-            <p className="text-2xl font-bold text-foreground">{formatRoundedScore(candidate.total_score)}</p>
-            <p className="text-xs text-muted-foreground">/100</p>
+    <Panel aria-label={t('shortlist.detail_aria', 'Selected candidate')} className="p-5 sm:p-6">
+      <div className="flex items-center gap-3">
+        <img
+          src={getArchetypeImageUrl(candidate.ximatar_archetype)}
+          alt={`XIMAtar ${archetypeName}`}
+          className="h-[58px] w-[58px] shrink-0 object-contain"
+          onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = 'hidden'; }}
+        />
+        <div className="min-w-0">
+          <Eyebrow>
+            {candidate.anonymous_label
+              ? t('shortlist.candidate_label', { label: candidate.anonymous_label, defaultValue: 'Candidate #{{label}}' })
+              : t('shortlist.rank_label', { rank, defaultValue: 'Candidate {{rank}}' })}
+          </Eyebrow>
+          <h2 className="mt-0.5 text-[22px] font-semibold leading-tight tracking-[-0.5px] text-foreground">{archetypeName}</h2>
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            {recommended && <Chip tone="blue">{t('shortlist.recommended_archetype', 'Recommended archetype')}</Chip>}
+            {invited && <Chip tone="status">{t('shortlist.invited', 'Invited')}</Chip>}
+            <MemberCodeBadge code={candidate.subscriber_code} />
           </div>
         </div>
+      </div>
 
-        {/* Score breakdown: maxima match generate-shortlist's weights */}
-        <div className="space-y-1.5">
+      <div className="mt-5 flex items-baseline gap-1.5">
+        <b className="font-mono text-[54px] font-normal leading-[1.1] tracking-[-3px] text-foreground tabular-nums">{formatRoundedScore(candidate.total_score)}</b>
+        <span className="text-sm text-muted-foreground">/100</span>
+      </div>
+      <p className="mb-4 text-xs text-muted-foreground">{t('shortlist.score_caption', 'Compatibility with the goal')}</p>
+
+      {reasons.length > 0 && (
+        <ul className="grid gap-2.5 text-xs text-muted-foreground" aria-label={t('shortlist.reasons_label', 'Why this candidate')}>
+          {reasons.map((r, i) => {
+            const text = reasonText(t, r);
+            if (!text) return null;
+            const glyph = reasonGlyph(r);
+            return (
+              <li key={`${r.k}-${i}`} className="grid grid-cols-[15px_1fr] gap-2">
+                <span className={`font-semibold ${glyphClass[glyph]}`} aria-hidden="true">{glyphChar[glyph]}</span>
+                <span>{text}</span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {chips.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          {chips.map((c) => <Chip key={c}>{c}</Chip>)}
+        </div>
+      )}
+
+      <div className="mt-5 border-t border-[hsl(var(--xs-line))] pt-4">
+        <h3 className="mb-3 text-[15px] font-semibold text-foreground">{t('businessPortal.overview_five_pillars', 'The five pillars')}</h3>
+        <PillarBars scores={candidate.pillar_scores} reference={companyPillars ?? undefined} />
+        <div className="mt-4 flex flex-wrap items-center gap-3.5 text-[10px] text-muted-foreground">
+          <span><i className="mr-1 inline-block h-[3px] w-3.5 bg-primary align-middle" aria-hidden="true" />{t('shortlist.legend_candidate', 'Candidate')}</span>
+          {companyPillars && <span><i className="mr-1 inline-block h-[9px] w-[2px] bg-foreground align-middle" aria-hidden="true" />{t('shortlist.legend_company', 'Company profile')}</span>}
+          <span>{t('businessPortal.scale_0_100', 'Scale 0–100')}</span>
+        </div>
+      </div>
+
+      <dl className="mt-5 grid grid-cols-2 gap-3.5 border-t border-[hsl(var(--xs-line))] pt-4 text-xs">
+        <div>
+          <dt className="text-muted-foreground">{t('shortlist.facts_challenges_done', 'Challenges completed')}</dt>
+          <dd className="mt-0.5 font-mono font-medium text-foreground" title={challengesCount == null ? unavailable : undefined}>{challengesCount ?? '—'}</dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">{t('shortlist.facts_credentials', 'Credentials (out of 10)')}</dt>
+          <dd className="mt-0.5 font-mono font-medium text-foreground" title={candidate.credential_score == null ? unavailable : undefined}>
+            {candidate.credential_score == null ? '—' : formatRoundedScore(candidate.credential_score)}
+          </dd>
+        </div>
+      </dl>
+
+      <details className="mt-4 border-t border-[hsl(var(--xs-line))] pt-3 text-xs">
+        <summary className="cursor-pointer text-muted-foreground hover:text-foreground">{t('shortlist.score_breakdown', 'How the score is composed')}</summary>
+        <div className="mt-3 space-y-1.5">
           <PillarScoreBar label={t('shortlist.score.identity', 'Identity')} value={candidate.identity_score} max={40} />
           <PillarScoreBar label={t('shortlist.score.performance', 'Challenges')} value={candidate.performance_score ?? null} max={20} unavailableLabel={unavailable} />
           <PillarScoreBar label={t('shortlist.score.location', 'Location')} value={candidate.location_score} max={15} />
@@ -140,86 +146,15 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, l
           <PillarScoreBar label={t('shortlist.score.trajectory', 'Trajectory')} value={candidate.trajectory_score} max={10} />
           <PillarScoreBar label={t('shortlist.score.engagement', 'Engagement')} value={candidate.engagement_score} max={5} />
         </div>
+      </details>
 
-        {/* Why this rank */}
-        {reasons.length > 0 && (
-          <ul className="space-y-1 text-xs text-muted-foreground" aria-label={t('shortlist.reasons_label', 'Why this candidate')}>
-            {reasons.map((r, i) => {
-              const text = reasonText(r);
-              return text ? <li key={`${r.k}-${i}`}>· {text}</li> : null;
-            })}
-          </ul>
-        )}
-
-        {/* Signal badges */}
-        <div className="flex flex-wrap gap-1.5">
-          {candidate.trajectory_summary && candidate.trajectory_summary !== "No recent growth" && candidate.trajectory_summary !== "New to platform" && (
-            <Badge variant="secondary" className="text-xs gap-1">
-              <TrendingUp className="w-3 h-3" />
-              {candidate.trajectory_summary}
-            </Badge>
-          )}
-          <Badge variant="outline" className="text-xs gap-1">
-            <Activity className="w-3 h-3" />
-            {engagementLabel}
-          </Badge>
-          {locationLabel && candidate.location_match !== "no_match" && (
-            <Badge variant="outline" className="text-xs gap-1">
-              <MapPin className="w-3 h-3" />
-              {locationLabel}
-            </Badge>
-          )}
-          {availabilityLabel && (
-            <Badge variant="outline" className="text-xs gap-1">
-              <Clock className="w-3 h-3" />
-              {availabilityLabel}
-            </Badge>
-          )}
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-2 pt-1">
-          <Button
-            size="sm"
-            className="flex-1 gap-1"
-            variant={invited ? 'secondary' : 'default'}
-            onClick={() => onInviteToChallenge(candidate.candidate_user_id)}
-            disabled={invited || inviting}
-            title={needsChallenge && !invited ? t('shortlist.invite_disabled_tooltip', 'Create a challenge for this role first') : undefined}
-          >
-            {invited ? (
-              <>
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                {t('shortlist.invited', 'Invited')}
-              </>
-            ) : inviting ? (
-              <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                {t('shortlist.inviting', 'Inviting…')}
-              </>
-            ) : (
-              <>
-                <Send className="w-3.5 h-3.5" />
-                {needsChallenge
-                  ? t('shortlist.create_challenge_to_invite', 'Create challenge to invite')
-                  : t('shortlist.invite_to_challenge', 'Invite to Challenge')}
-              </>
-            )}
-          </Button>
-          <Button size="sm" variant="outline" onClick={() => onViewProfile(candidate.candidate_user_id)}>
-            <User className="w-3.5 h-3.5" />
-          </Button>
-        </div>
-      </CardContent>
-      {locked && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/70 backdrop-blur-sm p-5">
-          <div className="text-center space-y-3">
-            <Badge variant="secondary">{t('shortlist.upgrade_badge', 'Upgrade')}</Badge>
-            <p className="text-sm font-semibold text-foreground">{t('shortlist.upgrade_title', 'Unlock the full shortlist')}</p>
-            <Button size="sm" variant="outline">{t('shortlist.upgrade_cta', 'Upgrade plan')}</Button>
-          </div>
-        </div>
-      )}
-    </Card>
+      <button
+        type="button"
+        onClick={() => onViewProfile(candidate.candidate_user_id)}
+        className="mt-5 text-xs font-medium text-primary underline underline-offset-[3px] hover:text-primary/80"
+      >
+        {t('shortlist.open_anonymous_profile', 'Open anonymous profile')} <span aria-hidden="true">↗</span>
+      </button>
+    </Panel>
   );
 };

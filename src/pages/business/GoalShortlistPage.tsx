@@ -4,18 +4,19 @@ import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
 import { ShortlistView } from '@/components/business/ShortlistView';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Users } from 'lucide-react';
+
+const WORK_MODEL_KEYS: Record<string, string> = { onsite: 'hiring_goal.onsite', remote: 'hiring_goal.remote', hybrid: 'hiring_goal.hybrid' };
 
 const GoalShortlistPage: React.FC = () => {
   const { goalId } = useParams<{ goalId: string }>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { goals, loading } = useHiringGoals();
   const [directGoal, setDirectGoal] = React.useState<any>(null);
@@ -46,8 +47,6 @@ const GoalShortlistPage: React.FC = () => {
     }
   }, [searchParams, setSearchParams, toast, t]);
 
-
-
   if (loading || directLoading) {
     return (
       <BusinessLayout>
@@ -66,46 +65,45 @@ const GoalShortlistPage: React.FC = () => {
     );
   }
 
+  const roleTitle = currentGoal.role_title || t('business.goals.untitled');
+  const workModel = currentGoal.work_model && WORK_MODEL_KEYS[currentGoal.work_model] ? t(WORK_MODEL_KEYS[currentGoal.work_model]) : currentGoal.work_model;
+  const ralMin = currentGoal.ral_min ?? currentGoal.salary_min;
+  const ralMax = currentGoal.ral_max ?? currentGoal.salary_max;
+  let ral: string | null = null;
+  if (ralMin || ralMax) {
+    const fmt = new Intl.NumberFormat(i18n.language, { style: 'currency', currency: currentGoal.salary_currency || 'EUR', maximumFractionDigits: 0 });
+    ral = `${t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL')} ${ralMin && ralMax ? `${fmt.format(ralMin)}–${fmt.format(ralMax)}` : fmt.format(ralMin || ralMax)}`;
+  }
+  const goalLine = [currentGoal.city_region, workModel, ral].filter(Boolean) as string[];
+
   return (
     <BusinessLayout>
-      <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto">
-        <GoalContextHeader currentGoal={currentGoal} allGoals={goals} onGoalSwitch={(newGoalId) => navigate(`/business/hiring-goals/${newGoalId}/shortlist`)} />
+      <div className="space-y-6">
+        <GoalContextHeader currentGoal={currentGoal} allGoals={goals} onGoalSwitch={(newGoalId) => navigate(`/business/hiring-goals/${newGoalId}/shortlist`)} hideSettings />
 
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">{t('shortlist.page_title', 'Shortlist')}</h1>
-            <p className="text-muted-foreground mt-1">
-              {t('shortlist.page_subtitle', 'The 12 candidates matched to this hiring goal and your company DNA.')}
-            </p>
-          </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <Button variant="outline" onClick={() => navigate('/business/candidates')} className="gap-2">
-              <Users className="h-4 w-4" />
-              {t('candidate_pool.title', 'Candidate Pool')}
+        <PageHeader
+          eyebrow={t('shortlist.page_eyebrow', 'Selection by goal')}
+          title={t('shortlist.page_heading', 'Candidate shortlist')}
+          subtitle={
+            <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px]">
+              <strong className="font-medium text-foreground">{roleTitle}</strong>
+              {goalLine.map((part) => (
+                <React.Fragment key={part}><span aria-hidden="true">·</span><span>{part}</span></React.Fragment>
+              ))}
+            </span>
+          }
+          actions={
+            <Button variant="outline" onClick={() => navigate(`/business/hiring-goals/${goalId}/settings`)}>
+              {t('shortlist.goal_requirements', 'Goal requirements')} <span aria-hidden="true">↗</span>
             </Button>
-            <Button onClick={() => navigate(`/business/challenges/select?goal=${goalId}&returnTo=shortlist`)} className="gap-2">
-              {t('shortlist.create_l1_challenge', 'Crea sfida L1 / XIMA Challenge')}
-            </Button>
-          </div>
-        </div>
-
-        <Card className="border-border/50 bg-muted/30">
-          <CardContent className="p-4 flex items-start gap-3">
-            <div className="space-y-1">
-              <p className="text-sm font-semibold text-foreground">{t('shortlist.explanation_title', 'Shortlist and Pool are separate')}</p>
-              <p className="text-sm text-muted-foreground">
-                {t('shortlist.explanation_desc', 'This page is goal-specific: XIMA ranks candidates against the role requirements, company DNA, growth trajectory, engagement, location and credentials. The Candidate Pool remains the full browseable talent base.')}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+          }
+        />
 
         <ShortlistView
           goalId={goalId}
-          roleTitle={currentGoal.role_title || t('business.goals.untitled')}
+          roleTitle={roleTitle}
           onViewProfile={() => toast({ title: t('anonymous.identity_hidden', 'Identity hidden — revealed at offer stage') })}
         />
-
       </div>
     </BusinessLayout>
   );

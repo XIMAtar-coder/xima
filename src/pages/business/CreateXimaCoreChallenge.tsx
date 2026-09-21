@@ -2,9 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { PageHeader, Panel, Eyebrow } from '@/components/layout/PageHeader';
+import { Chip } from '@/components/business/XsBits';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -30,7 +30,8 @@ import { XIMA_CORE_CHALLENGE } from '@/lib/challenges/ximaCoreChallenge';
 import { buildChallengePayload } from '@/features/challenge-builder/saveChallenge';
 import { labelForCcnl } from '@/lib/business/ccnl';
 import { log } from '@/lib/log';
-import { ArrowLeft, Brain, CalendarClock, CheckCircle2, ChevronDown, Clock, Compass, Euro, Eye, EyeOff, FileText, Heart, Loader2, Lock, MessageCircle, Rocket, Shield, Target, Zap } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { ArrowLeft, ChevronDown, Loader2 } from 'lucide-react';
 
 interface HiringGoal {
   id: string;
@@ -40,6 +41,7 @@ interface HiringGoal {
   function_area: string | null;
   work_model: string | null;
   country: string | null;
+  city_region?: string | null;
   required_skills: Json | null;
   nice_to_have_skills: Json | null;
   ral_min?: number | null;
@@ -82,35 +84,6 @@ interface GeneratedChallengeContext {
   mindset?: Record<string, unknown> | null;
 }
 
-const INDUSTRY_ICONS: Record<string, string> = {
-  real_estate: '🏗️',
-  construction: '🏗️',
-  technology: '💻',
-  tech: '💻',
-  software: '💻',
-  automotive: '🚗',
-  healthcare: '🏥',
-  health: '🏥',
-  finance: '📊',
-  financial_services: '📊',
-  consulting: '🤝',
-  manufacturing: '🏭',
-  energy: '⚡',
-  retail: '🛍️',
-  education: '🎓',
-  logistics: '🚚',
-  food: '🍽️',
-  pharma: '💊',
-  pharmaceutical: '💊',
-  media: '🎬',
-  hospitality: '🏨',
-  legal: '⚖️',
-  agriculture: '🌾',
-  telecom: '📡',
-  insurance: '🛡️',
-  nonprofit: '🤲',
-};
-
 const INDUSTRY_LABELS: Record<string, string> = {
   real_estate: 'Edilizia / Immobiliare',
   construction: 'Edilizia',
@@ -140,7 +113,12 @@ const INDUSTRY_LABELS: Record<string, string> = {
   nonprofit: 'No Profit',
 };
 
+const WORK_MODEL_KEYS: Record<string, string> = { onsite: 'hiring_goal.onsite', remote: 'hiring_goal.remote', hybrid: 'hiring_goal.hybrid' };
+
 const QUESTION_IDS = ['q1', 'q2', 'q3', 'q4', 'q5'] as const;
+const PILLAR_IDS = ['drive', 'comp_power', 'communication', 'creativity', 'knowledge'] as const;
+const SIGNAL_IDS = [1, 2, 3, 4, 5] as const;
+const JOURNEY_STEPS = [1, 2, 3, 4] as const;
 
 const normalizeLocale = (language?: string) => {
   const locale = language?.split('-')[0];
@@ -187,6 +165,8 @@ const CreateXimaCoreChallenge = () => {
   const [generatedTimeEstimate, setGeneratedTimeEstimate] = useState<number>(XIMA_CORE_CHALLENGE.timeEstimateMinutes);
   const [startAt, setStartAt] = useState<string>('');
   const [endAt, setEndAt] = useState<string>('');
+  // The introduction the candidate reads; starts from the standard text and can be adjusted.
+  const [candidateIntro, setCandidateIntro] = useState<string>(() => t('challenge.xima_core.candidate_intro'));
   const [previewOpen, setPreviewOpen] = useState(false);
   const [isFallbackScenario, setIsFallbackScenario] = useState(false);
   const [generationError, setGenerationError] = useState(false);
@@ -196,10 +176,13 @@ const CreateXimaCoreChallenge = () => {
   const rawIndustry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || '';
   const industryKey = String(rawIndustry).toLowerCase();
   const industry = INDUSTRY_LABELS[industryKey] || rawIndustry || t('challenge.xima_core.context_fallback_industry');
-  const industryIcon = INDUSTRY_ICONS[industryKey] || '🧭';
   const roleTitle = hiringGoal?.role_title || listingTitle || t('challenge.xima_core.context_fallback_role');
   const displayContextTag = contextTag || t('challenge.xima_core.context_tag', { role: roleTitle, industry });
   const hasValidScenario = !!scenario.trim() && !generationError && !isFallbackScenario;
+  const effectiveCandidateIntro = candidateIntro.trim() || t('challenge.xima_core.candidate_intro');
+  const themes = asTextList(expectedTensions);
+  const workModelLabel = hiringGoal?.work_model && WORK_MODEL_KEYS[hiringGoal.work_model] ? t(WORK_MODEL_KEYS[hiringGoal.work_model]) : hiringGoal?.work_model;
+  const roleLine = [roleTitle, hiringGoal?.city_region, workModelLabel].filter(Boolean).join(' · ');
   const localizedQuestions = useMemo(
     () => QUESTION_IDS.map((id) => ({
       id,
@@ -292,7 +275,7 @@ const CreateXimaCoreChallenge = () => {
 
       const { data: goalData, error: goalError } = await supabase
         .from('hiring_goal_drafts')
-        .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills, ral_min, ral_max, ccnl, salary_currency')
+        .select('id, role_title, task_description, experience_level, function_area, work_model, country, city_region, required_skills, nice_to_have_skills, ral_min, ral_max, ccnl, salary_currency')
         .eq('id', effectiveGoalId)
         .eq('business_id', user?.id ?? '')
         .single();
@@ -403,7 +386,7 @@ const CreateXimaCoreChallenge = () => {
 
   const buildChallengeDescription = (): string => {
     const parts = [
-      t('challenge.xima_core.candidate_intro'),
+      effectiveCandidateIntro,
       '',
       '---',
       '',
@@ -459,7 +442,7 @@ const CreateXimaCoreChallenge = () => {
         canonicalRubricCriteria: XIMA_CORE_CHALLENGE.rubric.criteria as unknown as Json,
         scenario,
         contextTag: displayContextTag,
-        candidateIntro: t('challenge.xima_core.candidate_intro'),
+        candidateIntro: effectiveCandidateIntro,
         questions: localizedQuestions,
         generatedTimeEstimate,
         generatedMindset,
@@ -489,6 +472,10 @@ const CreateXimaCoreChallenge = () => {
     }
   };
 
+  const backPath = goalId && returnTo === 'shortlist'
+    ? `/business/hiring-goals/${goalId}/shortlist`
+    : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/challenges';
+
   if (loading || businessLoading) {
     return (
       <BusinessLayout>
@@ -499,340 +486,262 @@ const CreateXimaCoreChallenge = () => {
     );
   }
 
+  const hasPayData = !!(hiringGoal?.ral_min || hiringGoal?.ral_max || hiringGoal?.ccnl);
+  const ralText = `${hiringGoal?.ral_min ? `€${hiringGoal.ral_min.toLocaleString('it-IT')}` : '—'} – ${hiringGoal?.ral_max ? `€${hiringGoal.ral_max.toLocaleString('it-IT')}` : '—'}`;
+
   return (
     <BusinessLayout>
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:shadow">{t('common.skip_to_content')}</a>
-      <main id="main-content" className="mx-auto flex max-w-4xl flex-col gap-6 pb-32">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(goalId && returnTo === 'shortlist' ? `/business/hiring-goals/${goalId}/shortlist` : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/challenges')}
-          className="w-fit gap-2 -ml-2"
-        >
-          <ArrowLeft size={16} />
+      <div className="space-y-6">
+        <Button variant="ghost" size="sm" onClick={() => navigate(backPath)} className="-ml-2 w-fit gap-2 text-muted-foreground">
+          <ArrowLeft size={16} aria-hidden="true" />
           {t('common.back')}
         </Button>
 
-        <header className="space-y-5">
-          <div className="flex items-start gap-4">
-            <div className="rounded-2xl border border-primary/20 bg-primary/10 p-3">
-              <Brain className="h-7 w-7 text-primary" />
-            </div>
-            <div className="min-w-0 flex-1 space-y-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-3xl font-semibold tracking-normal text-foreground">{t('challenge.xima_core.title')}</h1>
-                <Badge variant="secondary">{t('challenge.xima_core.level_1')}</Badge>
-                <Badge variant="outline" className="gap-1"><Lock className="h-3 w-3" />{t('challenge.xima_core.standardized')}</Badge>
-                <Badge variant="outline">{displayContextTag}</Badge>
-              </div>
-              <p className="max-w-2xl text-base text-muted-foreground">{t('challenge.xima_core.subtitle')}</p>
-              {hiringGoal?.role_title && <Badge className="rounded-full px-3 py-1">{hiringGoal.role_title}</Badge>}
-            </div>
-          </div>
-        </header>
+        <PageHeader
+          className="mb-0"
+          eyebrow={t('challenge.xima_core.page_eyebrow', 'Selection tools / XIMA Core')}
+          title={t('challenge.xima_core.page_title', 'Create the XIMA Core challenge')}
+          subtitle={t('challenge.xima_core.page_subtitle', { role: roleTitle, defaultValue: 'Prepare the challenge for your next {{role}}.' })}
+          actions={
+            <>
+              <Chip tone="blue">{isActivated ? t('businessPortal.challenge_status_active') : t('challenge.xima_core.status_to_activate', 'To activate')}</Chip>
+              <Chip>{t('challenge.xima_core.level_1')} · {t('challenge.xima_core.standardized')}</Chip>
+            </>
+          }
+        />
 
         {showNoContextWarning && (
-          <Card className="border-amber-500/40 bg-amber-500/5">
-            <CardContent className="flex items-start gap-3 p-4">
-              <p className="text-sm text-foreground">
-                {t('business.challenges.context_selector.no_context.warning')}
-              </p>
-            </CardContent>
-          </Card>
+          <div className="border-l-[3px] border-primary bg-primary/5 px-4 py-3 text-sm text-foreground">
+            {t('business.challenges.context_selector.no_context.warning')}
+          </div>
         )}
 
-        <Collapsible open={whatIsOpen} onOpenChange={setWhatIsOpen}>
-          <Card className="border-border/70 bg-card/80 shadow-sm">
-            <CollapsibleTrigger asChild>
-              <CardHeader className="cursor-pointer pb-4">
-                <div className="flex items-center justify-between gap-4">
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <Target className="h-5 w-5 text-primary" />
-                    {t('challenge.xima_core.what_is_title')}
-                  </CardTitle>
-                  <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${whatIsOpen ? 'rotate-180' : ''}`} />
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(315px,1fr)]">
+          <div className="min-w-0 space-y-6">
+            {/* 01 — the context of the challenge */}
+            <Panel accent id="scenario-section">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <Eyebrow className="!text-primary">{t('challenge.xima_core.scenario_eyebrow', '01 / The context of the challenge')}</Eyebrow>
+                  <h2 className="mt-1.5 text-[21px] font-semibold tracking-[-0.4px] text-foreground">{t('challenge.xima_core.scenario_heading', 'One scenario, many possibilities')}</h2>
                 </div>
-              </CardHeader>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <CardContent className="space-y-5 pt-0">
-                <p className="text-sm leading-6 text-muted-foreground">{t('challenge.xima_core.what_is_description')}</p>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {[1, 2, 3].map((item) => (
-                    <div key={item} className="flex items-start gap-2 rounded-lg border border-border/60 bg-secondary/40 p-3 text-sm text-foreground">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                      <span>{t(`challenge.xima_core.feature_${item}`)}</span>
-                    </div>
+                <Chip>{displayContextTag}</Chip>
+              </div>
+
+              {!generating && (generationError || isFallbackScenario) && (
+                <div className="mt-4 border-l-[3px] border-amber-500 bg-amber-500/10 px-4 py-2 text-sm text-foreground">
+                  {generationError ? t('challenge.xima_core.scenario_generation_failed') : t('challenge.xima_core.fallback_warning')}
+                </div>
+              )}
+
+              <div className="mt-5">
+                {generating || !scenario ? (
+                  <div className="flex min-h-40 items-center justify-center gap-3 text-muted-foreground" aria-busy="true">
+                    <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+                    <span>{t('challenge.xima_core.generating')}</span>
+                  </div>
+                ) : (
+                  <p className="whitespace-pre-wrap text-[17px] leading-[1.8] text-foreground sm:text-lg">{scenario}</p>
+                )}
+              </div>
+
+              {themes.length > 0 && !generating && (
+                <div className="mt-5 flex flex-wrap gap-2" aria-label={t('challenge.xima_core.themes_aria', 'Themes of the scenario')}>
+                  {themes.map((theme) => (
+                    <span key={theme} className="rounded bg-primary/10 px-2.5 py-1 text-[13px] text-foreground">{theme}</span>
                   ))}
                 </div>
-              </CardContent>
-            </CollapsibleContent>
-          </Card>
-        </Collapsible>
-
-        <section className="space-y-4">
-          <div className="space-y-2">
-            <div className="flex flex-wrap items-center gap-3">
-              <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
-                {t('challenge.xima_core.scenario_title')}
-              </h2>
-              <Badge variant="outline">{displayContextTag}</Badge>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {t('challenge.xima_core.scenario_subtitle', { company: businessProfile?.company_name || 'XIMA', role: roleTitle })}
-            </p>
-          </div>
-
-          {!generating && (generationError || isFallbackScenario) && (
-            <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm text-foreground flex items-start gap-2">
-              <span>{generationError ? t('challenge.xima_core.scenario_generation_failed') : t('challenge.xima_core.fallback_warning')}</span>
-            </div>
-          )}
-
-          <Card className="border-l-4 border-l-primary bg-card shadow-sm">
-            <CardContent className="p-6">
-              {generating || !scenario ? (
-                <div className="flex min-h-40 items-center justify-center gap-3 text-muted-foreground">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>{t('challenge.xima_core.generating')}</span>
-                </div>
-              ) : (
-                <div className="flex items-start gap-4">
-                  <span className="text-4xl opacity-60 mt-1 leading-none select-none" aria-hidden="true">{industryIcon}</span>
-                  <p className="flex-1 whitespace-pre-wrap text-[17px] leading-8 text-foreground">{scenario}</p>
-                </div>
               )}
-            </CardContent>
-          </Card>
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm text-muted-foreground">{t('challenge.xima_core.scenario_locked_note')}</p>
-            {!isActivated && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant={!hasValidScenario ? 'default' : 'outline'} className="gap-2" disabled={generating}>
-                    {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Compass className="h-4 w-4" />}
-                    {t('challenge.xima_core.scenario_regenerate')}
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>{t('challenge.xima_core.scenario_regenerate')}</AlertDialogTitle>
-                    <AlertDialogDescription>{t('challenge.xima_core.scenario_regenerate_confirm')}</AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => generateScenario()}>{t('common.confirm')}</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
-          </div>
-        </section>
-
-        {/* PART 2 — L'esperienza del candidato (4-step preview) */}
-        <section className="space-y-4">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div className="space-y-2">
-              <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
-                L'esperienza del candidato
-              </h2>
-              <p className="text-sm text-muted-foreground">Standardizzato · confronto equo</p>
-            </div>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-4">
-            {[
-              { icon: Zap, title: 'Istinto', desc: 'Carte rapide, scelte di pancia' },
-              { icon: Compass, title: 'La giornata', desc: 'Micro-decisioni in una giornata simulata' },
-              { icon: MessageCircle, title: 'Debrief con Aria', desc: 'Riflessione guidata, voce o testo' },
-              { icon: Heart, title: 'Esito', desc: 'Sfaccettature accese, nessun punteggio visibile' },
-            ].map((s, i) => (
-              <Card key={i} className="border-border/60 bg-card/80 shadow-sm">
-                <CardContent className="p-4 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">{i + 1}</div>
-                    <s.icon className="h-4 w-4 text-primary" />
-                  </div>
-                  <h3 className="text-sm font-semibold text-foreground">{s.title}</h3>
-                  <p className="text-xs text-muted-foreground leading-5">{s.desc}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* PART 2 — Cosa misura: 5 pilastri + 5 signal */}
-        <section className="space-y-4">
-          <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
-            <Target className="h-5 w-5 text-primary" />
-            Cosa misura
-          </h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card className="bg-card/80">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">5 Pilastri</CardTitle>
-                <CardDescription>I tratti di identità professionale</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm text-foreground">
-                {[
-                  { p: 'Drive', d: 'Energia, iniziativa, perseveranza' },
-                  { p: 'Potenza computazionale', d: 'Analisi, rigore, ragionamento strutturato' },
-                  { p: 'Comunicazione', d: 'Chiarezza, ascolto, persuasione' },
-                  { p: 'Creatività', d: 'Originalità, esplorazione, sintesi nuove' },
-                  { p: 'Conoscenza', d: 'Padronanza del dominio e contesto' },
-                ].map((x) => (
-                  <div key={x.p} className="flex gap-2">
-                    <span className="font-semibold min-w-[170px]">{x.p}</span>
-                    <span className="text-muted-foreground">{x.d}</span>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-            <Card className="bg-card/80">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">5 Tipi di signal</CardTitle>
-                <CardDescription>Lenti qualitative, niente punteggi al candidato</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm text-foreground">
-                {[
-                  { s: 'Framing', d: 'Come legge il problema' },
-                  { s: 'Decision quality', d: 'Qualità del ragionamento decisionale' },
-                  { s: 'Execution bias', d: 'Spinta all\'azione concreta' },
-                  { s: 'Impact thinking', d: 'Visione del risultato e delle priorità' },
-                  { s: 'Collaboration', d: 'Come coinvolge persone e contesti' },
-                ].map((x) => (
-                  <div key={x.s} className="flex gap-2">
-                    <span className="font-semibold min-w-[150px]">{x.s}</span>
-                    <span className="text-muted-foreground">{x.d}</span>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        {/* PART 2 — Valutazione alla cieca */}
-        <section className="space-y-3">
-          <Card className="border-primary/30 bg-primary/5">
-            <CardContent className="p-5 flex items-start gap-4">
-              <div className="rounded-xl bg-primary/15 p-3">
-                <EyeOff className="h-6 w-6 text-primary" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-lg font-semibold text-foreground">Valutazione alla cieca</h3>
-                <p className="text-sm text-muted-foreground leading-6">
-                  Il candidato non vede mai il nome della tua azienda nei Livelli 1 e 2 — solo il settore e una descrizione neutra del ruolo.
-                  Riduce i bias e rende il confronto fra candidati davvero equo.
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[hsl(var(--xs-line))] pt-4">
+                <p className="text-[13px] text-muted-foreground">
+                  {t('challenge.xima_core.scenario_subtitle', { company: businessProfile?.company_name || 'XIMA', role: roleTitle })}
                 </p>
+                {!isActivated && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant={!hasValidScenario ? 'default' : 'outline'} className="gap-2" disabled={generating}>
+                        {generating ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <span aria-hidden="true">↻</span>}
+                        {t('challenge.xima_core.scenario_regenerate')}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>{t('challenge.xima_core.scenario_regenerate')}</AlertDialogTitle>
+                        <AlertDialogDescription>{t('challenge.xima_core.scenario_regenerate_confirm')}</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => generateScenario()}>{t('common.confirm')}</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
               </div>
-            </CardContent>
-          </Card>
-        </section>
+            </Panel>
 
-        {/* PART 2 — Trasparenza retributiva */}
-        <section className="space-y-3">
-          <Card className="bg-card/80">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Euro className="h-4 w-4 text-primary" />
-                Trasparenza retributiva
-              </CardTitle>
-              <CardDescription>Obbligatoria dal 7 giugno 2026 (D.Lgs. 96/2026)</CardDescription>
-            </CardHeader>
-            <CardContent className="text-sm text-foreground space-y-2">
-              {(hiringGoal?.ral_min || hiringGoal?.ral_max || hiringGoal?.ccnl) ? (
-                <>
-                  <div>
-                    <span className="text-muted-foreground">RAL: </span>
-                    <span className="font-semibold">
-                      {hiringGoal?.ral_min ? `€${hiringGoal.ral_min.toLocaleString('it-IT')}` : '—'}
-                      {' – '}
-                      {hiringGoal?.ral_max ? `€${hiringGoal.ral_max.toLocaleString('it-IT')}` : '—'}
-                    </span>
+            {/* What is XIMA Core */}
+            <Collapsible open={whatIsOpen} onOpenChange={setWhatIsOpen}>
+              <Panel>
+                <CollapsibleTrigger asChild>
+                  <button type="button" className="flex w-full items-center justify-between gap-4 text-left">
+                    <span className="text-base font-semibold text-foreground">{t('challenge.xima_core.what_is_title')}</span>
+                    <ChevronDown className={cn('h-4 w-4 shrink-0 text-muted-foreground transition-transform', whatIsOpen && 'rotate-180')} aria-hidden="true" />
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <p className="mt-4 text-sm leading-6 text-muted-foreground">{t('challenge.xima_core.what_is_description')}</p>
+                  <div className="mt-5 flex flex-col gap-4 text-sm sm:flex-row">
+                    {[1, 2, 3].map((item) => (
+                      <span key={item} className="flex-1 border-l-2 border-primary/40 pl-3 text-foreground">
+                        {t(`challenge.xima_core.feature_${item}`)}
+                      </span>
+                    ))}
                   </div>
-                  <div>
-                    <span className="text-muted-foreground">CCNL: </span>
-                    <span className="font-semibold">{labelForCcnl(hiringGoal?.ccnl)}</span>
-                  </div>
-                </>
-              ) : (
-                <p className="text-amber-600">
-                  Manca RAL o CCNL sull'obiettivo di assunzione.{' '}
-                  {goalId && (
-                    <button
-                      onClick={() => navigate(`/business/hiring-goals/${goalId}/settings`)}
-                      className="underline hover:text-foreground"
-                    >
-                      Modifica l'obiettivo
-                    </button>
-                  )}
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        </section>
+                </CollapsibleContent>
+              </Panel>
+            </Collapsible>
 
+            {/* The candidate's experience */}
+            <Panel>
+              <Eyebrow className="!text-primary">{t('challenge.xima_core.journey_eyebrow', 'The journey')}</Eyebrow>
+              <h2 className="mt-1.5 text-[21px] font-semibold tracking-[-0.4px] text-foreground">{t('challenge.xima_core.journey_title', "The candidate's experience")}</h2>
+              <p className="mt-1 text-[13px] text-muted-foreground">{t('challenge.xima_core.journey_subtitle', 'One common structure for a fair comparison.')}</p>
+              <ol className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {JOURNEY_STEPS.map((n) => (
+                  <li key={n} className="border-t-2 border-[hsl(var(--xs-line))] pt-3.5">
+                    <span className="font-mono text-[13px] text-primary">{String(n).padStart(2, '0')}</span>
+                    <b className="mt-2 block text-sm text-foreground">{t(`challenge.xima_core.journey_step${n}_title`)}</b>
+                    <p className="mt-1 text-[13px] text-muted-foreground">{t(`challenge.xima_core.journey_step${n}_desc`)}</p>
+                  </li>
+                ))}
+              </ol>
+            </Panel>
 
-        <section className="space-y-4">
-          <h2 className="text-2xl font-semibold text-foreground">{t('challenge.xima_core.config_title')}</h2>
-          <Card className="bg-card/80 shadow-sm">
-            <CardContent className="space-y-6 p-6">
-              <div className="flex items-center gap-3 rounded-lg border border-border/60 bg-secondary/30 p-4">
-                <div className="rounded-lg bg-primary/10 p-2">
-                  <Clock className="h-5 w-5 text-primary" />
+            {/* The observation method */}
+            <Panel>
+              <Eyebrow className="!text-primary">{t('challenge.xima_core.measure_eyebrow', 'The observation method')}</Eyebrow>
+              <h2 className="mt-1.5 text-[21px] font-semibold tracking-[-0.4px] text-foreground">{t('challenge.xima_core.measure_title', 'What it measures')}</h2>
+              <div className="mt-5 grid gap-6 sm:grid-cols-2">
+                <div>
+                  <h3 className="border-b border-[hsl(var(--xs-line))] pb-3 text-base font-semibold text-foreground">{t('challenge.xima_core.measure_pillars_title', '5 pillars')}</h3>
+                  <p className="mt-3 text-[13px] text-muted-foreground">{t('challenge.xima_core.measure_pillars_subtitle', 'Traits of professional identity.')}</p>
+                  <dl className="mt-3">
+                    {PILLAR_IDS.map((p) => (
+                      <React.Fragment key={p}>
+                        <dt className="text-sm font-semibold text-foreground">{t(`shortlist.pillar.${p}`)}</dt>
+                        <dd className="mb-3 text-[13px] text-muted-foreground">{t(`challenge.xima_core.pillar_desc_${p}`)}</dd>
+                      </React.Fragment>
+                    ))}
+                  </dl>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">{t('challenge.xima_core.time_estimate')}</p>
-                  <p className="text-2xl font-semibold text-foreground">
-                    {t('challenge.xima_core.time_estimate_value', { minutes: XIMA_CORE_CHALLENGE.timeEstimateMinutes })}
+                  <h3 className="border-b border-[hsl(var(--xs-line))] pb-3 text-base font-semibold text-foreground">{t('challenge.xima_core.measure_signals_title', '5 decision signals')}</h3>
+                  <p className="mt-3 text-[13px] text-muted-foreground">{t('challenge.xima_core.measure_signals_subtitle', 'Qualitative lenses, no scores shown to the candidate.')}</p>
+                  <dl className="mt-3">
+                    {SIGNAL_IDS.map((n) => (
+                      <React.Fragment key={n}>
+                        <dt className="text-sm font-semibold text-foreground">{t(`challenge.xima_core.signal_${n}_title`)}</dt>
+                        <dd className="mb-3 text-[13px] text-muted-foreground">{t(`challenge.xima_core.signal_${n}_desc`)}</dd>
+                      </React.Fragment>
+                    ))}
+                  </dl>
+                </div>
+              </div>
+            </Panel>
+
+            <div className="border-l-[3px] border-primary bg-primary/5 px-4 py-3.5 text-sm">
+              <strong className="text-foreground">{t('challenge.xima_core.blind_title', 'Blind evaluation')}</strong>
+              <p className="mt-1 text-muted-foreground">{t('challenge.xima_core.blind_desc')}</p>
+            </div>
+          </div>
+
+          {/* 02 — configuration */}
+          <aside className="lg:sticky lg:top-20 lg:self-start">
+            <Panel id="config-section">
+              <Eyebrow className="!text-primary">{t('challenge.xima_core.config_eyebrow', '02 / Configuration')}</Eyebrow>
+              <h2 className="mt-1.5 text-[21px] font-semibold tracking-[-0.4px] text-foreground">{t('challenge.xima_core.config_heading', 'Timing and introduction')}</h2>
+
+              <div className="mt-5 flex gap-6 border-b border-[hsl(var(--xs-line))] pb-4">
+                <div>
+                  <strong className="block text-[26px] font-semibold leading-tight text-foreground">
+                    {generatedTimeEstimate || XIMA_CORE_CHALLENGE.timeEstimateMinutes} <small className="text-sm font-normal">min</small>
+                  </strong>
+                  <span className="text-[13px] text-muted-foreground">{t('challenge.xima_core.time_estimate')}</span>
+                </div>
+                <div>
+                  <strong className="block text-[26px] font-semibold leading-tight text-foreground">{t('challenge.xima_core.level_1')}</strong>
+                  <span className="text-[13px] text-muted-foreground">{t('challenge.xima_core.standardized_structure', 'Standardised structure')}</span>
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="xima-core-start">{t('challenge.xima_core.start_date')}</Label>
+                  <Input id="xima-core-start" type="datetime-local" value={startAt} onChange={(e) => setStartAt(e.target.value)} disabled={isActivated} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="xima-core-end">{t('challenge.xima_core.end_date')}</Label>
+                  <Input id="xima-core-end" type="datetime-local" value={endAt} onChange={(e) => setEndAt(e.target.value)} disabled={isActivated} />
+                </div>
+              </div>
+              <p className="mt-2 text-[13px] text-muted-foreground">{t('challenge.xima_core.duration_note', 'The estimated duration is not the availability window.')}</p>
+
+              <div className="mt-5 space-y-2">
+                <Label htmlFor="xima-core-intro">{t('challenge.xima_core.candidate_intro_title')}</Label>
+                <Textarea
+                  id="xima-core-intro"
+                  value={candidateIntro}
+                  onChange={(e) => setCandidateIntro(e.target.value)}
+                  disabled={isActivated}
+                  rows={5}
+                  className="min-h-[120px] resize-y text-sm leading-6"
+                />
+              </div>
+
+              <div className="mt-5 border-l-[3px] border-primary bg-primary/5 px-4 py-3.5 text-sm">
+                <strong className="text-foreground">{t('businessPortal.hiring_goal.pay_transparency.title', 'Pay transparency')}</strong>
+                {hasPayData ? (
+                  <p className="mt-1 text-foreground">
+                    {t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL')}: <b>{ralText}</b>
+                    <br />
+                    {t('businessPortal.hiring_goal.pay_transparency.ccnl_label', 'CCNL')}: {labelForCcnl(hiringGoal?.ccnl)}
                   </p>
-                </div>
+                ) : (
+                  <p className="mt-1 text-amber-700 dark:text-amber-400">
+                    {t('challenge.xima_core.pay_missing', 'RAL or CCNL is missing on the hiring goal.')}{' '}
+                    {goalId && (
+                      <button
+                        type="button"
+                        onClick={() => navigate(`/business/hiring-goals/${goalId}/settings`)}
+                        className="underline underline-offset-2 hover:text-foreground"
+                      >
+                        {t('challenge.xima_core.pay_edit_goal', 'Edit the goal')}
+                      </button>
+                    )}
+                  </p>
+                )}
               </div>
 
-              <div className="space-y-3">
-                <h3 className="flex items-center gap-2 font-semibold text-foreground">
-                  <CalendarClock className="h-4 w-4 text-primary" />
-                  {t('challenge.xima_core.time_window')}
-                </h3>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="xima-core-start">{t('challenge.xima_core.start_date')}</Label>
-                    <Input id="xima-core-start" type="datetime-local" value={startAt} onChange={(e) => setStartAt(e.target.value)} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="xima-core-end">{t('challenge.xima_core.end_date')}</Label>
-                    <Input id="xima-core-end" type="datetime-local" value={endAt} onChange={(e) => setEndAt(e.target.value)} />
-                  </div>
-                </div>
-              </div>
+              <p className="mt-4 text-[13px] text-muted-foreground">{roleLine}</p>
+            </Panel>
+          </aside>
+        </div>
 
-              <div className="space-y-3">
-                <h3 className="font-semibold text-foreground">{t('challenge.xima_core.candidate_intro_title')}</h3>
-                <div className="rounded-lg border border-border/70 bg-secondary/30 p-4">
-                  <p className="text-sm italic leading-6 text-foreground">{t('challenge.xima_core.candidate_intro')}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-      </main>
-
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/85 p-4 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-muted-foreground">{t('challenge.xima_core.scenario_locked_note')}</p>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        {/* Action bar: the one glass surface of the page */}
+        <div className="xs-glass sticky bottom-4 z-10 flex flex-col gap-3 !px-5 !py-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="max-w-[430px] text-[13px] text-muted-foreground">{t('challenge.xima_core.scenario_locked_note')}</p>
+          <div className="flex gap-2">
             <Button
               variant="outline"
-              size="lg"
-              className="gap-2"
+              className="flex-1 sm:flex-none"
               onClick={() => setPreviewOpen(true)}
               disabled={generating || !hasValidScenario}
             >
-              <Eye className="h-4 w-4" />
               {t('challenge.xima_core.preview_button')}
             </Button>
-            <Button onClick={handleActivate} disabled={saving || generating || !hasValidScenario || !startAt || !endAt} className="gap-2" size="lg">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
+            <Button onClick={handleActivate} disabled={saving || generating || !hasValidScenario || !startAt || !endAt || isActivated} className="flex-1 gap-2 sm:flex-none">
+              {saving && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
               {t('challenge.xima_core.activate_button')}
             </Button>
           </div>
@@ -841,74 +750,59 @@ const CreateXimaCoreChallenge = () => {
 
       {/* Candidate preview modal — read-only view of what the candidate will see */}
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-2xl">
-              <Eye className="h-5 w-5 text-primary" />
-              {t('challenge.xima_core.preview_title')}
-            </DialogTitle>
+            <Eyebrow>{t('challenge.xima_core.preview_title')}</Eyebrow>
+            <DialogTitle className="text-2xl">{roleTitle}</DialogTitle>
             <DialogDescription>
-              {t('challenge.xima_core.preview_subtitle')}
+              {industry} · {t('challenge.xima_core.level_1')} · {t('challenge.xima_core.time_estimate_value', { minutes: generatedTimeEstimate || XIMA_CORE_CHALLENGE.timeEstimateMinutes })}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-2">
-            <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm text-foreground flex items-center gap-2">
-              <Eye className="h-4 w-4 text-amber-600" />
-              {t('challenge.xima_core.preview_badge')}
+          <div className="space-y-4 py-2 text-sm">
+            <p className="text-xs text-muted-foreground">{t('challenge.xima_core.preview_badge')}</p>
+            <p className="leading-6 text-foreground">{effectiveCandidateIntro}</p>
+
+            <div className="rounded-md bg-[hsl(var(--xs-page))] p-3 italic leading-6 text-foreground">
+              {(generatedMindset as any)?.guide?.intro || t('challenge.xima_core.preview_aria_default', "Hi, I'm Aria. There are no right answers — follow your instinct and I'll be with you.")}
             </div>
 
-            <Card className="border-l-4 border-l-primary">
-              <CardContent className="space-y-5 p-6">
-                <div className="space-y-1">
-                  <h3 className="text-xl font-semibold text-foreground">Anteprima esperienza mindset</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Quello che il candidato vede — senza il nome della tua azienda.
-                  </p>
-                </div>
+            <ol className="grid grid-cols-2 gap-2 border-t border-[hsl(var(--xs-line))] pt-4 sm:grid-cols-4">
+              {JOURNEY_STEPS.map((n) => (
+                <li key={n} className="border-t-2 border-[hsl(var(--xs-line))] pt-2">
+                  <span className="font-mono text-xs text-primary">{String(n).padStart(2, '0')}</span>
+                  <p className="text-sm font-semibold text-foreground">{t(`challenge.xima_core.journey_step${n}_title`)}</p>
+                  <p className="text-[11px] text-muted-foreground">{t(`challenge.xima_core.journey_step${n}_desc`)}</p>
+                </li>
+              ))}
+            </ol>
 
-                <div className="rounded-md bg-secondary/50 p-3 text-sm leading-6 text-foreground italic">
-                  {(generatedMindset as any)?.guide?.intro || 'Ciao, sono Aria. Non ci sono risposte giuste — segui l\'istinto e ti accompagno io.'}
-                </div>
-
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  {t('challenge.xima_core.time_estimate_value', { minutes: generatedTimeEstimate || XIMA_CORE_CHALLENGE.timeEstimateMinutes })}
-                </div>
-
-                <div className="border-t border-border pt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {[
-                    { n: 1, t: 'Istinto', d: 'Carte rapide' },
-                    { n: 2, t: 'La giornata', d: 'Micro-decisioni' },
-                    { n: 3, t: 'Debrief', d: 'Voce o testo con Aria' },
-                    { n: 4, t: 'Esito', d: 'Sfaccettature accese' },
-                  ].map((s) => (
-                    <div key={s.n} className="rounded-lg border border-border/60 bg-card/80 p-3 text-center space-y-1">
-                      <div className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">{s.n}</div>
-                      <p className="text-sm font-semibold text-foreground">{s.t}</p>
-                      <p className="text-[11px] text-muted-foreground">{s.d}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {Array.isArray((generatedMindset as any)?.instinct_cards) && (generatedMindset as any).instinct_cards.length > 0 && (
-                  <div className="border-t border-border pt-4 space-y-3">
-                    <h4 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Esempio · prima carta istinto</h4>
-                    <div className="rounded-lg border border-border/60 bg-card/80 p-4 space-y-2">
-                      <p className="text-sm text-foreground">{(generatedMindset as any).instinct_cards[0]?.prompt}</p>
-                      <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div className="rounded-md bg-secondary/40 p-2">A · {(generatedMindset as any).instinct_cards[0]?.a?.label}</div>
-                        <div className="rounded-md bg-secondary/40 p-2">B · {(generatedMindset as any).instinct_cards[0]?.b?.label}</div>
-                      </div>
-                    </div>
+            {Array.isArray((generatedMindset as any)?.instinct_cards) && (generatedMindset as any).instinct_cards.length > 0 && (
+              <div className="space-y-3 border-t border-[hsl(var(--xs-line))] pt-4">
+                <Eyebrow>{t('challenge.xima_core.preview_example_card', 'Example · first instinct card')}</Eyebrow>
+                <div className="space-y-2 rounded-lg border border-[hsl(var(--xs-line))] p-4">
+                  <p className="text-foreground">{(generatedMindset as any).instinct_cards[0]?.prompt}</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="rounded-md bg-[hsl(var(--xs-page))] p-2">A · {(generatedMindset as any).instinct_cards[0]?.a?.label}</div>
+                    <div className="rounded-md bg-[hsl(var(--xs-page))] p-2">B · {(generatedMindset as any).instinct_cards[0]?.b?.label}</div>
                   </div>
-                )}
+                </div>
+              </div>
+            )}
 
-                <Button disabled className="w-full" size="lg">
-                  Anteprima · invio disabilitato
-                </Button>
-              </CardContent>
-            </Card>
+            {hasPayData && (
+              <p className="text-xs text-muted-foreground">
+                {t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL')} {ralText} · {labelForCcnl(hiringGoal?.ccnl)}
+              </p>
+            )}
+
+            <div className="border-l-[3px] border-primary bg-primary/5 px-4 py-3 text-foreground">
+              {t('challenge.xima_core.feature_3')}
+            </div>
+
+            <Button disabled className="w-full">
+              {t('challenge.xima_core.preview_submit_disabled')}
+            </Button>
           </div>
 
           <DialogFooter>

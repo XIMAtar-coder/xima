@@ -16,13 +16,16 @@ interface GoalContextHeaderProps {
   allGoals: HiringGoal[];
   onGoalSwitch: (goalId: string) => void;
   loading?: boolean;
+  /** The page shows its own "requirements" action (e.g. in its PageHeader). */
+  hideSettings?: boolean;
 }
 
 export const GoalContextHeader: React.FC<GoalContextHeaderProps> = ({
   currentGoal,
   allGoals,
   onGoalSwitch,
-  loading
+  loading,
+  hideSettings = false,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -81,7 +84,7 @@ export const GoalContextHeader: React.FC<GoalContextHeaderProps> = ({
         </DropdownMenu>
       </div>
 
-      {currentGoal && !isOnSettingsPage && (
+      {currentGoal && !isOnSettingsPage && !hideSettings && (
         <Link to={`/business/hiring-goals/${currentGoal.id}/settings`}>
           <Button variant="outline" size="sm" className="gap-2">
             <Settings className="h-4 w-4" />

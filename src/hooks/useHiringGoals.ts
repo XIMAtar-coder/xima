@@ -16,6 +16,10 @@ export interface HiringGoal {
   salary_max: number | null;
   salary_currency: string | null;
   salary_period: string | null;
+  /** Pay transparency fields (select('*') returns them; optional for callers that build goals by hand). */
+  ral_min?: number | null;
+  ral_max?: number | null;
+  ccnl?: string | null;
   status: string | null;
   candidate_count: number | null;
   challenge_count: number | null;

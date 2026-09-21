@@ -1,11 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Target, Users, MessageSquare, ChevronRight, Zap, Clock, AlertTriangle, Bug } from 'lucide-react';
+import { Panel, Eyebrow, Stat } from '@/components/layout/PageHeader';
+import { Chip } from '@/components/business/XsBits';
 import { getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
+import { cn } from '@/lib/utils';
 
 const isDev = import.meta.env.DEV;
 
@@ -27,117 +27,80 @@ interface ActiveChallengesOverviewProps {
   loading?: boolean;
 }
 
-export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> = ({
-  challenges,
-  loading = false
-}) => {
+/**
+ * The one glass surface of the dashboard: the selection in progress.
+ * Every active challenge is a block inside it; the first is the hero.
+ */
+export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> = ({ challenges, loading = false }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   if (loading) {
     return (
-      <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-background">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Zap className="h-5 w-5 text-primary" />
-            {t('businessPortal.active_challenges_title')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="animate-pulse space-y-3">
-            <div className="h-16 bg-muted/50 rounded-lg" />
-            <div className="h-16 bg-muted/50 rounded-lg" />
-          </div>
-        </CardContent>
-      </Card>
+      <Panel glass accent aria-busy="true">
+        <div className="animate-pulse space-y-4">
+          <div className="h-3 w-32 rounded bg-muted/60" />
+          <div className="h-7 w-2/3 rounded bg-muted/60" />
+          <div className="h-16 w-1/2 rounded bg-muted/60" />
+        </div>
+      </Panel>
     );
   }
 
   if (challenges.length === 0) return null;
 
   return (
-    <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-background">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Zap className="h-5 w-5 text-primary" />
-            {t('businessPortal.active_challenges_title')}
-          </CardTitle>
-          <Badge variant="secondary" className="bg-primary/20 text-primary">
-            {challenges.length} {t('businessPortal.challenge_status_active')}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {challenges.map((challenge) => {
-          const timeInfo = getChallengeTimeInfo(challenge.start_at, challenge.end_at, challenge.status);
-          
-          return (
-            <div 
-              key={challenge.id}
-              className="p-4 rounded-lg border border-border/50 bg-card/50 hover:border-primary/30 transition-colors"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <Target className="h-4 w-4 text-primary shrink-0" />
-                    <h4 className="font-medium text-foreground truncate">{challenge.title}</h4>
-                    {timeInfo.isExpiringSoon && (
-                      <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/30 text-xs">
-                        <AlertTriangle className="h-3 w-3 mr-1" />
-                        {t('business.dashboard.expiring_soon')}
-                      </Badge>
-                    )}
-                  </div>
-                  {challenge.hiring_goal_title && (
-                    <p className="text-sm text-muted-foreground truncate mb-2">
-                      {challenge.hiring_goal_title}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-4 text-sm flex-wrap">
-                    <span className="flex items-center gap-1 text-muted-foreground">
-                      <Users className="h-3.5 w-3.5" />
-                      {challenge.invited_count} {t('businessPortal.challenge_invited_label')}
-                    </span>
-                    <span className="flex items-center gap-1 text-muted-foreground">
-                      <MessageSquare className="h-3.5 w-3.5" />
-                      {challenge.responses_count} {t('businessPortal.challenge_responses_label')}
-                    </span>
-                    {timeInfo.remainingText && (
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <Clock className="h-3.5 w-3.5" />
-                        {timeInfo.remainingText}
-                      </span>
-                    )}
-                    {/* DEV: Show raw counts for debugging */}
-                    {isDev && (
-                      <span className="flex items-center gap-1 text-yellow-600 text-xs font-mono">
-                        <Bug className="h-3 w-3" />
-                        inv={challenge.invited_count} resp={challenge.responses_count}
-                      </span>
-                    )}
-                  </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="shrink-0"
-                onClick={() => {
-                  if (challenge.hiring_goal_id) {
-                    navigate(`/business/hiring-goals/${challenge.hiring_goal_id}/challenges/${challenge.id}/responses`);
-                  } else {
-                    navigate(`/business/challenges/${challenge.id}/responses`);
-                  }
-                }}
-              >
-                {t('businessPortal.challenge_view_responses')}
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
+    <Panel glass accent className="divide-y divide-[hsl(var(--xs-line))]">
+      {challenges.map((challenge, index) => {
+        const timeInfo = getChallengeTimeInfo(challenge.start_at, challenge.end_at, challenge.status);
+        const responsesPath = challenge.hiring_goal_id
+          ? `/business/hiring-goals/${challenge.hiring_goal_id}/challenges/${challenge.id}/responses`
+          : `/business/challenges/${challenge.id}/responses`;
+        const statusLine = challenge.responses_count > 0
+          ? t('businessPortal.attention_responses_waiting', { count: challenge.responses_count })
+          : challenge.invited_count > 0
+            ? t('businessPortal.overview_waiting_first_response', 'Waiting for the first response')
+            : t('businessPortal.overview_no_invites_yet', 'No candidates invited yet');
+
+        return (
+          <div key={challenge.id} className={cn(index > 0 && 'pt-6', index < challenges.length - 1 && 'pb-6')}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Eyebrow>{t('businessPortal.overview_selection_in_progress', 'Selection in progress')}</Eyebrow>
+              <div className="flex items-center gap-2">
+                {timeInfo.isExpiringSoon && <Chip>{t('business.dashboard.expiring_soon')}</Chip>}
+                <Chip tone="status">{t('businessPortal.overview_challenge_active_chip', 'Active challenge')}</Chip>
               </div>
             </div>
-          );
-        })}
-      </CardContent>
-    </Card>
+
+            <h2 className="mt-3 text-[22px] font-semibold leading-tight tracking-[-0.4px] text-foreground sm:text-[25px]">{challenge.title}</h2>
+            {challenge.hiring_goal_title && (
+              <p className="mt-1.5 text-sm text-muted-foreground">{challenge.hiring_goal_title}</p>
+            )}
+
+            <div className="my-5 flex divide-x divide-[hsl(var(--xs-line))]">
+              <Stat value={challenge.invited_count} label={t('businessPortal.overview_stat_invited', 'Invited')} className="pr-6" />
+              <Stat value={challenge.responses_count} label={t('businessPortal.overview_stat_responses', 'Responses received')} className="pl-6" />
+              {isDev && (
+                <span className="self-end pl-6 font-mono text-[11px] text-amber-600">
+                  inv={challenge.invited_count} resp={challenge.responses_count}
+                </span>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+                {statusLine}
+                <br />
+                <span className="pl-3">{timeInfo.remainingText || t('businessPortal.overview_no_deadline', 'No deadline')}</span>
+              </p>
+              <Button onClick={() => navigate(responsesPath)} className="w-full sm:w-auto">
+                {t('businessPortal.challenge_view_responses')} <span aria-hidden="true">↗</span>
+              </Button>
+            </div>
+          </div>
+        );
+      })}
+    </Panel>
   );
 };
