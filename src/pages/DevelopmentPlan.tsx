@@ -153,7 +153,15 @@ const DevelopmentPlan = () => {
           <span className="rounded-md border border-[hsl(var(--xs-line))] px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
             {t('developmentPlan.before_generation', 'Before generation')}
           </span>
-        ) : undefined}
+        ) : (
+          // Paths keep the language they were written in: every one generated
+          // before 2026-09-21 is in English, whatever the interface says.
+          <Button variant="outline" size="sm" onClick={generatePath} disabled={generating}>
+            {generating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" aria-hidden="true" />}
+            {t('developmentPlan.regenerate', 'Regenerate in my language')}
+          </Button>
+        )}
+        meta={activePath ? t('developmentPlan.regenerate_hint', 'The current path stays in your history.') : undefined}
       />
 
       <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">

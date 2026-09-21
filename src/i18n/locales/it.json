@@ -2888,7 +2888,7 @@
     "tests_passed": "{{passed}} di {{total}} test superati",
     "remaining": "{{count}} da completare",
     "resources_title": "Le tue risorse",
-    "regenerate": "Rigenera percorso",
+    "regenerate": "Rigenera nella mia lingua",
     "resource_type": "Tipo di risorsa",
     "tab_courses": "Corsi",
     "tab_books": "Libri",
@@ -2911,7 +2911,8 @@
     "toast_ready_body": "Il tuo percorso di crescita è pronto.",
     "toast_generate_failed": "Non è stato possibile generare il percorso di crescita.",
     "toast_test_failed": "Non è stato possibile generare il test.",
-    "toast_evaluate_failed": "Non è stato possibile valutare il test."
+    "toast_evaluate_failed": "Non è stato possibile valutare il test.",
+    "regenerate_hint": "Il percorso attuale resta nello storico."
   },
   "ximai": {
     "aria_open": "Apri la chat XIM-AI",
