@@ -242,7 +242,8 @@ describe('Settings (indice operativo)', () => {
     expect(screen.getByRole('button', { name: /businessPortal.settings_plan_change_cta/ })).toBeInTheDocument();
     await waitFor(() => expect(document.getElementById('profilo')).toBeTruthy());
     expect(screen.getByText('A summary')).toBeInTheDocument();
-    await waitFor(() => expect(screen.getAllByRole('progressbar').length).toBe(2));
+    // The five pillars always render; a vector missing some shows them at 0.
+    await waitFor(() => expect(screen.getAllByRole('progressbar').length).toBe(5));
     expect(screen.getByText('businessPortal.settings_dna_recommended')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Rigenera DNA' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Imposta focus strategico' })).toBeInTheDocument();

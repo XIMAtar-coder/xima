@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { PILLAR_KEYS, readPillar } from '@/lib/pillarKeys';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { PageHeader, Eyebrow } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/button';
@@ -292,11 +293,6 @@ const DnaPillarSection = () => {
   const recommended = (companyProfile?.recommended_ximatars as string[] | null) || [];
   const strategicFocus = businessProfile?.strategic_focus as { pillar?: string; weight_boost?: number; expires_at?: string } | null;
 
-  const PILLAR_LABELS: Record<string, string> = {
-    drive: 'Drive', knowledge: 'Knowledge', comp_power: 'Comp. Power',
-    computational_power: 'Comp. Power', creativity: 'Creativity', communication: 'Communication',
-  };
-
   return (
     <section id="pilastri" className="xs-panel scroll-mt-20">
       <SettingsSectionHeader
@@ -319,17 +315,22 @@ const DnaPillarSection = () => {
         </span>
       </p>
 
-      {/* DNA pillars as bars */}
+      {/* DNA pillars as bars. readPillar/PILLAR_KEYS normalise the key
+          spelling and the 0-10 vs 0-100 scale, the same way the shortlist
+          does — reading pillar_vector raw drew near-empty bars for a 0-10
+          vector. */}
       {pillarVector && Object.keys(pillarVector).length > 0 && (
         <ul className="mt-5 space-y-3">
-          {Object.entries(pillarVector).map(([key, value]) => {
-            const score = typeof value === 'number' ? Math.max(0, Math.min(100, value)) : 0;
-            const label = PILLAR_LABELS[key] || key.replace(/_/g, ' ');
-            const focusBoost = strategicFocus?.pillar === key ? strategicFocus.weight_boost || 0 : 0;
+          {PILLAR_KEYS.map((key) => {
+            const score = readPillar(pillarVector, key) ?? 0;
+            const label = t(`shortlist.pillar.${key}`);
+            const focusBoost = strategicFocus?.pillar === key || (key === 'comp_power' && strategicFocus?.pillar === 'computational_power')
+              ? strategicFocus?.weight_boost || 0
+              : 0;
             return (
               <li key={key}>
                 <div className="flex items-baseline justify-between text-sm">
-                  <span className="capitalize text-muted-foreground">
+                  <span className="text-muted-foreground">
                     {label}
                     {focusBoost > 0 && (
                       <span className="ml-2 rounded-full border border-primary/30 px-1.5 text-[11px] text-primary">+{Math.round(focusBoost * 100)}%</span>
