@@ -12,12 +12,23 @@ export type PillarKey = 'drive' | 'computational_power' | 'communication' | 'cre
 
 export const PILLAR_ORDER: PillarKey[] = ['drive', 'computational_power', 'communication', 'creativity', 'knowledge'];
 
-export type PillarScores = Partial<Record<PillarKey, number>> & { computational?: number };
+export type PillarScores = Partial<Record<PillarKey, number>> & { computational?: number; comp_power?: number };
 
+/**
+ * Reads one pillar on the 0-10 scale these bars draw. The same value is
+ * stored three ways across the product: profiles.pillar_scores is 0-10 and
+ * spells it computational_power, while company_profiles.pillar_vector and
+ * shortlist_results are 0-100 and spell it comp_power. Reading either one
+ * raw drew bars an order of magnitude wrong, which is what the shortlist
+ * scoring bug was. src/lib/pillarKeys.ts does the same for the 0-100 side.
+ */
 export const readPillar = (scores: PillarScores | null | undefined, key: PillarKey): number | null => {
   if (!scores) return null;
-  const raw = key === 'computational_power' ? (scores.computational_power ?? scores.computational) : scores[key];
-  return typeof raw === 'number' && Number.isFinite(raw) ? raw : null;
+  const raw = key === 'computational_power'
+    ? (scores.computational_power ?? scores.computational ?? scores.comp_power)
+    : scores[key];
+  if (typeof raw !== 'number' || !Number.isFinite(raw)) return null;
+  return raw > 10 ? Math.round(raw) / 10 : raw;
 };
 
 /** 5.5 → "5,5" in it, "5.5" in en. */
