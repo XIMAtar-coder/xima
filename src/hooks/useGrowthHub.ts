@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 import { getSupabaseFunctionErrorMessage } from '@/lib/supabaseFunctionError';
 import { log } from '@/lib/log';
 
@@ -69,6 +70,8 @@ export interface GrowthTestResult {
 }
 
 export function useGrowthHub() {
+  const { t, i18n } = useTranslation();
+  const locale = (i18n.language || 'en').split('-')[0];
   const { toast } = useToast();
   const [activePath, setActivePath] = useState<GrowthPath | null>(null);
   const [progress, setProgress] = useState<GrowthProgress[]>([]);
@@ -118,14 +121,14 @@ export function useGrowthHub() {
     setGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke('generate-growth-path', {
-        body: {}
+        body: { locale },
       });
       if (error) throw error;
-      toast({ title: 'Growth Hub', description: 'Your personalized Growth Path is ready!' });
+      toast({ title: t('developmentPlan.toast_ready_title', 'Growth Hub'), description: t('developmentPlan.toast_ready_body', 'Your growth path is ready.') });
       await fetchData();
     } catch (err: any) {
-      const message = await getSupabaseFunctionErrorMessage(err, 'Failed to generate growth path');
-      toast({ title: 'Error', description: message, variant: 'destructive' });
+      const message = await getSupabaseFunctionErrorMessage(err, t('developmentPlan.toast_generate_failed', 'Could not generate the growth path.'));
+      toast({ title: t('common.error', 'Error'), description: message, variant: 'destructive' });
     } finally {
       setGenerating(false);
     }
@@ -139,7 +142,7 @@ export function useGrowthHub() {
         .eq('id', progressId);
       await fetchData();
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: t('common.error', 'Error'), description: err.message, variant: 'destructive' });
     }
   };
 
@@ -147,14 +150,14 @@ export function useGrowthHub() {
     setTestingResourceId(progressId);
     try {
       const { data, error } = await supabase.functions.invoke('generate-growth-test', {
-        body: { progress_id: progressId }
+        body: { locale, progress_id: progressId }
       });
       if (error) throw error;
       setActiveTest({ ...data.test, progress_id: progressId });
       await fetchData();
     } catch (err: any) {
-      const message = await getSupabaseFunctionErrorMessage(err, 'Failed to generate test');
-      toast({ title: 'Error', description: message, variant: 'destructive' });
+      const message = await getSupabaseFunctionErrorMessage(err, t('developmentPlan.toast_test_failed', 'Could not generate the test.'));
+      toast({ title: t('common.error', 'Error'), description: message, variant: 'destructive' });
     } finally {
       setTestingResourceId(null);
     }
@@ -164,7 +167,7 @@ export function useGrowthHub() {
     setEvaluating(true);
     try {
       const { data, error } = await supabase.functions.invoke('evaluate-growth-test', {
-        body: { progress_id: progressId, answers }
+        body: { locale, progress_id: progressId, answers }
       });
       if (error) throw error;
       setLastTestResult(data.results);
@@ -172,8 +175,8 @@ export function useGrowthHub() {
       await fetchData();
       return data;
     } catch (err: any) {
-      const message = await getSupabaseFunctionErrorMessage(err, 'Failed to evaluate test');
-      toast({ title: 'Error', description: message, variant: 'destructive' });
+      const message = await getSupabaseFunctionErrorMessage(err, t('developmentPlan.toast_evaluate_failed', 'Could not evaluate the test.'));
+      toast({ title: t('common.error', 'Error'), description: message, variant: 'destructive' });
     } finally {
       setEvaluating(false);
     }

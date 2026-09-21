@@ -2904,7 +2904,12 @@
     "mark_complete": "Segna completato",
     "take_test": "Fai il test",
     "tests_note": "I test verificano l’apprendimento: non modificano i punteggi dell’assessment.",
-    "weakest_reminder": "La tua area di sviluppo è {{pillar}} ({{score}}/10)."
+    "weakest_reminder": "La tua area di sviluppo è {{pillar}} ({{score}}/10).",
+    "toast_ready_title": "Growth Hub",
+    "toast_ready_body": "Il tuo percorso di crescita è pronto.",
+    "toast_generate_failed": "Non è stato possibile generare il percorso di crescita.",
+    "toast_test_failed": "Non è stato possibile generare il test.",
+    "toast_evaluate_failed": "Non è stato possibile valutare il test."
   },
   "ximai": {
     "aria_open": "Apri la chat XIM-AI",

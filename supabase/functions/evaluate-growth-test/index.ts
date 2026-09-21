@@ -42,7 +42,7 @@ serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const { progress_id, answers } = body;
-    const locale = body.locale || "en";
+    const locale = String(body.locale || "en").split("-")[0];
 
     if (!progress_id || !answers || !Array.isArray(answers)) {
       return errorResponse(400, "MISSING_FIELD", "progress_id and answers array are required");

@@ -41,7 +41,7 @@ serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const { progress_id } = body;
-    const locale = body.locale || "en";
+    const locale = String(body.locale || "en").split("-")[0];
 
     if (!progress_id) {
       return errorResponse(400, "MISSING_FIELD", "progress_id is required");
@@ -96,7 +96,7 @@ serve(async (req) => {
       ? JSON.stringify(cvAnalysis.tension_gaps)
       : "No specific tension data";
 
-    const contentLang = ((profile as any).content_language || (profile as any).preferred_lang || locale) as string;
+    const contentLang = (locale || (profile as any).content_language || (profile as any).preferred_lang || "en") as string;
 
     const questionTypeGuide = progress.resource_type === "course"
       ? "2 scenario-based + 2 conceptual + 1 self-reflection"

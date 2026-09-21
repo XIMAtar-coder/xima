@@ -44,7 +44,7 @@ serve(async (req) => {
     if (budgetGate) return budgetGate;
 
     const body = await req.json().catch(() => ({}));
-    const locale = body.locale || "en";
+    const locale = String(body.locale || "en").split("-")[0];
 
     // Fetch user data in parallel
     const [profileResult, optCheckResult, cvAnalysisResult, trajectoryResult, completedResult] = await Promise.all([
@@ -85,7 +85,7 @@ serve(async (req) => {
     const assessmentScores = (profile.pillar_scores || null) as Record<string, number> | null;
     const ximatarRaw = (profile.ximatar || profile.ximatar_id || profile.ximatar_name || null) as string | null;
     const ximatarLevel = (profile.ximatar_level || 1) as number;
-    const preferredLang = ((profile as any).content_language || profile.preferred_lang || locale) as string;
+    const preferredLang = (locale || (profile as any).content_language || profile.preferred_lang || "en") as string;
 
     if (!assessmentScores) {
       return errorResponse(400, "ASSESSMENT_REQUIRED", "Please complete the XIMA assessment before generating a growth path.");
