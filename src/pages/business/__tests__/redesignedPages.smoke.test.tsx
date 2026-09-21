@@ -14,7 +14,9 @@ import React from 'react';
 vi.mock('react-i18next', () => {
   const t = (key: string, opts?: unknown) => (typeof opts === 'string' ? opts : key);
   const i18n = { language: 'en', changeLanguage: vi.fn() };
-  return { useTranslation: () => ({ t, i18n }) };
+  // <Trans> renders its key: the smoke tests assert on keys, not on prose.
+  const Trans = ({ i18nKey }: { i18nKey: string }) => React.createElement('span', null, i18nKey);
+  return { useTranslation: () => ({ t, i18n }), Trans };
 });
 
 vi.mock('@/components/business/BusinessLayout', () => ({
@@ -88,6 +90,8 @@ import Jobs from '../Jobs';
 import PipelineChat from '../PipelineChat';
 import Settings from '../Settings';
 import HiringGoalCreate from '../HiringGoalCreate';
+import Candidates from '../Candidates';
+import { supabase } from '@/integrations/supabase/client';
 
 const wrap = (ui: React.ReactNode, path = '/') => {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -276,5 +280,44 @@ describe('Hiring goal wizard (scheda di precisione)', () => {
     expect(screen.getByRole('button', { name: /hiring_goal.step_pay/ })).toBeDisabled();
     fireEvent.click(roleStep);
     expect(screen.getByLabelText(/Titolo del ruolo/)).toHaveValue('Software engineer');
+  });
+});
+
+describe('Pool di candidati (registro dei talenti)', () => {
+  const poolCandidate = (over: Record<string, unknown>) => ({
+    id: 'c1', ximatar_archetype: 'owl', ximatar_level: 1,
+    pillar_scores: { drive: 8, computational_power: 9, communication: 5, creativity: 7, knowledge: 8 },
+    work_preference: 'on-site', availability: 'immediately', engagement_level: 'active',
+    trajectory_trend: null, profile_completed: true, subscriber_code: 'A254', ...over,
+  });
+
+  beforeEach(() => {
+    (supabase.functions.invoke as ReturnType<typeof vi.fn>).mockResolvedValue({
+      data: {
+        candidates: [poolCandidate({}), poolCandidate({ id: 'c2', ximatar_archetype: 'bee', subscriber_code: 'A090' })],
+        total_count: 323, plan_limit: 5, is_restricted: true,
+      },
+      error: null,
+    });
+  });
+
+  it('lists people as rows, opens the selected one in the context column and states the plan limit', async () => {
+    wrap(<Candidates />, '/business/candidates');
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'Pool di candidati' })).toBeInTheDocument());
+
+    // One row per person, with the archetype name in the interface language.
+    await waitFor(() => expect(screen.getAllByText('ximatar.owl.name').length).toBeGreaterThan(0));
+    // The name appears both in the archetype chip and in the row.
+    expect(screen.getAllByText('ximatar.bee.name').length).toBeGreaterThan(1);
+    // The first row is selected, so its profile is in the context column.
+    expect(screen.getByText('Protected identity')).toBeInTheDocument();
+    // The plan line replaces the old banner that promised 5 while showing 20.
+    expect(screen.getByText(/candidate_pool.plan_line/)).toBeInTheDocument();
+    expect(screen.getByText('candidate_pool.legend_2')).toBeInTheDocument();
+
+    // Selecting the second row moves the detail panel onto it.
+    const bee = screen.getAllByText('ximatar.bee.name');
+    fireEvent.click(bee[bee.length - 1]);
+    await waitFor(() => expect(screen.getAllByText('Member #A090').length).toBe(2));
   });
 });

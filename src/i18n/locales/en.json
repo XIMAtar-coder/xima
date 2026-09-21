@@ -7160,7 +7160,32 @@
     "create_xima_core": "Create XIMA Core challenge",
     "invite_goal_label": "Invite candidates to a hiring goal",
     "select_goal": "Choose a hiring goal…",
-    "invite_failed": "The invitation could not be sent."
+    "invite_failed": "The invitation could not be sent.",
+    "level_short": "L{{n}}",
+    "five_pillars": "The five pillars",
+    "pillars_scale": "Assessment values · scale 0–10",
+    "protected_identity": "Protected identity",
+    "protected_identity_body": "The profile describes how this person thinks and works. The name is revealed only if they accept your invitation.",
+    "table_candidate": "Anonymous candidate",
+    "table_actions": "Actions",
+    "sort_by": "Sort by",
+    "plan_line": "<b>{{limit}} profiles</b> can be opened on your plan. All {{total}} talents stay explorable with the filters.",
+    "plan_details": "Plan details",
+    "select_candidate": "Select a person to read their profile.",
+    "legend": "Drive · Comp. = computational power · Comm. = communication · Creat. = creativity · Know. = knowledge",
+    "legend_2": "The pillars are not a ranking. A value that is not available shows as —, never as zero.",
+    "range": "{{from}}–{{to}} of {{total}} candidates",
+    "save": "Save",
+    "saved_row": "Saved",
+    "pillar_short": {
+      "drive": "Drive",
+      "comp_power": "Comp.",
+      "communication": "Comm.",
+      "creativity": "Creat.",
+      "knowledge": "Know."
+    },
+    "eyebrow_explore": "Exploration",
+    "eyebrow_anonymous": "Anonymous talents"
   },
   "anonymous": {
     "candidate_label": "Candidate #{{number}}",
@@ -7445,40 +7470,52 @@
   },
   "ximatar": {
     "bear": {
-      "name": "Bear"
+      "name": "Bear",
+      "title": "The Grounded Protector"
     },
     "bee": {
-      "name": "Bee"
+      "name": "Bee",
+      "title": "The Purposeful Contributor"
     },
     "cat": {
-      "name": "Cat"
+      "name": "Cat",
+      "title": "The Independent Specialist"
     },
     "chameleon": {
-      "name": "Chameleon"
+      "name": "Chameleon",
+      "title": "The Adaptive Generalist"
     },
     "dolphin": {
-      "name": "Dolphin"
+      "name": "Dolphin",
+      "title": "The Team Facilitator"
     },
     "elephant": {
-      "name": "Elephant"
+      "name": "Elephant",
+      "title": "The Wise Mentor"
     },
     "fox": {
-      "name": "Fox"
+      "name": "Fox",
+      "title": "The Strategic Opportunist"
     },
     "horse": {
-      "name": "Horse"
+      "name": "Horse",
+      "title": "The Relentless Performer"
     },
     "lion": {
-      "name": "Lion"
+      "name": "Lion",
+      "title": "The Executive Leader"
     },
     "owl": {
-      "name": "Owl"
+      "name": "Owl",
+      "title": "The Analytical Thinker"
     },
     "parrot": {
-      "name": "Parrot"
+      "name": "Parrot",
+      "title": "The Charismatic Communicator"
     },
     "wolf": {
-      "name": "Wolf"
+      "name": "Wolf",
+      "title": "The Pack Strategist"
     }
   }
 }

@@ -7159,7 +7159,32 @@
     "create_xima_core": "Crea sfida XIMA Core",
     "invite_goal_label": "Invita i candidati a un obiettivo di assunzione",
     "select_goal": "Scegli un obiettivo…",
-    "invite_failed": "Non è stato possibile inviare l’invito."
+    "invite_failed": "Non è stato possibile inviare l’invito.",
+    "level_short": "L{{n}}",
+    "five_pillars": "I cinque pilastri",
+    "pillars_scale": "Valori dell’assessment · scala da 0 a 10",
+    "protected_identity": "Identità protetta",
+    "protected_identity_body": "Il profilo descrive come questa persona pensa e lavora. Il nome si scopre solo se accetta il tuo invito.",
+    "table_candidate": "Candidato anonimo",
+    "table_actions": "Azioni",
+    "sort_by": "Ordina per",
+    "plan_line": "Con il tuo piano puoi aprire <b>{{limit}} profili</b>. Tutti i {{total}} talenti restano esplorabili con i filtri.",
+    "plan_details": "Dettagli del piano",
+    "select_candidate": "Seleziona una persona per leggere il suo profilo.",
+    "legend": "Drive · Calcolo = potenza computazionale · Comunic. = comunicazione · Creativ. = creatività · Conosc. = conoscenza",
+    "legend_2": "I pilastri non sono una classifica. Un dato non disponibile è indicato con —, mai con zero.",
+    "range": "{{from}}–{{to}} di {{total}} candidati",
+    "save": "Salva",
+    "saved_row": "Salvato",
+    "pillar_short": {
+      "drive": "Drive",
+      "comp_power": "Calcolo",
+      "communication": "Comunic.",
+      "creativity": "Creativ.",
+      "knowledge": "Conosc."
+    },
+    "eyebrow_explore": "Esplorazione",
+    "eyebrow_anonymous": "Talenti anonimi"
   },
   "anonymous": {
     "candidate_label": "Candidato #{{number}}",
@@ -7445,40 +7470,52 @@
   },
   "ximatar": {
     "bear": {
-      "name": "Orso"
+      "name": "Orso",
+      "title": "Solidità e protezione"
     },
     "bee": {
-      "name": "Ape"
+      "name": "Ape",
+      "title": "Contributo e collaborazione"
     },
     "cat": {
-      "name": "Gatto"
+      "name": "Gatto",
+      "title": "Specializzazione e autonomia"
     },
     "chameleon": {
-      "name": "Camaleonte"
+      "name": "Camaleonte",
+      "title": "Adattamento e versatilità"
     },
     "dolphin": {
-      "name": "Delfino"
+      "name": "Delfino",
+      "title": "Coesione del gruppo"
     },
     "elephant": {
-      "name": "Elefante"
+      "name": "Elefante",
+      "title": "Esperienza e memoria"
     },
     "fox": {
-      "name": "Volpe"
+      "name": "Volpe",
+      "title": "Agilità e intuizione"
     },
     "horse": {
-      "name": "Cavallo"
+      "name": "Cavallo",
+      "title": "Costanza e determinazione"
     },
     "lion": {
-      "name": "Leone"
+      "name": "Leone",
+      "title": "Guida e decisione"
     },
     "owl": {
-      "name": "Gufo"
+      "name": "Gufo",
+      "title": "Pensiero analitico"
     },
     "parrot": {
-      "name": "Pappagallo"
+      "name": "Pappagallo",
+      "title": "Comunicazione e carisma"
     },
     "wolf": {
-      "name": "Lupo"
+      "name": "Lupo",
+      "title": "Strategia di squadra"
     }
   }
 }
