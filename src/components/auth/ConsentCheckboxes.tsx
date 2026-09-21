@@ -11,6 +11,8 @@ interface ConsentCheckboxesProps {
   onTermsChange: (checked: boolean) => void;
   showError?: boolean;
   className?: string;
+  /** Small line above the boxes ("Prima di continuare, anche con Google"). */
+  legend?: React.ReactNode;
 }
 
 export const ConsentCheckboxes: React.FC<ConsentCheckboxesProps> = ({
@@ -20,11 +22,13 @@ export const ConsentCheckboxes: React.FC<ConsentCheckboxesProps> = ({
   onTermsChange,
   showError = false,
   className = '',
+  legend,
 }) => {
   const { t } = useTranslation();
 
   return (
     <div className={`space-y-3 ${className}`}>
+      {legend && <p className="text-xs text-muted-foreground">{legend}</p>}
       {/* Privacy Policy Checkbox */}
       <div className="flex items-start space-x-3">
         <Checkbox

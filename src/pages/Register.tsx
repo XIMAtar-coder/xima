@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '../context/UserContext';
 import { RegistrationForm } from '../types';
-import { Logo } from '@/components/Logo';
 import LandingLayout from '@/components/landing/LandingLayout';
 import Seo from '@/components/Seo';
 import { syncGuestAssessmentToProfile, syncGuestCvToProfile } from '@/utils/assessmentSync';
@@ -17,9 +15,35 @@ import { GoogleAuthButton, PENDING_CONSENT_KEY } from '@/components/auth/GoogleA
 import { ConsentCheckboxes } from '@/components/auth/ConsentCheckboxes';
 import { recordUserConsents } from '@/hooks/useConsentRecording';
 import { checkPassword, isPasswordAuthError, PASSWORD_MIN_LENGTH } from '@/lib/auth/passwordPolicy';
+import { useXimatarsCatalog } from '@/hooks/useXimatarsCatalog';
+import { normalizeXimatarImageUrl } from '@/utils/normalizeXimatarImage';
+import { Eyebrow, Panel } from '@/components/layout/PageHeader';
+import { cn } from '@/lib/utils';
 import { log } from '@/lib/log';
-import { Eye, EyeOff, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 
+/** The guest's result, if the journey ran in this tab: shown beside the form. */
+function useGuestResult() {
+  const [label] = useState(() => {
+    try { return sessionStorage.getItem('guest_ximatar'); } catch { return null; }
+  });
+  const [name] = useState(() => {
+    try { return sessionStorage.getItem('guest_ximatar_name'); } catch { return null; }
+  });
+  const [hasCv] = useState(() => {
+    try { return !!sessionStorage.getItem('guest_cv_analysis'); } catch { return false; }
+  });
+  const { catalogMap } = useXimatarsCatalog();
+  if (!label) return null;
+  const item = catalogMap.get(label.toLowerCase());
+  return {
+    label,
+    name: name || label,
+    tagline: item?.translation?.title || '',
+    imageUrl: item?.image_url ? normalizeXimatarImageUrl(item.image_url) : `/ximatars/${label.toLowerCase()}.webp`,
+    hasCv,
+  };
+}
 
 const Register = () => {
   const navigate = useNavigate();
@@ -28,23 +52,24 @@ const Register = () => {
   const { signUp, isAuthenticated } = useUser();
   const { t, i18n } = useTranslation();
   const refCode = searchParams.get('ref') || '';
-  
+  const guestResult = useGuestResult();
+
   const [formData, setFormData] = useState<RegistrationForm>({
     name: '',
     email: '',
     password: ''
   });
-  // A show/hide toggle replaces the old confirm-password field: the only thing
-  // that field checked was a local match, and seeing the password does that job.
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  
-  const [errors, setErrors] = useState<Partial<RegistrationForm>>({});
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const [errors, setErrors] = useState<Partial<RegistrationForm> & { confirm?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showConsentError, setShowConsentError] = useState(false);
-  
+
   React.useEffect(() => {
     if (isSubmitting) return;
     if (isAuthenticated) {
@@ -57,14 +82,15 @@ const Register = () => {
       }
     }
   }, [isAuthenticated, isSubmitting, navigate]);
-  
+
   const validateForm = () => {
-    const newErrors: Partial<RegistrationForm> = {};
+    const newErrors: Partial<RegistrationForm> & { confirm?: string } = {};
     if (!formData.name.trim()) newErrors.name = t('register.name_required');
     if (!formData.email.trim()) newErrors.email = t('register.email_required');
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = t('register.email_invalid');
     if (!formData.password) newErrors.password = t('register.password_required');
     else if (!checkPassword(formData.password, { email: formData.email }).valid) newErrors.password = t('register.password_rules_unmet', 'The password does not meet the requirements below.');
+    if (formData.password && confirmPassword !== formData.password) newErrors.confirm = t('register.passwords_match');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -74,20 +100,20 @@ const Register = () => {
     setShowConsentError(!consentsValid);
     return consentsValid;
   };
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formValid = validateForm();
     const consentsValid = validateConsents();
     if (!formValid || !consentsValid) return;
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const { data, error } = await signUp(formData.email, formData.password, formData.name);
       if (error) {
@@ -190,7 +216,11 @@ const Register = () => {
       setIsSubmitting(false);
     }
   };
-  
+
+  const fieldClass = (invalid: boolean) =>
+    cn('h-[46px] rounded-md border-[hsl(var(--xs-line))] px-3 text-[15px]', invalid && 'ring-2 ring-destructive');
+  const revealClass = 'absolute inset-y-0 right-0 flex items-center px-3 text-[11px] font-medium text-primary hover:underline';
+
   return (
     <LandingLayout>
       <Seo
@@ -198,28 +228,75 @@ const Register = () => {
         description="Join XIMA and build your XIMAtar — a behavioral identity across five pillars that connects you with the right mentors and employers."
         path="/register"
       />
-      <div className="container max-w-md mx-auto pt-8 pb-16 px-4">
-        <Card>
-          <CardHeader className="space-y-4 text-center">
-            <div className="mx-auto mb-2">
-              <Logo variant="full" className="h-12 mx-auto" alt="XIMA" />
-            </div>
-            <CardTitle className="text-[28px] font-bold">{t('register.title')}</CardTitle>
-            <CardDescription>
-              {t('register.subtitle')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* Quickest paths first: an existing account, or Google. */}
-            <p className="mb-4 text-sm text-muted-foreground text-center">
-              {t('register.have_account')}{" "}
-              <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/login')}>
-                {t('register.log_in')}
-              </Button>
-            </p>
+      <div className="mx-auto grid w-full max-w-[1160px] gap-8 px-4 pb-14 pt-6 sm:px-6 sm:pt-10 lg:grid-cols-[minmax(0,1fr)_430px] lg:gap-x-[88px] lg:pt-14">
+        {/* Context: what the account keeps. */}
+        <aside className="min-w-0 lg:pt-6">
+          {guestResult ? (
+            <>
+              <Eyebrow>{t('register.context_eyebrow')}</Eyebrow>
+              <h2 className="mt-3 text-[32px] font-semibold leading-[1.1] tracking-[-1.2px] text-foreground sm:text-[40px] sm:tracking-[-1.6px] lg:text-[48px] lg:tracking-[-1.8px]">
+                {t('register.context_title')}
+              </h2>
+              <p className="mt-3 text-sm text-muted-foreground sm:mt-5 sm:text-[17px]">{t('register.context_lead')}</p>
 
+              {/* The XIMAtar art is an opaque square, so it is framed on the
+                  tinted field rather than cut out over it. */}
+              <div className="relative mt-5 overflow-hidden rounded-lg border border-[hsl(var(--xs-line))] bg-[hsl(var(--xs-page))] p-4 sm:mt-7 sm:p-6">
+                <img
+                  src={guestResult.imageUrl}
+                  alt={guestResult.name}
+                  className="mx-auto h-[180px] w-[180px] rounded-lg object-contain sm:mr-0 sm:h-[260px] sm:w-[260px]"
+                  onError={(e) => { e.currentTarget.src = '/ximatars/fox.webp'; }}
+                />
+                <div className="mt-4 grid rounded border border-[hsl(var(--xs-line))] bg-card px-4 py-3 sm:absolute sm:bottom-6 sm:left-6 sm:mt-0 sm:min-w-[205px] sm:max-w-[55%] sm:px-5 sm:py-3.5">
+                  <Eyebrow>{t('register.your_ximatar')}</Eyebrow>
+                  <strong className="text-[22px] font-semibold capitalize tracking-[-0.6px] text-foreground sm:text-[26px] sm:tracking-[-0.8px]">{guestResult.name}</strong>
+                  {guestResult.tagline && <span className="text-[11px] text-muted-foreground">{guestResult.tagline}</span>}
+                </div>
+              </div>
+
+              <div className="mt-4 flex gap-3.5 text-[13px] text-muted-foreground sm:mt-6">
+                <Check size={20} className="shrink-0 text-primary" aria-hidden />
+                <p>
+                  <strong className="font-semibold text-foreground">{t('register.saved_title')}</strong>
+                  <br />
+                  {guestResult.hasCv ? t('register.saved_body_with_cv') : t('register.saved_body')}
+                </p>
+              </div>
+            </>
+          ) : (
+            <Panel className="p-6 sm:p-8">
+              <Eyebrow>{t('register.neutral_eyebrow')}</Eyebrow>
+              <h2 className="mt-3 text-[28px] font-semibold leading-[1.15] tracking-[-1px] text-foreground sm:text-[34px] sm:tracking-[-1.3px]">
+                {t('register.neutral_title')}
+              </h2>
+              <p className="mt-3 text-[15px] text-muted-foreground">{t('register.neutral_lead')}</p>
+            </Panel>
+          )}
+        </aside>
+
+        {/* The form. */}
+        <section aria-label={t('register.tab_register')} className="min-w-0">
+          <div className="mb-6 flex gap-7 border-b border-[hsl(var(--xs-line))]" role="group" aria-label={t('register.tab_register')}>
+            <button type="button" aria-pressed="true" className="-mb-px border-b-[3px] border-primary py-3 text-[15px] font-bold text-foreground">
+              {t('register.tab_register')}
+            </button>
+            <button type="button" aria-pressed="false" onClick={() => navigate('/login')} className="-mb-px border-b-[3px] border-transparent py-3 text-[15px] text-muted-foreground hover:text-foreground">
+              {t('register.tab_login')}
+            </button>
+          </div>
+          <Eyebrow>{t('register.kicker')}</Eyebrow>
+          <h1 className="mt-2 text-[30px] font-semibold leading-[1.12] tracking-[-1.1px] text-foreground sm:text-[34px] sm:tracking-[-1.3px]">
+            {t('register.title_new')}
+          </h1>
+          <p className="mb-6 mt-3 text-[15px] text-muted-foreground">
+            {guestResult ? t('register.intro_with_results') : t('register.subtitle')}
+          </p>
+
+          <form onSubmit={handleSubmit} noValidate>
             {/* Consent applies to both ways of signing up: Google used to skip it. */}
             <ConsentCheckboxes
+              legend={t('register.consents_legend')}
               privacyAccepted={privacyAccepted} termsAccepted={termsAccepted}
               onPrivacyChange={setPrivacyAccepted} onTermsChange={setTermsAccepted}
               showError={showConsentError} className="mb-4"
@@ -234,59 +311,57 @@ const Register = () => {
               }}
             />
 
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-[rgba(60,60,67,0.12)]" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">{t('register.or_with_email')}</span>
-              </div>
+            <div className="my-5 flex items-center gap-3.5 text-[11px] text-muted-foreground before:h-px before:flex-1 before:bg-[hsl(var(--xs-line))] after:h-px after:flex-1 after:bg-[hsl(var(--xs-line))]">
+              {t('register.or_with_email_short')}
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">{t('register.full_name')}</Label>
+            <div className="grid gap-3.5">
+              <div>
+                <Label htmlFor="name" className="mb-1.5 block text-xs font-semibold">{t('register.full_name')}</Label>
                 <Input
-                  id="name" name="name"
+                  id="name" name="name" autoComplete="name"
                   placeholder={t('register.name_placeholder')}
                   value={formData.name} onChange={handleChange}
-                  className={`min-h-[48px] ${errors.name ? "ring-2 ring-destructive" : ""}`}
+                  aria-invalid={!!errors.name}
+                  className={fieldClass(!!errors.name)}
                 />
-                {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+                {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name}</p>}
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="email">{t('register.email')}</Label>
+
+              <div>
+                <Label htmlFor="email" className="mb-1.5 block text-xs font-semibold">{t('register.email')}</Label>
                 <Input
-                  id="email" name="email" type="email"
+                  id="email" name="email" type="email" autoComplete="email"
                   placeholder={t('register.email_placeholder')}
                   value={formData.email} onChange={handleChange}
-                  className={`min-h-[48px] ${errors.email ? "ring-2 ring-destructive" : ""}`}
+                  aria-invalid={!!errors.email}
+                  className={fieldClass(!!errors.email)}
                 />
-                {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email}</p>}
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="password">{t('register.password')}</Label>
+
+              <div>
+                <Label htmlFor="password" className="mb-1.5 block text-xs font-semibold">{t('register.password')}</Label>
                 <div className="relative">
                   <Input
                     id="password" name="password" type={showPassword ? 'text' : 'password'} autoComplete="new-password"
                     placeholder={t('register.password_placeholder')}
                     value={formData.password} onChange={handleChange}
                     aria-describedby="password-requirements"
-                    className={`min-h-[48px] pr-12 ${errors.password ? "ring-2 ring-destructive" : ""}`}
+                    aria-invalid={!!errors.password}
+                    className={cn(fieldClass(!!errors.password), 'pr-20')}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-muted-foreground hover:text-foreground"
+                    className={revealClass}
                     aria-label={showPassword ? t('register.hide_password') : t('register.show_password')}
                     aria-pressed={showPassword}
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? t('register.hide') : t('register.show')}
                   </button>
                 </div>
-                <ul id="password-requirements" className="space-y-0.5" aria-live="polite">
+                <ul id="password-requirements" className="mt-2 space-y-0.5" aria-live="polite">
                   {checkPassword(formData.password, { email: formData.email }).rules.map((rule) => (
                     <li
                       key={rule.id}
@@ -297,27 +372,52 @@ const Register = () => {
                     </li>
                   ))}
                 </ul>
-                {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+                {errors.password && <p className="mt-1 text-sm text-destructive">{errors.password}</p>}
               </div>
 
-              <Button type="submit" className="w-full min-h-[48px]" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <>
-                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    {t('register.creating_account')}
-                  </>
-                ) : (
-                  t('register.create_account')
-                )}
-              </Button>
-            </form>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <p className="text-center text-sm text-muted-foreground font-medium">
-              Matching Quality in Jobs
-            </p>
-          </CardFooter>
-        </Card>
+              <div>
+                <Label htmlFor="confirm-password" className="mb-1.5 block text-xs font-semibold">{t('register.confirm_password')}</Label>
+                <div className="relative">
+                  <Input
+                    id="confirm-password" name="confirm-password" type={showConfirm ? 'text' : 'password'} autoComplete="new-password"
+                    placeholder={t('register.confirm_placeholder')}
+                    value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                    aria-invalid={!!errors.confirm}
+                    className={cn(fieldClass(!!errors.confirm), 'pr-20')}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm((v) => !v)}
+                    className={revealClass}
+                    aria-label={showConfirm ? t('register.hide_confirm_password') : t('register.show_confirm_password')}
+                    aria-pressed={showConfirm}
+                  >
+                    {showConfirm ? t('register.hide') : t('register.show')}
+                  </button>
+                </div>
+                {errors.confirm && <p className="mt-1 text-sm text-destructive">{errors.confirm}</p>}
+              </div>
+            </div>
+
+            <Button type="submit" className="mt-5 min-h-[48px] w-full rounded-[7px] text-[15px]" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  {t('register.creating_account')}
+                </>
+              ) : (
+                guestResult ? t('register.create_and_save') : t('register.create_account')
+              )}
+            </Button>
+          </form>
+
+          <p className="mt-5 text-center text-[13px] text-muted-foreground">
+            {t('register.have_account')}{' '}
+            <button type="button" onClick={() => navigate('/login')} className="font-semibold text-primary hover:underline">
+              {t('register.log_in')}
+            </button>
+          </p>
+        </section>
       </div>
     </LandingLayout>
   );
