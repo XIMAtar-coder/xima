@@ -545,7 +545,8 @@
     "messages": "Messaggi",
     "browse_jobs": "Offerte di lavoro",
     "my_offers": "Le tue offerte",
-    "xima_score_label": "Punteggio XIMA {{score}} su 50"
+    "xima_score_label": "Punteggio XIMA {{score}} su 50",
+    "candidate_area": "Il tuo spazio"
   },
   "hero": {
     "eyebrow": "PSICOMETRIA · SELEZIONE CON AI · CONFORME AL GDPR ART. 22",
@@ -581,7 +582,8 @@
     "reset_to_ai": "Ripristina AI",
     "empty": "Vuoto",
     "start": "Inizia",
-    "complete": "Completa"
+    "complete": "Completa",
+    "collapse": "Riduci"
   },
   "tutorial": {
     "dont_show_again": "Non mostrare più"
@@ -6173,7 +6175,8 @@
     "evaluations_open_review": "Apri valutazione",
     "evaluations_view_challenge": "Vedi challenge",
     "settings_plan_free": "Gratuito",
-    "settings_plan_free_subtitle": "Stai usando il piano gratuito. Le funzionalità qui sotto mostrano cosa aggiunge un piano a pagamento."
+    "settings_plan_free_subtitle": "Stai usando il piano gratuito. Le funzionalità qui sotto mostrano cosa aggiunge un piano a pagamento.",
+    "area_label": "Area azienda"
   },
   "ximatarJourney": {
     "page_title": "Il tuo percorso XIMAtar",
@@ -6747,7 +6750,10 @@
     "edit": "Modifica",
     "delete": "Elimina",
     "add": "Aggiungi",
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "close_menu": "Chiudi il menu",
+    "expand_menu": "Espandi il menu",
+    "collapse_menu": "Riduci il menu"
   },
   "pricing": {
     "title": "Piani per ogni fase di crescita",

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AppShell, type ShellNavItem } from '@/components/layout/AppShell';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
-import { 
-  LayoutDashboard, Users, Target, FileText, Swords, 
-  Settings, LogOut, Menu, X, Building2, Briefcase, Globe, HelpCircle, MessageSquare
+import {
+  LayoutDashboard, Users, Target, FileText, Swords,
+  Settings, LogOut, Briefcase, Globe, HelpCircle, MessageSquare,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -32,18 +33,10 @@ interface BusinessLayoutProps {
 }
 
 const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
-  const location = useLocation();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { user, signOut } = useUser();
   const { locale, changeLocale } = useBusinessLocale();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-
-  // Close mobile drawer on route change
-  useEffect(() => {
-    setMobileDrawerOpen(false);
-  }, [location.pathname]);
   const { shouldAutoShowBusinessGuide, completeStep } = useOnboardingState();
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideAutoTriggered, setGuideAutoTriggered] = useState(false);
@@ -109,246 +102,102 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
     navigate('/business/login');
   };
 
-  const navItems = [
-    { path: '/business/dashboard', icon: LayoutDashboard, labelKey: 'businessPortal.nav_overview' },
-    { path: '/business/hiring-goals', icon: Target, labelKey: 'businessPortal.nav_hiring_goals' },
-    { path: '/business/candidates', icon: Users, labelKey: 'businessPortal.nav_candidates' },
-    { path: '/business/challenges', icon: Swords, labelKey: 'businessPortal.nav_challenges' },
-    { path: '/business/messages', icon: MessageSquare, labelKey: 'businessPortal.nav_messages' },
-    { path: '/business/jobs', icon: Briefcase, labelKey: 'businessPortal.nav_jobs' },
-    { path: '/business/evaluations', icon: FileText, labelKey: 'businessPortal.nav_evaluations' },
-    { path: '/business/settings', icon: Settings, labelKey: 'businessPortal.nav_settings' }
+  const navItems: ShellNavItem[] = [
+    { path: '/business/dashboard', icon: LayoutDashboard, label: t('businessPortal.nav_overview') },
+    { path: '/business/hiring-goals', icon: Target, label: t('businessPortal.nav_hiring_goals'), prefix: true },
+    { path: '/business/candidates', icon: Users, label: t('businessPortal.nav_candidates'), prefix: true },
+    { path: '/business/challenges', icon: Swords, label: t('businessPortal.nav_challenges'), prefix: true },
+    { path: '/business/messages', icon: MessageSquare, label: t('businessPortal.nav_messages'), badge: unreadChatCount || undefined },
+    { path: '/business/jobs', icon: Briefcase, label: t('businessPortal.nav_jobs'), prefix: true },
+    { path: '/business/evaluations', icon: FileText, label: t('businessPortal.nav_evaluations') },
+    { path: '/business/settings', icon: Settings, label: t('businessPortal.nav_settings') },
   ];
 
+  const railFooter = (
+    <div className="space-y-2">
+      <div className="flex items-center gap-3 rounded-md bg-white/5 px-2 py-2">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
+          {user?.name?.charAt(0) || 'B'}
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium text-white">{user?.name || 'Business'}</p>
+          <p className="truncate text-xs text-white/60">{user?.email}</p>
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={handleSignOut}
+        className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-white/75 hover:bg-white/10 hover:text-white"
+      >
+        <LogOut size={16} />
+        {t('businessPortal.nav_logout')}
+      </button>
+    </div>
+  );
+
+  const topRight = (
+    <>
+      <NotificationsDropdown />
+      <ThemeToggle />
+      <Button variant="ghost" size="sm" onClick={() => setGuideOpen(true)} className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground">
+        <HelpCircle size={16} />
+        <span className="hidden text-sm font-medium sm:inline">{t('businessPortal.nav_guide')}</span>
+      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm" className="flex items-center gap-2 text-muted-foreground hover:text-foreground" aria-label={`Current language: ${currentLanguage.name}`}>
+            <Globe size={16} />
+            <span className="text-sm font-medium">{currentLanguage.code.toUpperCase()}</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-[150px]">
+          {languages.map((language) => (
+            <DropdownMenuItem
+              key={language.code}
+              onClick={() => handleLanguageChange(language.code)}
+              className={`flex cursor-pointer items-center gap-3 ${i18n.language === language.code ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              <span className="font-medium">{language.name}</span>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
+
+  const footer = (
+    <footer className="border-t border-[hsl(var(--xs-line))] px-4 py-6 sm:px-8">
+      <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} XIMA. {t('footer.all_rights_reserved')}</p>
+        <div className="flex items-center gap-6">
+          <Link to="/privacy" className="text-xs text-muted-foreground transition-colors hover:text-primary">{t('footer.privacy')}</Link>
+          <Link to="/terms" className="text-xs text-muted-foreground transition-colors hover:text-primary">{t('footer.terms')}</Link>
+          <Link to="/imprint" className="text-xs text-muted-foreground transition-colors hover:text-primary">{t('footer.imprint')}</Link>
+        </div>
+      </div>
+    </footer>
+  );
+
   return (
-    <div className="min-h-screen bg-background">
-      {/* Mobile backdrop */}
-      {mobileDrawerOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={() => setMobileDrawerOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside
-        className={`fixed top-0 left-0 h-full max-h-screen overflow-y-auto bg-card border-r border-border transition-all duration-300 z-50 ${
-          sidebarOpen ? 'w-64' : 'w-20'
-        } ${mobileDrawerOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+    <>
+      <AppShell
+        nav={navItems}
+        areaLabel={t('businessPortal.area_label', 'Company area')}
+        railFooter={railFooter}
+        topRight={topRight}
+        breadcrumb={<span className="truncate">{t('businessPortal.area_label', 'Company area')}</span>}
+        storageKey="xima:biz:rail-collapsed"
+        footer={footer}
       >
-        <div className="flex flex-col h-full min-h-screen">
-          {/* Header */}
-          <div className="p-4 border-b border-border">
-            <div className="flex items-center justify-between">
-              {sidebarOpen && (
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
-                    <Building2 className="text-primary" size={24} />
-                  </div>
-                  <span className="text-lg font-bold text-foreground">XIMA Business</span>
-                </div>
-              )}
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label={t('a11y.open_menu')}
-                onClick={() => {
-                  if (mobileDrawerOpen) {
-                    setMobileDrawerOpen(false);
-                  } else {
-                    setSidebarOpen(!sidebarOpen);
-                  }
-                }}
-                className="hover:bg-primary/10"
-              >
-                {sidebarOpen || mobileDrawerOpen ? <X size={20} /> : <Menu size={20} />}
-              </Button>
-            </div>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              const isMessages = item.path === '/business/messages';
-
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setMobileDrawerOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${
-                    isActive
-                      ? 'bg-primary/20 text-primary border border-primary/30'
-                      : 'text-muted-foreground hover:bg-primary/10 hover:text-foreground'
-                  }`}
-                >
-                  <Icon size={20} />
-                  {sidebarOpen && (
-                    <>
-                      <span className="font-medium flex-1">{t(item.labelKey)}</span>
-                      {isMessages && unreadChatCount > 0 && (
-                        <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
-                          {unreadChatCount}
-                        </span>
-                      )}
-                    </>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-
-
-          {/* User Info */}
-          <div className="p-4 border-t border-border">
-            {sidebarOpen ? (
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/10">
-                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
-                    {user?.name?.charAt(0) || 'B'}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">
-                      {user?.name || 'Business User'}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-                  </div>
-                </div>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-primary/10"
-                  onClick={handleSignOut}
-                >
-                  <LogOut size={18} className="mr-2" />
-                  {t('businessPortal.nav_logout')}
-                </Button>
-              </div>
-            ) : (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleSignOut}
-                className="w-full hover:bg-primary/10" aria-label={t('a11y.log_out')}
-              >
-                <LogOut size={20} />
-              </Button>
-            )}
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:shadow">{t('common.skip_to_content')}</a>
-      <main id="main-content"
-        className={`transition-all duration-300 min-h-screen ml-0 ${
-          sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'
-        }`}
-      >
-        {/* Top Header */}
-        <header className="sticky top-0 z-30 flex items-center gap-2 px-4 sm:px-6 py-3 bg-background/80 backdrop-blur-sm border-b border-border">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setMobileDrawerOpen(true)}
-            className="lg:hidden hover:bg-primary/10"
-            aria-label={t('a11y.open_menu')}
-          >
-            <Menu size={20} />
-          </Button>
-
-          <div className="flex-1" />
-
-          {/* The business portal had no notification surface at all, so a
-              submission could arrive and nobody was told. */}
-          <NotificationsDropdown />
-
-          <ThemeToggle />
-
-
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setGuideOpen(true)}
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-primary/10"
-          >
-            <HelpCircle size={16} />
-            <span className="text-sm font-medium">{t('businessPortal.nav_guide')}</span>
-          </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground hover:bg-primary/10"
-                aria-label={`Current language: ${currentLanguage.name}`}
-              >
-                <Globe size={16} />
-                <span className="hidden sm:inline">{currentLanguage.flag}</span>
-                <span className="text-sm font-medium">{currentLanguage.code.toUpperCase()}</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-[150px]">
-              {languages.map((language) => (
-                <DropdownMenuItem
-                  key={language.code}
-                  onClick={() => handleLanguageChange(language.code)}
-                  className={`flex items-center gap-3 cursor-pointer ${
-                    i18n.language === language.code ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  <span className="text-lg">{language.flag}</span>
-                  <span className="font-medium">{language.name}</span>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </header>
-        
-        <div className="relative z-10 p-4 sm:p-8 pb-16">
-          {children}
-        </div>
-        
-        {/* Footer */}
-        <footer className="relative z-10 border-t border-border px-4 sm:px-8 py-6">
-
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()} XIMA. {t('footer.all_rights_reserved')}
-            </p>
-            <div className="flex items-center gap-6">
-              <Link 
-                to="/privacy" 
-                className="text-xs text-muted-foreground hover:text-primary transition-colors"
-              >
-                {t('footer.privacy')}
-              </Link>
-              <Link 
-                to="/terms" 
-                className="text-xs text-muted-foreground hover:text-primary transition-colors"
-              >
-                {t('footer.terms')}
-              </Link>
-              <Link 
-                to="/imprint" 
-                className="text-xs text-muted-foreground hover:text-primary transition-colors"
-              >
-                {t('footer.imprint')}
-              </Link>
-            </div>
-          </div>
-        </footer>
-      </main>
+        {children}
+      </AppShell>
 
       <BusinessJourneyGuideModal
         open={guideOpen}
         onClose={handleGuideClose}
         isAutoOpen={shouldAutoShowBusinessGuide}
       />
-    </div>
+    </>
   );
 };
 

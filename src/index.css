@@ -34,6 +34,11 @@
     --input: 240 5% 75%;
     --ring: 211 100% 50%;
 
+    /* ── Signed-in areas ("strumenti di osservazione" redesign, 2026-09-21) ── */
+    --xs-page: 204 33% 94%;              /* #eaf0f4 page behind panels */
+    --xs-line: 210 20% 89%;              /* #dce3e9 hairlines */
+    --xs-rail: 208 50% 17%;              /* #162e43 dark rail */
+    --xs-ink: 213 32% 17%;               /* #182b3d */
     --radius: 1.25rem;                   /* 20px default */
 
     /* Glass tokens */
@@ -117,6 +122,10 @@
     --input: 240 6% 12%;
     --ring: 239 84% 67%;
 
+    --xs-page: 240 10% 4%;
+    --xs-line: 240 6% 16%;
+    --xs-rail: 208 50% 12%;
+    --xs-ink: 240 5% 96%;
     --radius: 1.25rem;
 
     /* Dark glass tokens */
@@ -728,3 +737,25 @@ html.dark [class*="rounded-["][class*="border"] {
 /* Hide scrollbars on horizontally scrolling nav/tab rows */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Signed-in areas: shared classes used by AppShell pages ── */
+.xs-eyebrow {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px; line-height: 1.5; letter-spacing: 1.5px; text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+.xs-title { font-size: 28px; line-height: 1.2; font-weight: 600; letter-spacing: -0.8px; color: hsl(var(--foreground)); }
+@media (min-width: 768px) { .xs-title { font-size: 34px; letter-spacing: -1.3px; } }
+.xs-panel {
+  background: hsl(var(--card)); border: 1px solid hsl(var(--xs-line)); border-radius: 12px; padding: 24px;
+}
+.xs-panel-accent { border-top: 3px solid hsl(var(--primary)); }
+/* The one translucent surface per page (a synthesis, a sticky action bar). */
+.xs-glass {
+  background: rgba(255,255,255,0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.95); border-radius: 12px; padding: 24px; box-shadow: 0 4px 20px #233e5910;
+}
+html.dark .xs-glass { background: rgba(20,20,30,0.7); border-color: rgba(255,255,255,0.10); box-shadow: 0 8px 32px rgba(0,0,0,0.35); }
+.xs-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid hsl(var(--xs-line)); }
+.xs-row:last-child { border-bottom: 0; }
+.xs-num { font-variant-numeric: tabular-nums; }

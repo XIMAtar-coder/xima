@@ -546,7 +546,8 @@
     "reset_to_ai": "Restore AI",
     "empty": "Empty",
     "start": "Start",
-    "complete": "Complete"
+    "complete": "Complete",
+    "collapse": "Collapse"
   },
   "tutorial": {
     "dont_show_again": "Don't show again"
@@ -736,7 +737,8 @@
     "messages": "Messages",
     "browse_jobs": "Job Listings",
     "my_offers": "Your Offers",
-    "xima_score_label": "XIMA score {{score}} of 50"
+    "xima_score_label": "XIMA score {{score}} of 50",
+    "candidate_area": "Your space"
   },
   "hero": {
     "eyebrow": "PSYCHOMETRICS · AI HIRING · GDPR ART. 22 COMPLIANT",
@@ -6174,7 +6176,8 @@
     "evaluations_open_review": "Open review",
     "evaluations_view_challenge": "View challenge",
     "settings_plan_free": "Free",
-    "settings_plan_free_subtitle": "You are on the free plan. The features below show what a paid plan adds."
+    "settings_plan_free_subtitle": "You are on the free plan. The features below show what a paid plan adds.",
+    "area_label": "Company area"
   },
   "ximatarJourney": {
     "page_title": "Your XIMAtar Journey",
@@ -6747,7 +6750,10 @@
     "edit": "Edit",
     "delete": "Delete",
     "add": "Add",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "close_menu": "Close menu",
+    "expand_menu": "Expand menu",
+    "collapse_menu": "Collapse menu"
   },
   "pricing": {
     "title": "Plans for every stage of growth",
