@@ -154,24 +154,13 @@ const Register = () => {
           catch (refErr) { log.warn('[Register] Referral apply exception:', refErr); }
         }
 
-        // 72h verification window
-        const deadline = new Date();
-        deadline.setHours(deadline.getHours() + 72);
-
-        try {
-          await supabase.from('profiles').update({
-            verification_required_until: deadline.toISOString(),
-            email_verified_at: null,
-          }).eq('user_id', newUserId);
-        } catch (e) { log.warn('[Register] verification deadline update failed', e); }
-
+        // 72h verification window is set server-side by the edge function.
         try {
           const { error: emailErr } = await supabase.functions.invoke('send-verification-email', {
             body: {
               user_id: newUserId,
               email: formData.email,
               name: formData.name,
-              verification_deadline: deadline.toISOString(),
             },
           });
           if (emailErr) {
