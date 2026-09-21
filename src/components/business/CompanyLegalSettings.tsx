@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { SettingsSectionHeader } from '@/components/business/SettingsSectionHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCompanyLegal, CompanyLegalInput } from '@/hooks/useCompanyLegal';
 import { Building2, MapPin, FileText, Mail, Save, Loader2 } from 'lucide-react';
+
+const inputClass = 'bg-background border-[hsl(var(--xs-line))] text-foreground';
 
 const CompanyLegalSettings: React.FC = () => {
   const { t } = useTranslation();
@@ -53,26 +55,22 @@ const CompanyLegalSettings: React.FC = () => {
 
   if (isLoading && !initialized) {
     return (
-      <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
-        <CardContent className="py-12 flex items-center justify-center">
-          <Loader2 className="w-6 h-6 animate-spin text-primary" />
-        </CardContent>
-      </Card>
+      <section id="legale" className="xs-panel scroll-mt-20 flex items-center justify-center py-12" role="status" aria-live="polite">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" aria-hidden="true" />
+        <span className="sr-only">{t('common.loading')}</span>
+      </section>
     );
   }
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
-      <CardHeader>
-        <CardTitle className="text-foreground flex items-center gap-2">
-          <FileText className="text-primary" />
-          {t('businessPortal.settings_legal_title')}
-        </CardTitle>
-        <CardDescription className="text-muted-foreground">
-          {t('businessPortal.settings_legal_subtitle')}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <section id="legale" className="xs-panel scroll-mt-20">
+      <SettingsSectionHeader
+        index="04"
+        eyebrow={t('businessPortal.settings_eyebrow_legal')}
+        title={t('businessPortal.settings_legal_title')}
+        subtitle={t('businessPortal.settings_legal_subtitle')}
+      />
+      <div>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Legal Name */}
           <div className="space-y-2">
@@ -83,7 +81,7 @@ const CompanyLegalSettings: React.FC = () => {
             <Input
               id="legal_name"
               placeholder={t('business.legal.legal_name_placeholder')}
-              className="bg-background border-border text-foreground"
+              className={inputClass}
               value={formData.legal_name || ''}
               onChange={(e) => updateField('legal_name', e.target.value)}
             />
@@ -107,7 +105,7 @@ const CompanyLegalSettings: React.FC = () => {
                 <Input
                   id="street_address"
                   placeholder={t('business.legal.street_placeholder')}
-                  className="bg-background border-border text-foreground"
+                  className={inputClass}
                   value={formData.street_address || ''}
                   onChange={(e) => updateField('street_address', e.target.value)}
                 />
@@ -120,7 +118,7 @@ const CompanyLegalSettings: React.FC = () => {
                 <Input
                   id="city"
                   placeholder={t('business.legal.city_placeholder')}
-                  className="bg-background border-border text-foreground"
+                  className={inputClass}
                   value={formData.city || ''}
                   onChange={(e) => updateField('city', e.target.value)}
                 />
@@ -133,7 +131,7 @@ const CompanyLegalSettings: React.FC = () => {
                 <Input
                   id="postal_code"
                   placeholder={t('business.legal.postal_placeholder')}
-                  className="bg-background border-border text-foreground"
+                  className={inputClass}
                   value={formData.postal_code || ''}
                   onChange={(e) => updateField('postal_code', e.target.value)}
                 />
@@ -146,7 +144,7 @@ const CompanyLegalSettings: React.FC = () => {
                 <Input
                   id="country"
                   placeholder={t('business.legal.country_placeholder')}
-                  className="bg-background border-border text-foreground"
+                  className={inputClass}
                   value={formData.country || ''}
                   onChange={(e) => updateField('country', e.target.value)}
                 />
@@ -169,7 +167,7 @@ const CompanyLegalSettings: React.FC = () => {
                 <Input
                   id="vat_number"
                   placeholder={t('business.legal.vat_placeholder')}
-                  className="bg-background border-border text-foreground"
+                  className={inputClass}
                   value={formData.vat_number || ''}
                   onChange={(e) => updateField('vat_number', e.target.value)}
                 />
@@ -182,7 +180,7 @@ const CompanyLegalSettings: React.FC = () => {
                 <Input
                   id="registration_number"
                   placeholder={t('business.legal.registration_placeholder')}
-                  className="bg-background border-border text-foreground"
+                  className={inputClass}
                   value={formData.registration_number || ''}
                   onChange={(e) => updateField('registration_number', e.target.value)}
                 />
@@ -200,7 +198,7 @@ const CompanyLegalSettings: React.FC = () => {
               id="contact_email"
               type="email"
               placeholder={t('business.legal.contact_email_placeholder')}
-              className="bg-background border-border text-foreground"
+              className={inputClass}
               value={formData.contact_email || ''}
               onChange={(e) => updateField('contact_email', e.target.value)}
             />
@@ -210,21 +208,20 @@ const CompanyLegalSettings: React.FC = () => {
           </div>
 
           {/* Save Button */}
-          <Button
-            type="submit"
-            className="w-full bg-primary hover:bg-primary/90"
-            disabled={isUpserting}
-          >
-            {isUpserting ? (
-              <Loader2 className="mr-2 animate-spin" size={16} />
-            ) : (
-              <Save className="mr-2" size={16} />
-            )}
-            {isUpserting ? t('business_portal.saving') : t('businessPortal.settings_legal_save_cta')}
-          </Button>
+          <div className="flex flex-col gap-3 border-t border-[hsl(var(--xs-line))] pt-5 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-xs text-muted-foreground">{t('businessPortal.settings_save_hint')}</span>
+            <Button type="submit" disabled={isUpserting}>
+              {isUpserting ? (
+                <Loader2 className="mr-2 animate-spin" size={16} aria-hidden="true" />
+              ) : (
+                <Save className="mr-2" size={16} aria-hidden="true" />
+              )}
+              {isUpserting ? t('business_portal.saving') : t('businessPortal.settings_legal_save_cta')}
+            </Button>
+          </div>
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 };
 

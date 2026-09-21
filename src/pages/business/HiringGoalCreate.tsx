@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Target, Users, MapPin, DollarSign, FileDown, Info, ChevronDown, X, Plus } from 'lucide-react';
+import { ArrowLeft, ArrowRight, FileDown, Info, ChevronDown, X, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -385,13 +386,37 @@ const HiringGoalCreate = () => {
     }
   };
 
+
   const stepProps = { formData, updateField, userId, importedListing };
+
+  const stepNames = [
+    t('hiring_goal.step_role'),
+    t('hiring_goal.step_skills'),
+    t('hiring_goal.step_mode'),
+    t('hiring_goal.step_location'),
+    t('hiring_goal.step_pay'),
+  ];
+  const stepMeta: { title: string; intro: string; hint: string }[] = [
+    { title: t('hiring_goal.step0_title', 'Quale ruolo stai cercando?'), intro: t('hiring_goal.step0_subtitle'), hint: t('hiring_goal.step0_hint') },
+    { title: t('hiring_goal.step1_title', 'Quali sono le responsabilità chiave?'), intro: t('hiring_goal.step1_subtitle'), hint: t('hiring_goal.step1_hint') },
+    { title: t('hiring_goal.step2_title', 'Livello e modalità di lavoro'), intro: t('hiring_goal.step2_subtitle'), hint: t('hiring_goal.step2_hint') },
+    { title: t('hiring_goal.step3_title', 'Dove si trova il ruolo?'), intro: t('hiring_goal.step3_subtitle'), hint: t('hiring_goal.step3_hint') },
+    { title: t('businessPortal.hiring_goal.gross_salary.title'), intro: t('businessPortal.hiring_goal.gross_salary.subtitle'), hint: t('hiring_goal.step4_hint') },
+  ];
+  const pad = (n: number) => String(n).padStart(2, '0');
+
+  const metaLine = isEditMode
+    ? t('hiring_goal.meta_edit')
+    : fromListingId
+      ? t('hiring_goal.meta_import')
+      : t('hiring_goal.meta_local_draft');
 
   if (isEditMode && editLoading) {
     return (
       <BusinessLayout>
-        <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="flex justify-center items-center min-h-[60vh]" role="status" aria-live="polite">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+          <span className="sr-only">{t('common.loading')}</span>
         </div>
       </BusinessLayout>
     );
@@ -399,118 +424,215 @@ const HiringGoalCreate = () => {
 
   return (
     <BusinessLayout>
-      <div className="max-w-2xl mx-auto py-8 px-4">
-        {/* Back */}
-        <button
-          onClick={() => navigate('/business/dashboard')}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {t('common.back_to_dashboard', 'Torna alla dashboard')}
-        </button>
+      <PageHeader
+        eyebrow={`${t('businessPortal.nav_hiring_goals')} / ${isEditMode ? t('hiring_goal.edit_title') : t('hiring_goal.wizard_eyebrow')}`}
+        title={t('hiring_goal.wizard_title')}
+        subtitle={isEditMode
+          ? t('hiring_goal.edit_subtitle', 'Aggiorna il brief: XIMA rigenererà la shortlist al salvataggio.')
+          : t('hiring_goal.create_subtitle', 'XIMA trasformerà questo brief in una shortlist intelligente di candidati per identità comportamentale.')}
+        actions={(
+          <Button variant="ghost" size="sm" onClick={() => navigate('/business/dashboard')} className="gap-2 text-muted-foreground">
+            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+            {t('common.back_to_dashboard', 'Torna alla dashboard')}
+          </Button>
+        )}
+        meta={<span role="status">{metaLine}</span>}
+      />
 
-        {/* Title */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground">
-            {isEditMode
-              ? t('hiring_goal.edit_title', 'Modifica obiettivo di assunzione')
-              : t('hiring_goal.create_title', 'Crea un nuovo obiettivo di assunzione')}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {isEditMode
-              ? t('hiring_goal.edit_subtitle', 'Aggiorna il brief: XIMA rigenererà la shortlist al salvataggio.')
-              : t('hiring_goal.create_subtitle', 'XIMA trasformerà questo brief in una shortlist intelligente di candidati per identità comportamentale.')}
+      {/* Import banner */}
+      {importedListing && (
+        <ImportBanner
+          listing={importedListing}
+          onModify={() => setShowLeaveConfirm(true)}
+        />
+      )}
+
+      <div className="grid gap-6 lg:grid-cols-[190px_minmax(0,1fr)_320px]">
+        {/* Step index */}
+        <div className="lg:sticky lg:top-20 lg:self-start">
+          <nav aria-label={t('hiring_goal.steps_label')} className="no-scrollbar flex gap-1 overflow-x-auto lg:flex-col lg:gap-0.5">
+            {stepNames.map((name, i) => {
+              const current = i === step;
+              const done = i < step;
+              return (
+                <button
+                  key={name}
+                  type="button"
+                  aria-current={current ? 'step' : undefined}
+                  disabled={!done && !current}
+                  onClick={() => { if (done) setStep(i); }}
+                  className={`flex shrink-0 items-center gap-3 rounded-md px-3 py-2 text-left text-[14px] transition-colors ${
+                    current
+                      ? 'bg-primary/10 font-semibold text-foreground'
+                      : done
+                        ? 'text-foreground hover:bg-muted/60'
+                        : 'text-muted-foreground'
+                  }`}
+                >
+                  <span className={`xs-num flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs ${
+                    current ? 'border-primary bg-primary text-white' : done ? 'border-primary text-primary' : 'border-[hsl(var(--xs-line))]'
+                  }`}>
+                    {i + 1}
+                  </span>
+                  {name}
+                </button>
+              );
+            })}
+          </nav>
+          <p className="mt-6 hidden text-xs leading-relaxed text-muted-foreground lg:block">
+            <span className="xs-eyebrow block">{t('hiring_goal.nav_note_title')}</span>
+            <span className="mt-3 block">{t('hiring_goal.nav_note_body')}</span>
           </p>
         </div>
 
-        {/* Import banner */}
-        {importedListing && (
-          <ImportBanner
-            listing={importedListing}
-            onModify={() => setShowLeaveConfirm(true)}
-          />
-        )}
+        {/* Step form */}
+        <section className="xs-panel" aria-label={stepNames[step]}>
+          <p className="xs-eyebrow">{t('hiring_goal.step_counter', { current: pad(step + 1), total: pad(TOTAL_STEPS) })}</p>
+          <h2 className="mt-2 text-[23px] font-semibold leading-tight tracking-[-0.5px] text-foreground">{stepMeta[step].title}</h2>
+          <p className="mt-1.5 text-sm text-muted-foreground">{stepMeta[step].intro}</p>
 
-        {/* Step indicator */}
-        <div className="flex items-center gap-2 mb-8">
-          {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
-            <div
-              key={i}
-              className={`h-1.5 flex-1 rounded-full transition-colors ${i <= step ? 'bg-primary' : 'bg-secondary'}`}
-            />
-          ))}
-          <span className="text-xs text-muted-foreground ml-2">{step + 1}/{TOTAL_STEPS}</span>
-        </div>
+          <div className="mt-6 min-h-[320px]">
+            {step === 0 && <Step0Role {...stepProps} />}
+            {step === 1 && <Step1Responsibilities {...stepProps} />}
+            {step === 2 && <Step2SeniorityWorkMode {...stepProps} />}
+            {step === 3 && <Step3Location {...stepProps} />}
+            {step === 4 && <Step4SalaryReview {...stepProps} />}
+          </div>
 
-        {/* Step content */}
-        <div className="min-h-[320px]">
-          {step === 0 && <Step0Role {...stepProps} />}
-          {step === 1 && <Step1Responsibilities {...stepProps} />}
-          {step === 2 && <Step2SeniorityWorkMode {...stepProps} />}
-          {step === 3 && <Step3Location {...stepProps} />}
-          {step === 4 && <Step4SalaryReview {...stepProps} />}
-        </div>
+          <p className="mt-6 flex gap-2 text-[13px] text-muted-foreground">
+            <span aria-hidden="true">↳</span>
+            <span>{stepMeta[step].hint}</span>
+          </p>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between pt-6 border-t mt-8">
-          <Button variant="ghost" onClick={prev} disabled={step === 0}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {t('common.back', 'Indietro')}
-          </Button>
-          {step < TOTAL_STEPS - 1 ? (
-            <Button onClick={next} disabled={!canProceed()}>
-              {t('common.next', 'Avanti')}
-              <ArrowRight className="w-4 h-4 ml-2" />
+          {/* Navigation */}
+          <div className="mt-6 flex items-center justify-between border-t border-[hsl(var(--xs-line))] pt-5">
+            <Button variant="ghost" onClick={prev} disabled={step === 0}>
+              <ArrowLeft className="w-4 h-4 mr-2" aria-hidden="true" />
+              {t('common.back', 'Indietro')}
             </Button>
-          ) : (
-            <Button onClick={handleSubmit} disabled={submitting || !canProceed()}>
-              {submitting
-                ? t('hiring_goal.creating', 'Creazione...')
-                : formData.xima_hr_requested
-                  ? t('businessPortal.hiring_goal.xima_hr_checkbox.activate', 'Attiva con XIMA HR')
-                  : t('hiring_goal.create_and_shortlist', 'Crea e Genera Shortlist')}
-            </Button>
-          )}
-        </div>
-
-        {/* Resume a locally saved draft */}
-        <Dialog open={!!pendingDraft} onOpenChange={(open) => { if (!open) resumeDraft(); }}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t('businessPortal.hiring_goal.draft_found_title')}</DialogTitle>
-            </DialogHeader>
-            <p className="text-sm text-muted-foreground">
-              {t('businessPortal.hiring_goal.draft_found_body', {
-                role: pendingDraft?.formData.role_title?.trim() || t('businessPortal.hiring_goal.draft_untitled'),
-                date: pendingDraft ? new Date(pendingDraft.savedAt).toLocaleString() : '',
-              })}
-            </p>
-            <DialogFooter className="gap-2">
-              <Button variant="ghost" onClick={startOver}>{t('businessPortal.hiring_goal.draft_start_over')}</Button>
-              <Button onClick={resumeDraft}>{t('businessPortal.hiring_goal.draft_resume')}</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Leave confirmation dialog */}
-        <Dialog open={showLeaveConfirm} onOpenChange={setShowLeaveConfirm}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t('businessPortal.hiring_goal.import_banner.leave_title', 'Tornare all\'importazione?')}</DialogTitle>
-            </DialogHeader>
-            <p className="text-sm text-muted-foreground">
-              {t('businessPortal.hiring_goal.import_banner.leave_body', 'Le modifiche non salvate andranno perse. Vuoi continuare?')}
-            </p>
-            <DialogFooter className="gap-2">
-              <Button variant="ghost" onClick={() => setShowLeaveConfirm(false)}>{t('common.cancel', 'Annulla')}</Button>
-              <Button variant="destructive" onClick={() => navigate('/business/jobs/import')}>
-                {t('businessPortal.hiring_goal.import_banner.leave_confirm', 'Sì, torna all\'importazione')}
+            {step < TOTAL_STEPS - 1 ? (
+              <Button onClick={next} disabled={!canProceed()}>
+                {t('hiring_goal.continue')}
+                <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            ) : (
+              <Button onClick={handleSubmit} disabled={submitting || !canProceed()}>
+                {submitting
+                  ? t('hiring_goal.creating', 'Creazione...')
+                  : formData.xima_hr_requested
+                    ? t('businessPortal.hiring_goal.xima_hr_checkbox.activate', 'Attiva con XIMA HR')
+                    : t('hiring_goal.create_and_shortlist', 'Crea e Genera Shortlist')}
+              </Button>
+            )}
+          </div>
+        </section>
+
+        {/* Live summary: the one translucent surface of this page. */}
+        <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+          <GoalSummaryPanel formData={formData} />
+          <CompanyContextNote profile={businessProfile} />
+        </aside>
       </div>
+
+      {/* Resume a locally saved draft */}
+      <Dialog open={!!pendingDraft} onOpenChange={(open) => { if (!open) resumeDraft(); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('businessPortal.hiring_goal.draft_found_title')}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            {t('businessPortal.hiring_goal.draft_found_body', {
+              role: pendingDraft?.formData.role_title?.trim() || t('businessPortal.hiring_goal.draft_untitled'),
+              date: pendingDraft ? new Date(pendingDraft.savedAt).toLocaleString() : '',
+            })}
+          </p>
+          <DialogFooter className="gap-2">
+            <Button variant="ghost" onClick={startOver}>{t('businessPortal.hiring_goal.draft_start_over')}</Button>
+            <Button onClick={resumeDraft}>{t('businessPortal.hiring_goal.draft_resume')}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Leave confirmation dialog */}
+      <Dialog open={showLeaveConfirm} onOpenChange={setShowLeaveConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('businessPortal.hiring_goal.import_banner.leave_title', 'Tornare all\'importazione?')}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            {t('businessPortal.hiring_goal.import_banner.leave_body', 'Le modifiche non salvate andranno perse. Vuoi continuare?')}
+          </p>
+          <DialogFooter className="gap-2">
+            <Button variant="ghost" onClick={() => setShowLeaveConfirm(false)}>{t('common.cancel', 'Annulla')}</Button>
+            <Button variant="destructive" onClick={() => navigate('/business/jobs/import')}>
+              {t('businessPortal.hiring_goal.import_banner.leave_confirm', 'Sì, torna all\'importazione')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </BusinessLayout>
+  );
+};
+
+// ── Live summary ("Il tuo obiettivo") ──
+const GoalSummaryPanel = ({ formData }: { formData: FormData }) => {
+  const { t } = useTranslation();
+  const seniorityLabel: Record<string, string> = {
+    first_time: t('hiring_goal.seniority_first_time', 'Prima esperienza'),
+    independent: t('hiring_goal.seniority_independent', 'Autonomo'),
+    led_others: t('hiring_goal.seniority_led_others', 'Ha guidato altri'),
+  };
+  const modeLabel: Record<string, string> = {
+    remote: t('hiring_goal.remote', 'Remoto'),
+    hybrid: t('hiring_goal.hybrid', 'Ibrido'),
+    onsite: t('hiring_goal.onsite', 'In sede'),
+  };
+  const tbd = t('hiring_goal.summary_tbd');
+  const payMonths = formData.pay_months ?? defaultPayMonths(formData.country, formData.ccnl);
+  const ral = deriveRal(formData.salary_min, formData.salary_max, formData.salary_period, payMonths);
+  const ralText = ral.ral_min > 0
+    ? `${ral.ral_min.toLocaleString()}–${(ral.ral_max || ral.ral_min).toLocaleString()} ${formData.salary_currency}`
+    : tbd;
+  const rows: [string, React.ReactNode][] = [
+    [t('hiring_goal.seniority', 'Seniority'), seniorityLabel[formData.experience_level] || tbd],
+    [t('hiring_goal.review_mode', 'Modalità'), modeLabel[formData.work_model] || tbd],
+    [t('hiring_goal.review_location', 'Località'), [formData.city_region, formData.country].filter(Boolean).join(', ') || tbd],
+    [t('hiring_goal.review_responsibilities', 'Responsabilità'), formData.responsibilities.length],
+    [t('businessPortal.hiring_goal.advanced.required_skills', 'Competenze richieste'), formData.required_skills.length],
+    [t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL'), ralText],
+  ];
+  return (
+    <div className="xs-glass" aria-live="polite">
+      <p className="xs-eyebrow">{t('hiring_goal.summary_eyebrow')}</p>
+      <p className="mt-3 text-[19px] font-semibold leading-tight tracking-[-0.4px] text-foreground">
+        {formData.role_title.trim() || t('hiring_goal.summary_role_placeholder')}
+      </p>
+      <dl className="mt-4 divide-y divide-[hsl(var(--xs-line))]">
+        {rows.map(([label, value]) => (
+          <div key={label} className="flex items-baseline justify-between gap-4 py-2 text-sm">
+            <dt className="text-muted-foreground">{label}</dt>
+            <dd className="xs-num text-right font-medium text-foreground">{value}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="mt-3 text-xs text-muted-foreground">{t('hiring_goal.summary_updates')}</p>
+    </div>
+  );
+};
+
+// ── Company context note under the summary ──
+const CompanyContextNote = ({ profile }: { profile: ReturnType<typeof useBusinessProfile>['businessProfile'] }) => {
+  const { t } = useTranslation();
+  if (!profile) return null;
+  const industry = profile.manual_industry || profile.snapshot_industry;
+  const city = profile.manual_hq_city || profile.snapshot_hq_city;
+  const details = [industry, city].filter(Boolean).join(' · ');
+  return (
+    <div className="xs-panel !py-4 text-sm text-muted-foreground">
+      <strong className="block text-foreground">{t('hiring_goal.company_context_title', { company: profile.company_name })}</strong>
+      {details && <span className="mt-1 block">{details}</span>}
+      <span className="mt-1 block">{t('hiring_goal.company_context_body')}</span>
+    </div>
   );
 };
 
@@ -518,8 +640,8 @@ const HiringGoalCreate = () => {
 const ImportBanner = ({ listing, onModify }: { listing: any; onModify: () => void }) => {
   const { t } = useTranslation();
   return (
-    <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-6 flex items-start gap-3">
-      <FileDown className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+    <div className="xs-panel mb-6 flex items-start gap-3 !py-4">
+      <FileDown className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" aria-hidden="true" />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-foreground">
           {t('businessPortal.hiring_goal.import_banner.title', 'Importato da')}: {listing.title}
@@ -543,35 +665,30 @@ interface StepProps {
   importedListing: any;
 }
 
+const fieldLabel = 'text-sm font-medium text-foreground mb-1.5 block';
+const inputClass = 'w-full rounded-lg border border-[hsl(var(--xs-line))] bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none';
+
 // ── STEP 0 — Role title ──
 const Step0Role = ({ formData, updateField, userId }: StepProps) => {
   const { t } = useTranslation();
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950 flex items-center justify-center">
-          <Target className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold text-foreground">{t('hiring_goal.step0_title', 'Quale ruolo stai cercando?')}</h2>
-          <p className="text-sm text-muted-foreground">{t('hiring_goal.step0_subtitle', 'Inizia con il titolo. XIMA userà questo come ancora per il matching.')}</p>
-        </div>
-      </div>
       <div>
-        <label className="text-sm font-medium text-foreground mb-1.5 block">
+        <label htmlFor="goal-role-title" className={fieldLabel}>
           {t('hiring_goal.role_title', 'Titolo del ruolo')} <span className="text-destructive">*</span>
         </label>
         <input
+          id="goal-role-title"
           type="text"
           value={formData.role_title}
           onChange={e => updateField('role_title', e.target.value)}
           placeholder={t('hiring_goal.role_title_placeholder', 'es. Senior Product Manager, Lead Engineer')}
-          className="w-full rounded-lg border border-border bg-background px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
+          className={`${inputClass} px-4 py-3 text-base`}
         />
       </div>
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <label className="text-sm font-medium text-foreground">
+          <label htmlFor="goal-role-summary" className="text-sm font-medium text-foreground">
             {t('hiring_goal.role_summary', 'Sintesi del ruolo (opzionale)')}
           </label>
           {userId && (
@@ -586,11 +703,12 @@ const Step0Role = ({ formData, updateField, userId }: StepProps) => {
           )}
         </div>
         <textarea
+          id="goal-role-summary"
           value={formData.task_description}
           onChange={e => updateField('task_description', e.target.value)}
           rows={3}
           placeholder={t('hiring_goal.role_summary_placeholder', 'In una frase, qual è la missione di questo ruolo?')}
-          className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
+          className={`${inputClass} px-4 py-3`}
         />
       </div>
     </div>
@@ -605,7 +723,6 @@ const ChipEditor = ({
   suggestFieldName?: 'responsibilities' | 'required_skills' | 'nice_to_have';
   roleTitle: string; userId: string;
 }) => {
-  const { t } = useTranslation();
   const [input, setInput] = useState('');
   const add = (text: string) => {
     if (!text.trim() || items.includes(text)) return;
@@ -617,7 +734,9 @@ const ChipEditor = ({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-foreground">{label}</label>
+        <label className="text-sm font-medium text-foreground">
+          {label} <span className="xs-num text-muted-foreground">({items.length})</span>
+        </label>
         {suggestFieldName && userId && (
           <SuggestFieldButton
             fieldName={suggestFieldName}
@@ -629,14 +748,23 @@ const ChipEditor = ({
           />
         )}
       </div>
-      <div className="flex flex-wrap gap-1.5">
-        {items.map((item, i) => (
-          <Badge key={i} variant="secondary" className="gap-1 pr-1">
-            {item}
-            <button onClick={() => remove(i)} className="ml-1 hover:text-destructive"><X className="h-3 w-3" /></button>
-          </Badge>
-        ))}
-      </div>
+      {items.length > 0 && (
+        <ol className="divide-y divide-[hsl(var(--xs-line))] rounded-lg border border-[hsl(var(--xs-line))]">
+          {items.map((item, i) => (
+            <li key={i} className="flex items-start justify-between gap-3 px-3 py-2 text-sm text-foreground">
+              <span className="min-w-0">{item}</span>
+              <button
+                type="button"
+                onClick={() => remove(i)}
+                aria-label={`${item} ×`}
+                className="shrink-0 rounded p-0.5 text-muted-foreground hover:text-destructive"
+              >
+                <X className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+            </li>
+          ))}
+        </ol>
+      )}
       <div className="flex gap-2">
         <input
           type="text"
@@ -644,10 +772,10 @@ const ChipEditor = ({
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); add(input); } }}
           placeholder={placeholder}
-          className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
+          className={`flex-1 ${inputClass} py-2`}
         />
-        <Button type="button" size="sm" onClick={() => add(input)}>
-          <Plus className="h-4 w-4" />
+        <Button type="button" size="sm" variant="outline" onClick={() => add(input)} aria-label="+">
+          <Plus className="h-4 w-4" aria-hidden="true" />
         </Button>
       </div>
     </div>
@@ -660,16 +788,6 @@ const Step1Responsibilities = ({ formData, updateField, userId }: StepProps) => 
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950 flex items-center justify-center">
-          <Target className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold text-foreground">{t('hiring_goal.step1_title', 'Quali sono le responsabilità chiave?')}</h2>
-          <p className="text-sm text-muted-foreground">{t('hiring_goal.step1_subtitle', 'Aggiungi 2-5 responsabilità e le competenze richieste.')}</p>
-        </div>
-      </div>
-
       <ChipEditor
         items={formData.responsibilities}
         onChange={v => updateField('responsibilities', v)}
@@ -727,26 +845,16 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: StepProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950 flex items-center justify-center">
-          <Users className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold text-foreground">{t('hiring_goal.step2_title', 'Livello e modalità di lavoro')}</h2>
-          <p className="text-sm text-muted-foreground">{t('hiring_goal.step2_subtitle', 'Questo influenza la difficoltà delle sfide.')}</p>
-        </div>
-      </div>
-
       <div>
-        <label className="text-sm font-medium text-foreground mb-2 block">
+        <p className="text-sm font-medium text-foreground mb-2">
           {t('hiring_goal.seniority', 'Seniority')} <span className="text-destructive">*</span>
-        </label>
+        </p>
         <div className="space-y-2">
           {seniorities.map(s => (
             <label
               key={s.value}
-              className={`flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                formData.experience_level === s.value ? 'border-primary bg-primary/5' : 'border-border bg-background hover:border-primary/50'
+              className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition-colors ${
+                formData.experience_level === s.value ? 'border-primary bg-primary/5' : 'border-[hsl(var(--xs-line))] bg-background hover:border-primary/50'
               }`}
             >
               <input type="radio" name="seniority" value={s.value} checked={formData.experience_level === s.value}
@@ -760,22 +868,20 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: StepProps) => {
         </div>
         {/* Original seniority note */}
         {formData.original_seniority && (
-          <div className="flex items-start gap-2 mt-2 p-2.5 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
-            <Info className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
-            <p className="text-xs text-blue-700 dark:text-blue-300">
-              {t('businessPortal.hiring_goal.original_seniority_note', 'Importato come "{{original}}" (mappato a "{{mapped}}")', {
-                original: formData.original_seniority,
-                mapped: SENIORITY_DISPLAY[formData.experience_level] || formData.experience_level,
-              })}
-            </p>
-          </div>
+          <p className="mt-2 flex items-start gap-2 border-l-2 border-primary pl-3 text-xs text-muted-foreground">
+            <Info className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+            {t('businessPortal.hiring_goal.original_seniority_note', 'Importato come "{{original}}" (mappato a "{{mapped}}")', {
+              original: formData.original_seniority,
+              mapped: SENIORITY_DISPLAY[formData.experience_level] || formData.experience_level,
+            })}
+          </p>
         )}
       </div>
 
       <div>
-        <label className="text-sm font-medium text-foreground mb-2 block">
+        <p className="text-sm font-medium text-foreground mb-2">
           {t('hiring_goal.work_mode', 'Modalità di lavoro')} <span className="text-destructive">*</span>
-        </label>
+        </p>
         <div className="grid grid-cols-3 gap-2">
           {[
             { value: 'remote', label: t('hiring_goal.remote', 'Remoto') },
@@ -785,11 +891,12 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: StepProps) => {
             <button
               key={opt.value}
               type="button"
+              aria-pressed={formData.work_model === opt.value}
               onClick={() => updateField('work_model', opt.value)}
-              className={`px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
+              className={`px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
                 formData.work_model === opt.value
                   ? 'border-primary bg-primary text-primary-foreground'
-                  : 'border-border bg-background text-foreground hover:border-primary/50'
+                  : 'border-[hsl(var(--xs-line))] bg-background text-foreground hover:border-primary/50'
               }`}
             >
               {opt.label}
@@ -802,16 +909,16 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: StepProps) => {
       <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
         <CollapsibleTrigger asChild>
           <button type="button" className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            <ChevronDown className={`h-4 w-4 transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`h-4 w-4 transition-transform ${advancedOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
             {t('businessPortal.hiring_goal.advanced.title', 'Dettagli avanzati')}
           </button>
         </CollapsibleTrigger>
         <CollapsibleContent className="space-y-4 pt-4">
           {/* Years experience */}
           <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">
+            <p className={fieldLabel}>
               {t('businessPortal.hiring_goal.advanced.years_experience', 'Anni di esperienza')}
-            </label>
+            </p>
             <div className="grid grid-cols-2 gap-3">
               <Input
                 type="number"
@@ -819,6 +926,7 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: StepProps) => {
                 value={formData.years_experience_min ?? ''}
                 onChange={e => updateField('years_experience_min', e.target.value ? Number(e.target.value) : null)}
                 placeholder={t('businessPortal.hiring_goal.advanced.min', 'Min')}
+                aria-label={t('businessPortal.hiring_goal.advanced.min', 'Min')}
               />
               <Input
                 type="number"
@@ -826,15 +934,16 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: StepProps) => {
                 value={formData.years_experience_max ?? ''}
                 onChange={e => updateField('years_experience_max', e.target.value ? Number(e.target.value) : null)}
                 placeholder={t('businessPortal.hiring_goal.advanced.max', 'Max')}
+                aria-label={t('businessPortal.hiring_goal.advanced.max', 'Max')}
               />
             </div>
           </div>
 
           {/* Education level */}
           <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">
+            <p className={fieldLabel}>
               {t('businessPortal.hiring_goal.advanced.education_level', 'Livello di istruzione')}
-            </label>
+            </p>
             <Select value={formData.education_level} onValueChange={v => updateField('education_level', v)}>
               <SelectTrigger><SelectValue placeholder={t('businessPortal.hiring_goal.advanced.select_education', 'Seleziona...')} /></SelectTrigger>
               <SelectContent>
@@ -849,16 +958,16 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: StepProps) => {
 
           {/* Languages */}
           <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">
+            <p className={fieldLabel}>
               {t('businessPortal.hiring_goal.advanced.languages', 'Lingue')}
-            </label>
+            </p>
             <div className="space-y-2">
               {formData.languages.map((l, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <Badge variant="outline" className="gap-1.5 py-1">
                     {l.language} ({t(`businessPortal.language_levels.${l.level}`, l.level)})
-                    <button onClick={() => updateField('languages', formData.languages.filter((_, j) => j !== i))} className="hover:text-destructive">
-                      <X className="h-3 w-3" />
+                    <button type="button" onClick={() => updateField('languages', formData.languages.filter((_, j) => j !== i))} className="hover:text-destructive" aria-label={`${l.language} ×`}>
+                      <X className="h-3 w-3" aria-hidden="true" />
                     </button>
                   </Badge>
                 </div>
@@ -869,7 +978,8 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: StepProps) => {
                   value={newLang}
                   onChange={e => setNewLang(e.target.value)}
                   placeholder={t('businessPortal.hiring_goal.advanced.language_placeholder', 'es. Italiano')}
-                  className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
+                  aria-label={t('businessPortal.hiring_goal.advanced.languages', 'Lingue')}
+                  className={`flex-1 ${inputClass} py-2`}
                 />
                 <Select value={newLangLevel} onValueChange={setNewLangLevel}>
                   <SelectTrigger className="w-[130px]"><SelectValue /></SelectTrigger>
@@ -879,8 +989,8 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: StepProps) => {
                     <SelectItem value="native">{t('businessPortal.language_levels.native', 'Madrelingua')}</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button type="button" size="sm" variant="outline" onClick={addLanguage}>
-                  <Plus className="h-4 w-4" />
+                <Button type="button" size="sm" variant="outline" onClick={addLanguage} aria-label="+">
+                  <Plus className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </div>
             </div>
@@ -895,45 +1005,36 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: StepProps) => {
 const Step3Location = ({ formData, updateField }: StepProps) => {
   const { t } = useTranslation();
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-950 flex items-center justify-center">
-          <MapPin className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold text-foreground">{t('hiring_goal.step3_title', 'Dove si trova il ruolo?')}</h2>
-          <p className="text-sm text-muted-foreground">{t('hiring_goal.step3_subtitle', 'Indica paese e città del ruolo.')}</p>
-        </div>
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div>
+        <label htmlFor="goal-country" className={fieldLabel}>
+          {t('hiring_goal.country', 'Paese')} <span className="text-destructive">*</span>
+        </label>
+        <select
+          id="goal-country"
+          value={formData.country}
+          onChange={e => updateField('country', e.target.value)}
+          className={inputClass}
+        >
+          <option value="">—</option>
+          <option value="IT">Italia</option>
+          <option value="FR">Francia</option>
+          <option value="DE">Germania</option>
+          <option value="ES">Spagna</option>
+          <option value="UK">Regno Unito</option>
+          <option value="US">Stati Uniti</option>
+        </select>
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="text-sm font-medium text-foreground mb-1.5 block">
-            {t('hiring_goal.country', 'Paese')} <span className="text-destructive">*</span>
-          </label>
-          <select
-            value={formData.country}
-            onChange={e => updateField('country', e.target.value)}
-            className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
-          >
-            <option value="">—</option>
-            <option value="IT">Italia</option>
-            <option value="FR">Francia</option>
-            <option value="DE">Germania</option>
-            <option value="ES">Spagna</option>
-            <option value="UK">Regno Unito</option>
-            <option value="US">Stati Uniti</option>
-          </select>
-        </div>
-        <div>
-          <label className="text-sm font-medium text-foreground mb-1.5 block">{t('hiring_goal.city', 'Città')}</label>
-          <input
-            type="text"
-            value={formData.city_region}
-            onChange={e => updateField('city_region', e.target.value)}
-            placeholder={t('hiring_goal.city_placeholder', 'es. Milano')}
-            className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
-          />
-        </div>
+      <div>
+        <label htmlFor="goal-city" className={fieldLabel}>{t('hiring_goal.city', 'Città')}</label>
+        <input
+          id="goal-city"
+          type="text"
+          value={formData.city_region}
+          onChange={e => updateField('city_region', e.target.value)}
+          placeholder={t('hiring_goal.city_placeholder', 'es. Milano')}
+          className={inputClass}
+        />
       </div>
     </div>
   );
@@ -952,32 +1053,19 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-950 flex items-center justify-center">
-          <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold text-foreground">
-            {t('businessPortal.hiring_goal.gross_salary.title', 'Compensazione lorda annuale (RAL)')}
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            {t('businessPortal.hiring_goal.gross_salary.subtitle', 'XIMA mostra sempre la retribuzione lorda. Il candidato vedrà questo valore.')}
-          </p>
-        </div>
-      </div>
-
       <div>
-        <label className="text-sm font-medium text-foreground mb-2 block">
+        <p className="text-sm font-medium text-foreground mb-2">
           {t('hiring_goal.salary_range', 'Range')} <span className="text-destructive">*</span>
-        </label>
+        </p>
         <div className="grid grid-cols-[1fr_auto_1fr_auto] gap-2 items-center">
           <Input type="number" min={0} step={1000} value={formData.salary_min || ''}
-            onChange={e => updateField('salary_min', Number(e.target.value))} placeholder={`${salaryLabel} Min`} />
-          <span className="text-muted-foreground">—</span>
+            onChange={e => updateField('salary_min', Number(e.target.value))} placeholder={`${salaryLabel} Min`} aria-label={`${salaryLabel} Min`} />
+          <span className="text-muted-foreground" aria-hidden="true">—</span>
           <Input type="number" min={0} step={1000} value={formData.salary_max || ''}
-            onChange={e => updateField('salary_max', Number(e.target.value))} placeholder={`${salaryLabel} Max`} />
+            onChange={e => updateField('salary_max', Number(e.target.value))} placeholder={`${salaryLabel} Max`} aria-label={`${salaryLabel} Max`} />
           <select value={formData.salary_currency} onChange={e => updateField('salary_currency', e.target.value)}
-            className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none">
+            aria-label="Currency"
+            className="rounded-lg border border-[hsl(var(--xs-line))] bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none">
             <option value="EUR">EUR</option><option value="USD">USD</option><option value="GBP">GBP</option>
           </select>
         </div>
@@ -986,6 +1074,7 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
           <span className="text-xs text-muted-foreground">{t('businessPortal.hiring_goal.gross_salary.period', 'Periodo')}:</span>
           <button
             type="button"
+            aria-pressed={isYearly}
             onClick={() => updateField('salary_period', 'yearly')}
             className={`text-xs px-2.5 py-1 rounded-md transition-colors ${isYearly ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
           >
@@ -993,6 +1082,7 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
           </button>
           <button
             type="button"
+            aria-pressed={!isYearly}
             onClick={() => updateField('salary_period', 'monthly')}
             className={`text-xs px-2.5 py-1 rounded-md transition-colors ${!isYearly ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
           >
@@ -1008,14 +1098,14 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
         <p className="text-sm font-medium text-foreground mb-2">
           {t('businessPortal.hiring_goal.pay_transparency.title')}
         </p>
-        <div className="rounded-lg bg-secondary/30 px-3 py-2 mb-2 text-sm" aria-live="polite">
-          <span className="text-muted-foreground">{t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL')}: </span>
-          <span className="font-medium text-foreground">
+        <div className="rounded-lg border border-[hsl(var(--xs-line))] px-4 py-3 mb-3" aria-live="polite">
+          <p className="xs-eyebrow">{t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL')}</p>
+          <p className="xs-num mt-1 text-[22px] font-semibold leading-none text-foreground">
             {derivedRal.ral_min > 0
               ? `${derivedRal.ral_min.toLocaleString()}–${(derivedRal.ral_max || derivedRal.ral_min).toLocaleString()} ${formData.salary_currency}`
               : '—'}
-          </span>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          </p>
+          <p className="text-xs text-muted-foreground mt-1.5">
             {isYearly
               ? t('businessPortal.hiring_goal.pay_transparency.ral_from_yearly')
               : t('businessPortal.hiring_goal.pay_transparency.ral_from_monthly', { months: payMonths })}
@@ -1032,7 +1122,7 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
                   const v = Number(e.target.value);
                   updateField('pay_months', v === contractMonths ? null : v);
                 }}
-                className="rounded-md border border-border bg-background px-2 py-1 text-xs text-foreground"
+                className="rounded-md border border-[hsl(var(--xs-line))] bg-background px-2 py-1 text-xs text-foreground"
               >
                 {[12, 13, 14].map((m) => <option key={m} value={m}>{m}</option>)}
               </select>
@@ -1044,14 +1134,14 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
             </div>
           )}
         </div>
-        <label htmlFor="goal-ccnl" className="text-sm font-medium text-foreground mb-1.5 block">
+        <label htmlFor="goal-ccnl" className={fieldLabel}>
           {t('businessPortal.hiring_goal.pay_transparency.ccnl_label')}
         </label>
         <select
           id="goal-ccnl"
           value={formData.ccnl}
           onChange={(e) => updateField('ccnl', e.target.value)}
-          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
+          className={inputClass}
         >
           <option value="">{t('businessPortal.hiring_goal.pay_transparency.ccnl_placeholder')}</option>
           {CCNL_OPTIONS.map((o) => (
@@ -1061,10 +1151,10 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
         <p className="text-xs text-muted-foreground mt-2">{CCNL_HELPER_IT}</p>
       </div>
 
-      {/* Review */}
-      <div className="pt-6 border-t">
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">{t('hiring_goal.review_title', 'Riepilogo')}</p>
-        <div className="rounded-lg bg-secondary/30 p-4 space-y-2 text-sm">
+      {/* Review (the live summary sits beside the form; this stays for the mobile reader) */}
+      <details className="border-t border-[hsl(var(--xs-line))] pt-4 lg:hidden">
+        <summary className="cursor-pointer text-sm font-medium text-foreground">{t('hiring_goal.review_title', 'Riepilogo')}</summary>
+        <div className="mt-3 space-y-2 text-sm">
           <div className="flex justify-between"><span className="text-muted-foreground">{t('hiring_goal.review_role', 'Ruolo')}:</span><span className="font-medium text-foreground">{formData.role_title}</span></div>
           <div className="flex justify-between"><span className="text-muted-foreground">{t('hiring_goal.review_seniority', 'Seniority')}:</span><span className="font-medium capitalize text-foreground">{SENIORITY_DISPLAY[formData.experience_level] || formData.experience_level}</span></div>
           <div className="flex justify-between"><span className="text-muted-foreground">{t('hiring_goal.review_mode', 'Modalità')}:</span><span className="font-medium capitalize text-foreground">{formData.work_model}</span></div>
@@ -1077,10 +1167,10 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
             <div className="flex justify-between"><span className="text-muted-foreground">{salaryLabel}:</span><span className="font-medium text-foreground">{formData.salary_min.toLocaleString()}–{formData.salary_max.toLocaleString()} {formData.salary_currency}</span></div>
           )}
         </div>
-      </div>
+      </details>
 
       {/* XIMA HR checkbox */}
-      <div className="border-t pt-4">
+      <div className="border-t border-[hsl(var(--xs-line))] pt-4">
         <label className="flex items-start gap-3 cursor-pointer">
           <Checkbox
             checked={formData.xima_hr_requested}

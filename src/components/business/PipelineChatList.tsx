@@ -1,12 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { usePipelineChatThreads } from '@/hooks/usePipelineChatThreads';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getArchetypeEmoji } from '@/utils/anonymousDisplay';
-import { log } from '@/lib/log';
 
 interface PipelineChatListProps {
   role: 'business' | 'candidate';
@@ -19,26 +17,7 @@ export const PipelineChatList: React.FC<PipelineChatListProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { data: threads, isLoading } = useQuery({
-    queryKey: ['pipeline-chat-threads', role],
-    queryFn: async () => {
-      const { data: user } = await supabase.auth.getUser();
-      if (!user.user) return [];
-
-      const { data, error } = await supabase
-        .from('pipeline_chat_threads')
-        .select('*')
-        .eq('is_active', true)
-        .order('last_message_at', { ascending: false, nullsFirst: false });
-
-      if (error) {
-        log.error('Failed to load pipeline threads:', error);
-        return [];
-      }
-      return data || [];
-    },
-    refetchInterval: 15000,
-  });
+  const { data: threads, isLoading } = usePipelineChatThreads(role);
 
   const formatTime = (dateStr?: string | null) => {
     if (!dateStr) return '';

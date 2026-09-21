@@ -6,31 +6,21 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { Eyebrow } from '@/components/layout/PageHeader';
+import { SettingsSectionHeader } from '@/components/business/SettingsSectionHeader';
 import { useBusinessEntitlements, type FeatureFlag } from '@/hooks/useBusinessEntitlements';
-import {
-  Crown, Users, Calendar, Check, X, ArrowRight, Loader2,
-  Shield, BarChart3, FileText, MessageSquare, Compass, Eye
-} from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 
-const FEATURE_KEYS: Record<FeatureFlag, { labelKey: string; icon: React.ReactNode }> = {
-  mentor_portal: { labelKey: 'businessPortal.settings_plan_feature_mentor_portal', icon: <MessageSquare className="h-4 w-4" /> },
-  level3_challenges: { labelKey: 'businessPortal.settings_plan_feature_l3_challenges', icon: <Compass className="h-4 w-4" /> },
-  data_export: { labelKey: 'businessPortal.settings_plan_feature_data_export', icon: <FileText className="h-4 w-4" /> },
-  premium_signals: { labelKey: 'businessPortal.settings_plan_feature_premium_signals', icon: <BarChart3 className="h-4 w-4" /> },
-  eligibility_gate: { labelKey: 'businessPortal.settings_plan_feature_eligibility_gate', icon: <Shield className="h-4 w-4" /> },
-  decision_pack: { labelKey: 'businessPortal.settings_plan_feature_decision_pack', icon: <Eye className="h-4 w-4" /> },
-  consistency_guard: { labelKey: 'businessPortal.settings_plan_feature_consistency_guard', icon: <Shield className="h-4 w-4" /> },
-  advanced_signals: { labelKey: 'businessPortal.settings_plan_feature_advanced_signals', icon: <BarChart3 className="h-4 w-4" /> },
-};
-
-const TIER_COLORS: Record<string, string> = {
-  starter: 'bg-muted text-muted-foreground',
-  growth: 'bg-primary/10 text-primary',
-  enterprise: 'bg-primary text-primary-foreground',
+const FEATURE_KEYS: Record<FeatureFlag, string> = {
+  mentor_portal: 'businessPortal.settings_plan_feature_mentor_portal',
+  level3_challenges: 'businessPortal.settings_plan_feature_l3_challenges',
+  data_export: 'businessPortal.settings_plan_feature_data_export',
+  premium_signals: 'businessPortal.settings_plan_feature_premium_signals',
+  eligibility_gate: 'businessPortal.settings_plan_feature_eligibility_gate',
+  decision_pack: 'businessPortal.settings_plan_feature_decision_pack',
+  consistency_guard: 'businessPortal.settings_plan_feature_consistency_guard',
+  advanced_signals: 'businessPortal.settings_plan_feature_advanced_signals',
 };
 
 export const BusinessPlanCard: React.FC = () => {
@@ -40,115 +30,104 @@ export const BusinessPlanCard: React.FC = () => {
 
   if (loading) {
     return (
-      <Card>
-        <CardContent className="py-8 flex items-center justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-        </CardContent>
-      </Card>
+      <section id="piano" className="xs-glass scroll-mt-20 flex items-center justify-center py-8" role="status" aria-live="polite">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" aria-hidden="true" />
+        <span className="sr-only">{t('common.loading')}</span>
+      </section>
     );
   }
 
+  const planName = isFreePlan
+    ? t('businessPortal.settings_plan_free')
+    : planTier.charAt(0).toUpperCase() + planTier.slice(1);
+  const features = Object.entries(FEATURE_KEYS) as [FeatureFlag, string][];
+  const missing = features.filter(([key]) => entitlements?.features[key] !== true);
+  const included = features.filter(([key]) => entitlements?.features[key] === true);
+
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-foreground">
-            <Crown className="h-5 w-5 text-primary" />
-            {t('businessPortal.settings_plan_title')}
-          </CardTitle>
-          <Badge className={isFreePlan ? TIER_COLORS.starter : TIER_COLORS[planTier] || TIER_COLORS.starter}>
-            {isFreePlan
-              ? t('businessPortal.settings_plan_free')
-              : planTier.charAt(0).toUpperCase() + planTier.slice(1)}
-          </Badge>
-        </div>
-        <CardDescription>
-          {isFreePlan
-            ? t('businessPortal.settings_plan_free_subtitle')
-            : t('businessPortal.settings_plan_subtitle')}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Seats */}
-        <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-          <div className="flex items-center gap-3">
-            <Users className="h-5 w-5 text-primary" />
-            <div>
-              <p className="text-sm font-medium text-foreground">
-                {t('businessPortal.settings_plan_seats_label')}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {entitlements?.seatsUsed ?? 1} / {entitlements?.maxSeats ?? 1} {t('business.plan.used', 'used')}
-              </p>
-            </div>
-          </div>
-        </div>
+    <section id="piano" className="xs-glass scroll-mt-20">
+      <SettingsSectionHeader
+        index="06"
+        eyebrow={t('businessPortal.settings_eyebrow_plan')}
+        title={t('businessPortal.settings_plan_title')}
+        subtitle={isFreePlan
+          ? t('businessPortal.settings_plan_free_subtitle')
+          : t('businessPortal.settings_plan_subtitle')}
+      />
 
-        {/* Contract dates */}
-        {(entitlements?.contractStart || entitlements?.contractEnd) && (
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-            <Calendar className="h-5 w-5 text-primary" />
-            <div className="text-sm">
-              {entitlements?.contractStart && (
-                <span className="text-foreground">
-                  {t('business.plan.contract_start', 'Start')}: {entitlements.contractStart}
-                </span>
-              )}
-              {entitlements?.contractEnd && (
-                <span className="text-muted-foreground ml-3">
-                  {t('business.plan.contract_end', 'End')}: {entitlements.contractEnd}
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-
-        <Separator />
-
-        {/* Features */}
+      {/* Plan summary */}
+      <div className="flex items-end justify-between gap-4 border-y border-[hsl(var(--xs-line))] py-4">
         <div>
-          <p className="text-sm font-medium text-foreground mb-3">
-            {t('businessPortal.settings_plan_features_label')}
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {(Object.entries(FEATURE_KEYS) as [FeatureFlag, typeof FEATURE_KEYS[FeatureFlag]][]).map(
-              ([key, { labelKey, icon }]) => {
-                const enabled = entitlements?.features[key] === true;
-                return (
-                  <div
-                    key={key}
-                    className={`flex items-center gap-2 p-2 rounded text-sm ${
-                      enabled ? 'text-foreground' : 'text-muted-foreground opacity-60'
-                    }`}
-                  >
-                    {enabled ? (
-                      <Check className="h-4 w-4 text-primary shrink-0" />
-                    ) : (
-                      <X className="h-4 w-4 shrink-0" />
-                    )}
-                    {icon}
-                    <span>{t(labelKey)}</span>
-                  </div>
-                );
-              }
-            )}
-          </div>
+          <Eyebrow>{t('businessPortal.settings_plan_current')}</Eyebrow>
+          <p className="mt-1 text-[24px] font-semibold leading-none tracking-[-0.5px] text-foreground">{planName}</p>
         </div>
+        <div className="text-right">
+          <p className="xs-num text-[24px] font-semibold leading-none text-foreground">
+            {entitlements?.seatsUsed ?? 1} <span className="text-sm font-normal text-muted-foreground">/ {entitlements?.maxSeats ?? 1}</span>
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t('businessPortal.settings_plan_seats_used')}</p>
+        </div>
+      </div>
 
-        <Separator />
+      {/* Contract dates */}
+      {(entitlements?.contractStart || entitlements?.contractEnd) && (
+        <p className="mt-3 text-xs text-muted-foreground">
+          {entitlements?.contractStart && (
+            <span className="text-foreground">
+              {t('business.plan.contract_start', 'Start')}: {entitlements.contractStart}
+            </span>
+          )}
+          {entitlements?.contractEnd && (
+            <span className="ml-3">
+              {t('business.plan.contract_end', 'End')}: {entitlements.contractEnd}
+            </span>
+          )}
+        </p>
+      )}
 
-        {/* CTA */}
-        <Button
-          className="w-full"
-          variant={planTier === 'enterprise' ? 'outline' : 'default'}
-          onClick={() => navigate('/contact-sales', { state: { desiredTier: planTier === 'starter' ? 'growth' : 'enterprise' } })}
-        >
-          {planTier === 'enterprise'
-            ? t('business.plan.manage_plan', 'Manage Plan')
-            : t('businessPortal.settings_plan_upgrade_cta')}
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
-      </CardContent>
-    </Card>
+      {/* Features */}
+      <div className="mt-5">
+        {missing.length > 0 ? (
+          <>
+            <h3 className="text-sm font-semibold text-foreground">{t('businessPortal.settings_plan_not_included', { plan: planName })}</h3>
+            <ul className="mt-2 space-y-1.5">
+              {missing.map(([key, labelKey]) => (
+                <li key={key} className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span aria-hidden="true" className="w-3 text-center">−</span>
+                  {t(labelKey)}
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">{t('businessPortal.settings_plan_all_included')}</p>
+        )}
+        {included.length > 0 && missing.length > 0 && (
+          <details className="mt-3 text-sm">
+            <summary className="cursor-pointer text-muted-foreground">{t('businessPortal.settings_plan_features_label')} ({included.length})</summary>
+            <ul className="mt-2 space-y-1.5">
+              {included.map(([key, labelKey]) => (
+                <li key={key} className="flex items-center gap-2 text-foreground">
+                  <span aria-hidden="true" className="w-3 text-center text-primary">✓</span>
+                  {t(labelKey)}
+                </li>
+              ))}
+            </ul>
+          </details>
+        )}
+      </div>
+
+      {/* CTA */}
+      <Button
+        className="mt-5 w-full"
+        variant={planTier === 'enterprise' ? 'outline' : 'default'}
+        onClick={() => navigate('/contact-sales', { state: { desiredTier: planTier === 'starter' ? 'growth' : 'enterprise' } })}
+      >
+        {planTier === 'enterprise'
+          ? t('business.plan.manage_plan', 'Manage Plan')
+          : t('businessPortal.settings_plan_change_cta')}
+        <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+      </Button>
+    </section>
   );
 };
