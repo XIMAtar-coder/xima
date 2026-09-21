@@ -1,8 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import MainLayout from '../components/layout/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import CandidateLayout from '@/components/layout/CandidateLayout';
+import { PageHeader, Panel } from '@/components/layout/PageHeader';
+import { EmailVerificationBanner } from '@/components/auth/EmailVerificationBanner';
+import { useCandidateSnapshot } from '@/hooks/useCandidateSnapshot';
+import { OptimizedImage } from '@/components/ui/OptimizedImage';
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -26,6 +30,8 @@ const XimaChat = () => {
   // Only show conversations view if explicitly requested AND user has conversations
   const requestedView = searchParams.get('view');
   const [showConversations, setShowConversations] = useState(requestedView === 'conversations');
+  const snapshot = useCandidateSnapshot();
+  const breadcrumb = <span className="block truncate">{t('nav.candidate_area', 'Your space')} / {t('nav.feed')}</span>;
   
   const { 
     users, 
@@ -141,15 +147,13 @@ const XimaChat = () => {
 
   if (!user) {
     return (
-      <MainLayout fullHeight>
+      <CandidateLayout breadcrumb={breadcrumb}>
         <Seo title="Feed — XIMA" description="Your XIMA feed." path="/xima-chat" noindex />
-        <div className="h-full flex items-center justify-center">
-          <Card className="p-8 text-center">
-            <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <p className="text-muted-foreground">{t('chat.login_required')}</p>
-          </Card>
-        </div>
-      </MainLayout>
+        <Panel className="mx-auto max-w-md py-10 text-center">
+          <MessageCircle className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
+          <p className="text-muted-foreground">{t('chat.login_required')}</p>
+        </Panel>
+      </CandidateLayout>
     );
   }
 
@@ -158,10 +162,10 @@ const XimaChat = () => {
   // If showing conversations view (gated by mutual interest)
   if (showConversations) {
     return (
-      <MainLayout fullHeight>
+      <CandidateLayout breadcrumb={breadcrumb}>
         <Seo title="Conversations — XIMA" description="Your conversations." path="/xima-chat" noindex />
-        <div className="h-full flex flex-col overflow-hidden">
-          <div className="flex-1 container max-w-7xl mx-auto px-4 py-4 overflow-hidden">
+        <div className="flex flex-col">
+          <div className="min-w-0">
             {/* Back to Feed button */}
             <div className="mb-4">
               <Button 
@@ -176,9 +180,9 @@ const XimaChat = () => {
             </div>
 
             {/* Conversations grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 h-[calc(100%-4rem)]">
+            <div className="grid h-[calc(100vh-11rem)] grid-cols-1 gap-4 lg:grid-cols-4">
               {/* Left Sidebar - Thread List (no search for new users) */}
-              <Card className="lg:col-span-1 flex flex-col min-h-0 overflow-hidden">
+              <Panel className="flex min-h-0 flex-col overflow-hidden !p-0 lg:col-span-1">
                 <CardHeader className="pb-3 flex-shrink-0">
                   <CardTitle className="flex items-center gap-2 text-base">
                     <MessageCircle className="h-5 w-5 text-primary" />
@@ -253,10 +257,10 @@ const XimaChat = () => {
                     </div>
                   </ScrollArea>
                 </CardContent>
-              </Card>
+              </Panel>
 
               {/* Right Side - Chat Area */}
-              <Card className="lg:col-span-3 flex flex-col min-h-0 overflow-hidden">
+              <Panel className="flex min-h-0 flex-col overflow-hidden !p-0 lg:col-span-3">
                 {selectedUser ? (
                   <>
                     {/* Chat Header */}
@@ -395,27 +399,43 @@ const XimaChat = () => {
                     </div>
                   </div>
                 )}
-              </Card>
+              </Panel>
             </div>
           </div>
         </div>
-      </MainLayout>
+      </CandidateLayout>
     );
   }
 
   // Default: Show the XIMA Feed (read-only, anonymous signals)
   return (
-    <MainLayout>
+    <CandidateLayout breadcrumb={breadcrumb}>
       <Seo title="Feed — XIMA" description="Your XIMA feed." path="/xima-chat" noindex />
-      <div className="container max-w-4xl mx-auto px-4 py-8">
-        
-        <XimaFeed 
-          showChatAccess={true}
-          hasPendingChats={hasPendingChats}
-          onOpenConversations={() => setShowConversations(true)}
-        />
-      </div>
-    </MainLayout>
+      <EmailVerificationBanner slim />
+      <PageHeader
+        eyebrow={t('dashboard.eyebrow', 'Your personal space')}
+        title={t('feed.title')}
+        subtitle={t('feed.subtitle')}
+        actions={(
+          <div className="flex items-center gap-3 text-[14px]">
+            {snapshot.ximatarImage && (
+              <span className="h-9 w-9 overflow-hidden rounded-full border border-[hsl(var(--xs-line))] bg-[hsl(var(--xs-page))]">
+                <OptimizedImage src={snapshot.ximatarImage} alt="" width={36} height={36} className="h-full w-full object-cover" />
+              </span>
+            )}
+            <span className="min-w-0">
+              <span className="block font-semibold text-foreground">{snapshot.name || user.name}</span>
+              {snapshot.ximatarName && <span className="block text-[12px] text-muted-foreground">{snapshot.ximatarName}</span>}
+            </span>
+          </div>
+        )}
+      />
+      <XimaFeed
+        showChatAccess={true}
+        hasPendingChats={hasPendingChats}
+        onOpenConversations={() => setShowConversations(true)}
+      />
+    </CandidateLayout>
   );
 };
 

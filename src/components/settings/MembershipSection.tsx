@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import { SettingShell } from './SettingShell';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -67,7 +68,14 @@ const TIER_CONFIG: Record<string, {
   },
 };
 
-export const MembershipSection: React.FC = () => {
+interface MembershipSectionProps {
+  /** Which blocks to render: the plan (with upgrade options) or the referral programme. */
+  part?: 'plan' | 'referral' | 'all';
+  /** Render without Card chrome, inside a settings panel. */
+  flat?: boolean;
+}
+
+export const MembershipSection: React.FC<MembershipSectionProps> = ({ part = 'all', flat = false }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -176,6 +184,7 @@ export const MembershipSection: React.FC = () => {
   };
 
   if (loading) {
+    if (flat) return <div className="flex items-center py-4"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>;
     return (
       <Card>
         <CardContent className="py-8 flex items-center justify-center">
@@ -186,27 +195,24 @@ export const MembershipSection: React.FC = () => {
   }
 
   const config = TIER_CONFIG[currentTier] || TIER_CONFIG.freemium;
+  const showPlan = part === 'plan' || part === 'all';
+  const showReferral = part === 'referral' || part === 'all';
 
   return (
-    <div className="space-y-4">
+    <div className={flat ? 'space-y-8' : 'space-y-4'}>
       {/* Current Plan */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Crown className="h-5 w-5 text-primary" />
-              {t('settings.membership_title', 'Membership Plan')}
-            </CardTitle>
-            <Badge className={config.color}>
-              {config.icon}
-              <span className="ml-1">{config.label}</span>
-            </Badge>
-          </div>
-          <CardDescription>
-            {t('settings.membership_subtitle', 'Your current plan and benefits')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      {showPlan && (
+      <SettingShell
+        flat={flat}
+        title={<><Crown className="h-5 w-5 text-primary" />{t('settings.membership_title', 'Membership Plan')}</>}
+        description={t('settings.membership_subtitle', 'Your current plan and benefits')}
+        aside={(
+          <Badge className={config.color}>
+            {config.icon}
+            <span className="ml-1">{config.label}</span>
+          </Badge>
+        )}
+      >
           <div className="space-y-2">
             {config.benefits.map((benefit, idx) => (
               <div key={idx} className="flex items-center gap-3 text-sm">
@@ -242,21 +248,16 @@ export const MembershipSection: React.FC = () => {
               {t('settings.membership_credits_note', 'A standard mentor session (45 min) costs 5 credits.')}
             </p>
           </div>
-        </CardContent>
-      </Card>
+      </SettingShell>
+      )}
 
       {/* Referral Section */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Gift className="h-5 w-5 text-primary" />
-            {t('settings.referral_title', 'Invite Friends, Earn Credits')}
-          </CardTitle>
-          <CardDescription>
-            {t('settings.referral_body', 'When someone signs up with your link and completes their first free intro session with a mentor, the referral is validated.')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      {showReferral && (
+      <SettingShell
+        flat={flat}
+        title={<><Gift className="h-5 w-5 text-primary" />{t('settings.referral_title', 'Invite Friends, Earn Credits')}</>}
+        description={t('settings.referral_body', 'When someone signs up with your link and completes their first free intro session with a mentor, the referral is validated.')}
+      >
           {/* How credits work */}
           <div className="space-y-1.5 text-sm text-muted-foreground">
             <p>{t('settings.referral_credit_rule', '✦ Each validated referral gives you +1 credit.')}</p>
@@ -357,21 +358,16 @@ export const MembershipSection: React.FC = () => {
               </div>
             </>
           )}
-        </CardContent>
-      </Card>
+      </SettingShell>
+      )}
 
       {/* Upgrade Options (only show for non-pro) */}
-      {currentTier !== 'pro' && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">
-              {t('settings.upgrade_title', 'Upgrade Your Plan')}
-            </CardTitle>
-            <CardDescription>
-              {t('settings.upgrade_subtitle', 'Unlock unlimited mentor sessions, priority access to opportunities, and advanced development tools.')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+      {showPlan && currentTier !== 'pro' && (
+        <SettingShell
+          flat={flat}
+          title={t('settings.upgrade_title', 'Upgrade Your Plan')}
+          description={t('settings.upgrade_subtitle', 'Unlock unlimited mentor sessions, priority access to opportunities, and advanced development tools.')}
+        >
             <div className="grid gap-3">
               {Object.entries(TIER_CONFIG)
                 .filter(([key]) => {
@@ -402,8 +398,7 @@ export const MembershipSection: React.FC = () => {
                   </div>
                 ))}
             </div>
-          </CardContent>
-        </Card>
+        </SettingShell>
       )}
     </div>
   );

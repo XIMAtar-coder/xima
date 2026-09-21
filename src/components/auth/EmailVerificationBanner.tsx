@@ -22,7 +22,11 @@ function formatRemaining(s: VerificationStatus): string {
   return `${mins} minuti`;
 }
 
-export const EmailVerificationBanner: React.FC = () => {
+/**
+ * `slim`: the one-row version used inside AppShell pages (candidate
+ * redesign) — no container, no Alert chrome, a text link to resend.
+ */
+export const EmailVerificationBanner: React.FC<{ slim?: boolean }> = ({ slim = false }) => {
   const { user, isAuthenticated } = useUser();
   const { toast } = useToast();
   const [status, setStatus] = useState<VerificationStatus | null>(null);
@@ -86,6 +90,36 @@ export const EmailVerificationBanner: React.FC = () => {
 
   const expired = status.expired;
   const remaining = formatRemaining(status);
+
+  if (slim) {
+    return (
+      <div
+        role="status"
+        className={`mb-5 flex flex-col gap-2 rounded-lg border px-4 py-2.5 text-[13px] sm:flex-row sm:items-center sm:justify-between ${expired
+          ? 'border-red-300 bg-red-50 text-red-900 dark:border-red-800 dark:bg-red-950/40 dark:text-red-100'
+          : 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100'}`}
+      >
+        <span className="min-w-0">
+          <strong className="font-semibold">{expired ? 'Verifica scaduta' : `Verifica la tua email entro ${remaining}`}</strong>
+          <span className="hidden sm:inline"> · </span>
+          <span className="block sm:inline">
+            {expired
+              ? 'Alcune funzioni sono bloccate (candidatura, condivisione XIMAtar, accettazione offerte). Verifica ora per sbloccarle.'
+              : 'Conferma il tuo indirizzo per mantenere pieno accesso a tutte le funzionalità XIMA.'}
+          </span>
+        </span>
+        <button
+          type="button"
+          onClick={handleResend}
+          disabled={resending}
+          className="shrink-0 self-start font-semibold text-primary hover:underline disabled:opacity-60 sm:self-auto"
+        >
+          {resending ? <Loader2 className="mr-1 inline h-3 w-3 animate-spin" /> : null}
+          Reinvia email ↗
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 pt-4">

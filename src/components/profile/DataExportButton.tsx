@@ -1,25 +1,20 @@
 import { Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { SettingShell } from "@/components/settings/SettingShell";
 import { useDataExport } from "@/hooks/useDataExport";
 import { useTranslation } from "react-i18next";
 
-export function DataExportButton() {
+export function DataExportButton({ flat = false }: { flat?: boolean }) {
   const { exportData, isExporting } = useDataExport();
   const { t } = useTranslation();
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Download className="h-5 w-5" />
-          {t("settings.export_title", "Export Your Data")}
-        </CardTitle>
-        <CardDescription>
-          {t("settings.export_body", "Download a copy of all your personal data stored in XIMA. Your data belongs to you — always.")}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <SettingShell
+      flat={flat}
+      title={<><Download className="h-5 w-5" />{t("settings.export_title", "Export Your Data")}</>}
+      description={t("settings.export_body", "Download a copy of all your personal data stored in XIMA. Your data belongs to you — always.")}
+    >
+      <div>
         <p className="text-sm text-muted-foreground mb-4">
           {t("settings.export_includes_label", "This export includes:")}
         </p>
@@ -49,7 +44,7 @@ export function DataExportButton() {
             </>
           )}
         </Button>
-      </CardContent>
-    </Card>
+      </div>
+    </SettingShell>
   );
 }
