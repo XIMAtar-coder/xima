@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Trash2, AlertTriangle, Loader2 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { SettingShell } from './SettingShell';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,9 +23,11 @@ import { log } from '@/lib/log';
 
 interface AccountDeletionSectionProps {
   variant?: 'candidate' | 'business';
+  /** Render without Card chrome, inside a settings panel. */
+  flat?: boolean;
 }
 
-export function AccountDeletionSection({ variant = 'candidate' }: AccountDeletionSectionProps) {
+export function AccountDeletionSection({ variant = 'candidate', flat = false }: AccountDeletionSectionProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -89,17 +91,13 @@ export function AccountDeletionSection({ variant = 'candidate' }: AccountDeletio
   };
 
   return (
-    <Card className="border-destructive/50 bg-destructive/5">
-      <CardHeader>
-        <CardTitle className="text-destructive flex items-center gap-2">
-          <Trash2 className="h-5 w-5" />
-          {t('settings.delete_title')}
-        </CardTitle>
-        <CardDescription className="text-muted-foreground">
-          {t('settings.delete_subtitle')}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <SettingShell
+      flat={flat}
+      className={flat ? 'rounded-lg border border-destructive/30 bg-destructive/5 p-5' : 'border-destructive/50 bg-destructive/5'}
+      titleClassName="text-destructive"
+      title={<><Trash2 className="h-5 w-5" />{t('settings.delete_title')}</>}
+      description={t('settings.delete_subtitle')}
+    >
         <div className="rounded-lg bg-destructive/10 p-4 border border-destructive/20">
           <div className="flex gap-3">
             <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
@@ -171,7 +169,6 @@ export function AccountDeletionSection({ variant = 'candidate' }: AccountDeletio
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </CardContent>
-    </Card>
+    </SettingShell>
   );
 }

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Brain, Info, Loader2 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import { SettingShell } from './SettingShell';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -10,7 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { log } from '@/lib/log';
 
-export function ProfilingOptOutSection() {
+export function ProfilingOptOutSection({ flat = false }: { flat?: boolean }) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user } = useUser();
@@ -76,6 +77,7 @@ export function ProfilingOptOutSection() {
   };
 
   if (loading) {
+    if (flat) return <div className="flex items-center py-4"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>;
     return (
       <Card>
         <CardContent className="flex items-center justify-center py-8">
@@ -86,17 +88,11 @@ export function ProfilingOptOutSection() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Brain className="h-5 w-5 text-primary" />
-          {t('settings.ai_profiling_title')}
-        </CardTitle>
-        <CardDescription>
-          {t('settings.ai_profiling_subtitle')}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <SettingShell
+      flat={flat}
+      title={<><Brain className="h-5 w-5 text-primary" />{t('settings.ai_profiling_title')}</>}
+      description={t('settings.ai_profiling_subtitle')}
+    >
         {/* What is profiling explanation */}
         <Alert>
           <Info className="h-4 w-4" />
@@ -157,7 +153,6 @@ export function ProfilingOptOutSection() {
             privacy@xima.app
           </a>
         </p>
-      </CardContent>
-    </Card>
+    </SettingShell>
   );
 }

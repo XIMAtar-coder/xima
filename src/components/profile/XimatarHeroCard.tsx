@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { TrendingUp, AlertCircle, Upload, Loader2, Flame, Zap, Target } from 'lucide-react';
+import { Upload, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { toast } from 'sonner';
 import { prepareImageForUpload } from '@/lib/images/prepareImageForUpload';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
+import { Panel, Eyebrow } from '@/components/layout/PageHeader';
+import { formatScore, pillarName, type PillarKey } from '@/components/candidate/PillarBars';
 import { log } from '@/lib/log';
 
 interface XimatarHeroCardProps {
@@ -21,13 +21,20 @@ interface XimatarHeroCardProps {
   avatarUrl: string | null;
   pillarScores: { drive?: number; } | null;
   onAvatarUpdate?: () => void;
+  /** "Esplora il tuo profilo ↗" — opens the profile detail below the fold. */
+  onExploreProfile?: () => void;
 }
 
+/**
+ * The XIMAtar identity panel of the candidate dashboard (the one glass
+ * surface on that page): image, archetype, one line, and a small
+ * "how you contribute" note. Profile photo upload stays here.
+ */
 export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
   ximatarName, ximatarImage, driveLevel, strongestPillar, weakestPillar,
-  storytelling, fullName, avatarUrl, pillarScores, onAvatarUpdate
+  storytelling, fullName, avatarUrl, pillarScores, onAvatarUpdate, onExploreProfile,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useUser();
   const [uploading, setUploading] = useState(false);
   const [currentAvatar, setCurrentAvatar] = useState<string | null>(avatarUrl);
@@ -45,11 +52,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
       const filePath = `${user.id}/${fileName}`;
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, prepared.file, {
-          upsert: true,
-          cacheControl: '604800',
-          contentType: prepared.file.type,
-        });
+        .upload(filePath, prepared.file, { upsert: true, cacheControl: '604800', contentType: prepared.file.type });
       if (uploadError) throw uploadError;
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
       const avatarValue = { image: publicUrl, type: 'custom' as const };
@@ -62,9 +65,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
         log.error('[XimatarHeroCard] profile update failed', updateError);
         throw updateError;
       }
-      if (!updated || updated.length === 0) {
-        throw new Error('Profile row not updated (auth/RLS mismatch).');
-      }
+      if (!updated || updated.length === 0) throw new Error('Profile row not updated (auth/RLS mismatch).');
       setCurrentAvatar(publicUrl);
       toast.success('Profile photo updated');
       onAvatarUpdate?.();
@@ -74,142 +75,67 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
     } finally { setUploading(false); }
   };
 
-  const getInitials = () => {
-    if (!fullName) return 'U';
-    return fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-  };
-
-  const driveLevelConfig = {
-    high: { icon: Flame, color: 'text-apple-green', bg: 'bg-[rgba(52,199,89,0.12)]', border: 'border-[rgba(52,199,89,0.25)]', label: t('profile.drive_level_high', 'High Drive') },
-    medium: { icon: Zap, color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20', label: t('profile.drive_level_medium', 'Medium Drive') },
-    low: { icon: Target, color: 'text-apple-orange', bg: 'bg-[rgba(255,149,0,0.12)]', border: 'border-[rgba(255,149,0,0.25)]', label: t('profile.drive_level_low', 'Building Momentum') }
-  };
-
-  const driveConfig = driveLevel ? driveLevelConfig[driveLevel] : null;
-  const DriveIcon = driveConfig?.icon || Zap;
-  const driveValue = pillarScores?.drive ?? 0;
-  const drivePercentage = Math.min(Math.max(driveValue / 10, 0), 1);
+  const initials = fullName ? fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'U';
+  const driveValue = typeof pillarScores?.drive === 'number' ? pillarScores.drive : null;
+  const driveLabel = driveLevel ? t(`profile.drive_level_${driveLevel}`) : null;
+  const tagline = storytelling ? storytelling.split(/(?<=[.!?])\s/)[0] : null;
 
   return (
-    <div className="glass-surface rounded-[20px] overflow-hidden hover:translate-y-0">
-      <div className="p-6 md:p-8">
-        <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
-          {/* Left: User Photo */}
-          <div className="flex flex-col items-center gap-3 shrink-0">
-            <div className="relative group">
-              <div className="w-24 h-24 md:w-28 md:h-28 rounded-[18px] overflow-hidden bg-[rgba(118,118,128,0.12)] flex items-center justify-center border border-[rgba(60,60,67,0.12)] shadow-sm">
-                {currentAvatar ? (
-                  <OptimizedImage
-                    src={currentAvatar}
-                    alt={fullName || 'Profile'}
-                    width={112}
-                    height={112}
-                    priority
-                    className="w-full h-full"
-                    fallback={<div className="text-2xl font-bold text-secondary">{getInitials()}</div>}
-                  />
-                ) : (
-                  <div className="text-2xl font-bold text-secondary">{getInitials()}</div>
-                )}
-              </div>
-              {uploading && (
-                <div className="absolute inset-0 bg-background/80 rounded-[18px] flex items-center justify-center">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                </div>
-              )}
-              <label htmlFor="avatar-upload" className="absolute inset-0 bg-black/20 rounded-[18px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                <Upload className="w-5 h-5 text-white" />
-              </label>
-            </div>
-            <input type="file" id="avatar-upload" accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} className="hidden" disabled={uploading} />
-          </div>
+    <Panel glass className="flex flex-col gap-5">
+      <div className="flex items-start gap-5">
+        <div className="h-[104px] w-[104px] shrink-0 overflow-hidden rounded-[10px] bg-[hsl(var(--xs-page))] sm:h-[132px] sm:w-[132px]">
+          {ximatarImage ? (
+            <OptimizedImage src={ximatarImage} alt={ximatarName || 'XIMAtar'} width={132} height={132} priority className="h-full w-full object-cover" />
+          ) : null}
+        </div>
+        <div className="min-w-0 flex-1">
+          <Eyebrow>{t('dashboard.ximatar_label', 'Your XIMAtar')}</Eyebrow>
+          <h2 className="mt-1.5 truncate text-[26px] font-semibold leading-tight tracking-[-0.6px] text-foreground sm:text-[30px]">
+            {ximatarName || t('profile.ximatar_archetype', 'XIMAtar Archetype')}
+          </h2>
+          {tagline && <p className="mt-1.5 line-clamp-2 text-[14px] text-muted-foreground">{tagline}</p>}
+          {driveLabel && (
+            <p className="mt-2 font-mono text-[12px] text-muted-foreground">
+              Drive {formatScore(driveValue, i18n.language)} / 10 · {driveLabel}
+            </p>
+          )}
+        </div>
 
-          {/* Center: XIMAtar Identity */}
-          <div className="flex-1 space-y-3 text-center md:text-left min-w-0">
-            <div>
-              <p className="text-[12px] font-medium text-primary uppercase tracking-[0.04em] mb-1">
-                {t('dashboard.ximatar_label', 'Your XIMAtar')}
-              </p>
-              <h2 className="text-[28px] md:text-[34px] font-bold text-foreground truncate">
-                {ximatarName || t('profile.ximatar_archetype', 'XIMAtar Archetype')}
-              </h2>
-            </div>
-
-            {driveConfig && (
-              <div className="flex items-center gap-2 justify-center md:justify-start">
-                <Badge className={`${driveConfig.bg} ${driveConfig.color} ${driveConfig.border} border px-3 py-1.5 text-[13px] font-medium gap-1.5`}>
-                  <DriveIcon className="w-3.5 h-3.5" />
-                  {driveConfig.label}
-                </Badge>
-              </div>
+        {/* Profile photo (upload on hover / focus) */}
+        <div className="relative shrink-0">
+          <label
+            htmlFor="avatar-upload"
+            className="group relative flex h-12 w-12 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-[hsl(var(--xs-line))] bg-background text-sm font-semibold text-muted-foreground focus-within:ring-2 focus-within:ring-primary"
+            title={t('profile.upload_photo', 'Upload photo')}
+          >
+            {currentAvatar ? (
+              <OptimizedImage src={currentAvatar} alt={fullName || 'Profile'} width={48} height={48} className="h-full w-full object-cover" fallback={<span>{initials}</span>} />
+            ) : (
+              <span>{initials}</span>
             )}
-
-            {storytelling && (
-              <p className="text-muted-foreground leading-relaxed text-[15px] max-w-lg line-clamp-2">{storytelling}</p>
-            )}
-
-            <div className="flex flex-wrap items-center gap-2 justify-center md:justify-start">
-              {strongestPillar && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-[999px] bg-[rgba(52,199,89,0.12)] border border-[rgba(52,199,89,0.25)]">
-                  <TrendingUp className="w-3.5 h-3.5 text-apple-green" />
-                  <span className="text-[12px] font-medium text-apple-green uppercase tracking-wide">{t('dashboard.ximatar_advantage_label', 'Edge')}:</span>
-                  <span className="text-[12px] font-medium text-foreground capitalize">{t(`pillars.${strongestPillar}.name`, strongestPillar)}</span>
-                </div>
-              )}
-              {weakestPillar && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-[999px] bg-[rgba(255,149,0,0.12)] border border-[rgba(255,149,0,0.25)]">
-                  <AlertCircle className="w-3.5 h-3.5 text-apple-orange" />
-                  <span className="text-[12px] font-medium text-apple-orange uppercase tracking-wide">{t('dashboard.ximatar_friction_label', 'Grow')}:</span>
-                  <span className="text-[12px] font-medium text-foreground capitalize">{t(`pillars.${weakestPillar}.name`, weakestPillar)}</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Right: XIMAtar Image with Drive Ring */}
-          <div className="relative flex items-center justify-center shrink-0">
-            <div className="relative w-28 h-28 md:w-36 md:h-36">
-              <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 120 120">
-                <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(118,118,128,0.16)" strokeWidth="3" />
-                <circle
-                  cx="60" cy="60" r="54" fill="none" strokeWidth="3.5"
-                  strokeDasharray={`${2 * Math.PI * 54}`}
-                  strokeDashoffset={`${2 * Math.PI * 54 * (1 - drivePercentage)}`}
-                  strokeLinecap="round"
-                  style={{
-                    stroke: driveLevel === 'high' ? '#34C759' : driveLevel === 'medium' ? '#007AFF' : '#FF9500',
-                    transition: 'stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                  }}
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center p-3">
-                {ximatarImage ? (
-                  <div className="w-full h-full rounded-full overflow-hidden bg-[rgba(118,118,128,0.08)] border border-[rgba(60,60,67,0.12)] shadow-lg">
-                    <OptimizedImage
-                      src={ximatarImage}
-                      alt={ximatarName || 'XIMAtar'}
-                      width={144}
-                      height={144}
-                      priority
-                      className="w-full h-full"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-full h-full rounded-full bg-[rgba(118,118,128,0.08)] flex items-center justify-center border border-[rgba(60,60,67,0.12)]">
-                  </div>
-                )}
-              </div>
-              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2">
-                <span className="text-[10px] font-bold text-muted-foreground bg-background/90 px-2 py-0.5 rounded-[999px] border border-border stat-value shadow-sm">
-                  {Math.round(drivePercentage * 100)}%
-                </span>
-              </div>
-            </div>
-          </div>
+            <span className="absolute inset-0 flex items-center justify-center bg-black/35 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+              {uploading ? <Loader2 className="h-4 w-4 animate-spin text-white" /> : <Upload className="h-4 w-4 text-white" />}
+            </span>
+            <input type="file" id="avatar-upload" accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} className="sr-only" disabled={uploading} aria-label={t('profile.upload_photo', 'Upload photo')} />
+          </label>
         </div>
       </div>
 
-      <div className="h-1 momentum-bar" />
-    </div>
+      <div className="rounded-lg border border-[hsl(var(--xs-line))] bg-background/60 p-4">
+        <Eyebrow>{t('dashboard.contribute_label', 'How you contribute')}</Eyebrow>
+        <p className="mt-1.5 text-[15px] font-semibold text-foreground">
+          {strongestPillar ? pillarName(t, strongestPillar as PillarKey) : '—'}
+          {weakestPillar && (
+            <span className="font-normal text-muted-foreground"> · {t('dashboard.growing_in', 'growing in')} {pillarName(t, weakestPillar as PillarKey)}</span>
+          )}
+        </p>
+        <p className="mt-1 text-[13px] text-muted-foreground">{t('dashboard.ximatar_tagline')}</p>
+        {onExploreProfile && (
+          <button type="button" onClick={onExploreProfile} className="mt-3 text-[14px] font-semibold text-primary hover:underline">
+            {t('dashboard.explore_profile', 'Explore your profile')} <span aria-hidden="true">↗</span>
+          </button>
+        )}
+      </div>
+    </Panel>
   );
 };

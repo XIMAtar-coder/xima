@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { SettingShell } from './SettingShell';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
@@ -14,12 +14,15 @@ interface MentorCVConsentToggleProps {
   candidateProfileId: string;
   mentorId: string | null;
   mentorName: string | null;
+  /** Render without Card chrome, inside a settings panel. */
+  flat?: boolean;
 }
 
 export function MentorCVConsentToggle({ 
   candidateProfileId, 
   mentorId, 
-  mentorName 
+  mentorName,
+  flat = false,
 }: MentorCVConsentToggleProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -133,52 +136,35 @@ export function MentorCVConsentToggle({
   };
 
   // No mentor assigned
+  const title = <><Shield className="h-5 w-5 text-primary" />{t('settings.mentor_cv_title', 'Mentor CV Access')}</>;
+
   if (!mentorId) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Shield className="h-5 w-5 text-primary" />
-            {t('settings.mentor_cv_title', 'Mentor CV Access')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <AlertCircle className="h-5 w-5" />
-            <p className="text-sm">
-              {t('settings.mentor_cv_incomplete', 'Complete your assessment to get a mentor and manage CV access.')}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <SettingShell flat={flat} title={title}>
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <AlertCircle className="h-5 w-5" />
+          <p className="text-sm">
+            {t('settings.mentor_cv_incomplete', 'Complete your assessment to get a mentor and manage CV access.')}
+          </p>
+        </div>
+      </SettingShell>
     );
   }
 
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <Skeleton className="h-6 w-48" />
-        </CardHeader>
-        <CardContent>
-          <Skeleton className="h-12 w-full" />
-        </CardContent>
-      </Card>
+      <SettingShell flat={flat} title={<Skeleton className="h-6 w-48" />}>
+        <Skeleton className="h-12 w-full" />
+      </SettingShell>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Shield className="h-5 w-5 text-primary" />
-          {t('settings.mentor_cv_title', 'Mentor CV Access')}
-        </CardTitle>
-        <CardDescription>
-          {t('settings.mentor_cv_body', 'Control whether your mentor can access your CV during sessions. Disabled by default — your CV stays private until you choose to share it.')}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <SettingShell
+      flat={flat}
+      title={title}
+      description={t('settings.mentor_cv_body', 'Control whether your mentor can access your CV during sessions. Disabled by default — your CV stays private until you choose to share it.')}
+    >
         <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/30">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -210,7 +196,6 @@ export function MentorCVConsentToggle({
         <p className="text-xs text-muted-foreground">
           {t('settings.cv_consent_note', 'When enabled, your mentor can view your CV to better help with career guidance. You can revoke access at any time.')}
         </p>
-      </CardContent>
-    </Card>
+    </SettingShell>
   );
 }
