@@ -6,6 +6,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { RefreshCw } from 'lucide-react';
 import { log } from '@/lib/log';
+import { cn } from '@/lib/utils';
+import { pillarShortName } from '@/components/ximatar-journey/pillarLabels';
 
 
 interface PillarScore {
@@ -37,6 +39,8 @@ interface FeaturedProfessionalsProps {
   selectedId?: string;
   pillarScores?: PillarScore[];
   ximatar?: string;
+  /** `compact`: the flat two-up cards of the guest results page. */
+  variant?: 'default' | 'compact';
 }
 
 // Simple seeded shuffle for client-side fallback
@@ -61,8 +65,10 @@ export default function FeaturedProfessionals({
   onSelect,
   selectedId,
   pillarScores,
-  ximatar
+  ximatar,
+  variant = 'default',
 }: FeaturedProfessionalsProps) {
+  const compact = variant === 'compact';
   const { i18n, t } = useTranslation();
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [pinnedProfessional, setPinnedProfessional] = useState<Professional | null>(null);
@@ -214,10 +220,10 @@ export default function FeaturedProfessionals({
 
   if (loading) {
     return (
-      <div className="grid md:grid-cols-3 gap-4">
-        {[1, 2, 3].map((i) => (
-          <Card key={i} className="p-6 animate-pulse">
-            <div className="h-14 w-14 rounded-full bg-muted mb-4" />
+      <div className={compact ? 'grid gap-4 sm:grid-cols-2' : 'grid md:grid-cols-3 gap-4'}>
+        {Array.from({ length: compact ? Math.min(limit, 2) : 3 }, (_, i) => (
+          <Card key={i} className={cn('animate-pulse', compact ? 'rounded-lg border-[hsl(var(--xs-line))] p-4 shadow-none' : 'p-6')}>
+            <div className={cn('rounded-full bg-muted mb-4', compact ? 'h-10 w-10' : 'h-14 w-14')} />
             <div className="h-4 bg-muted rounded mb-2" />
             <div className="h-3 bg-muted rounded" />
           </Card>
@@ -266,9 +272,105 @@ export default function FeaturedProfessionals({
   };
 
   // Build the display list: pinned professional first (if any), then others
-  const displayList = pinnedProfessional 
+  const displayList = pinnedProfessional
     ? [pinnedProfessional, ...professionals.filter(p => p.id !== pinnedProfessional.id)]
     : professionals;
+
+  if (compact) {
+    const shown = displayList.slice(0, limit);
+    return (
+      <div className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          {shown.map((p) => {
+            const isSelected = selectedId === p.id;
+            const isPinned = pinnedProfessional?.id === p.id;
+            const avatarUrl = normalizeAvatarUrl(p.avatar_path, p.updated_at);
+            const bio = (typeof p.locale_bio === 'object' && p.locale_bio !== null)
+              ? (p.locale_bio[locale] || p.locale_bio.en || '')
+              : '';
+            const specialties = (p.expertise_tags || []).slice(0, 3);
+            const firstName = p.full_name.trim().split(/\s+/)[0] || p.full_name;
+            return (
+              <article
+                key={p.id}
+                className={cn(
+                  'relative flex flex-col rounded-lg border bg-card p-4',
+                  isSelected ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-[hsl(var(--xs-line))]',
+                )}
+              >
+                {isPinned && (
+                  <span className="mb-2 w-fit rounded border border-[hsl(var(--xs-line))] px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
+                    {t('professionals.your_selection', 'Your selection')}
+                  </span>
+                )}
+                <div className="flex items-center gap-3">
+                  <div className="grid h-[42px] w-[42px] shrink-0 place-items-center overflow-hidden rounded-full bg-muted text-lg font-medium text-foreground">
+                    {avatarUrl && !imageErrors.has(p.id) ? (
+                      <img
+                        src={avatarUrl}
+                        alt=""
+                        className="h-full w-full object-cover"
+                        onError={() => setImageErrors(prev => new Set([...prev, p.id]))}
+                      />
+                    ) : (
+                      <span aria-hidden>{p.full_name.charAt(0)}</span>
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="truncate text-base font-semibold text-foreground">{p.full_name}</h3>
+                    {p.title && <p className="truncate text-xs text-muted-foreground">{p.title}</p>}
+                  </div>
+                </div>
+                {p.compatibility_score !== null && (
+                  <p className="mb-2.5 mt-4 text-[13px] text-primary">
+                    <b className="font-semibold tabular-nums">{p.compatibility_score}%</b> {t('guestJourney.results.mentor_affinity')}
+                  </p>
+                )}
+                {(specialties.length > 0 || bio) && (
+                  <p className={cn('line-clamp-2 text-xs text-muted-foreground', p.compatibility_score === null && 'mt-4')}>
+                    {specialties.length > 0 ? specialties.join(' · ') : bio}
+                  </p>
+                )}
+                {p.xima_pillars.length > 0 && (
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    <b className="font-semibold text-foreground">{t('guestJourney.results.mentor_pillars')}</b>
+                    <br />
+                    {p.xima_pillars.slice(0, 3).map((pillar) => pillarShortName(t, pillar)).join(' · ')}
+                  </p>
+                )}
+                <div className="mt-auto pt-4">
+                  <Button
+                    onClick={() => onSelect?.(p)}
+                    variant={isSelected ? 'default' : 'outline'}
+                    aria-pressed={isSelected}
+                    className="h-10 w-full rounded-md text-sm"
+                  >
+                    {isSelected ? `✓ ${t('guestJourney.results.mentor_chosen', { name: firstName })}` : t('guestJourney.results.mentor_choose', { name: firstName })}
+                  </Button>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+        <div className="flex flex-col gap-2 text-xs text-muted-foreground sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+          {shown.some((p) => p.compatibility_score !== null) ? (
+            <p className="max-w-[520px]">{t('ximatarJourney.mentor_match_explained')}</p>
+          ) : (
+            <span />
+          )}
+          <button
+            type="button"
+            onClick={handleRefresh}
+            disabled={refreshing || loading}
+            className="inline-flex shrink-0 items-center gap-1.5 text-primary hover:underline disabled:opacity-50"
+          >
+            <RefreshCw className={cn('h-3.5 w-3.5', refreshing && 'animate-spin')} aria-hidden />
+            {t('guestJourney.results.mentor_refresh')}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

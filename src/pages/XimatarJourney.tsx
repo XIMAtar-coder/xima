@@ -1,17 +1,15 @@
-import React, { useEffect } from 'react';
-import { useNavigate, useBlocker } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from 'next-themes';
 import MainLayout from '../components/layout/MainLayout';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
 import { useUser } from '../context/UserContext';
-import { ArrowRight, ArrowLeft, Check, Upload, FileText, Calendar, User, RotateCcw } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
 import BaselineAssessment from '../components/ximatar-journey/BaselineAssessment';
 import XimatarAssessment from '../components/ximatar-journey/XimatarAssessment';
 import ResultsComparison from '../components/ximatar-journey/ResultsComparison';
-import { Logo } from '../components/Logo';
+import { JourneyBar, JourneyInline } from '../components/ximatar-journey/JourneySteps';
+import { Panel } from '@/components/layout/PageHeader';
 import { useXimatarJourneyState } from '@/hooks/useXimatarJourneyState';
 import {
   AlertDialog,
@@ -26,20 +24,22 @@ import {
 import Seo from '@/components/Seo';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 
+/**
+ * The guest journey: field and CV, questionnaire, results. Each step carries
+ * its own header (eyebrow, title, actions); this page only adds the shell
+ * width and the step indicator.
+ */
 const XimatarJourney = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { isAuthenticated, signOut } = useUser();
   const { isBusiness, loading: businessRoleLoading } = useBusinessRole();
   const { t } = useTranslation();
-  const { resolvedTheme } = useTheme();
-  
+
   const {
     step: currentStep,
     questionIndex,
     mcAnswers,
     openAnswers,
-    baselineCompleted,
     cvUploaded,
     showResumeModal,
     setStep,
@@ -48,19 +48,12 @@ const XimatarJourney = () => {
     setOpenAnswer,
     setBaselineCompleted,
     setCvUploaded,
-    goToNextQuestion,
     goToPrevQuestion,
     completeJourney,
     resumeJourney,
     startFresh,
     setShowResumeModal,
   } = useXimatarJourneyState();
-
-  const steps = [
-    { number: 1, title: t('ximatarJourney.step1_label'), icon: <FileText size={20} /> },
-    { number: 2, title: t('ximatarJourney.step2_label'), icon: <User size={20} /> },
-    { number: 3, title: t('ximatarJourney.step3_label'), icon: <Check size={20} /> }
-  ];
 
   const handleStepComplete = (step: number) => {
     switch (step) {
@@ -88,10 +81,6 @@ const XimatarJourney = () => {
     }
   };
 
-  const answering = currentStep === 2;
-
-  const hasProgress = currentStep > 1 || questionIndex > 0 || Object.keys(mcAnswers).length > 0;
-
   // The journey saves its answers to whoever is signed in. A company account
   // that opened it (easy to do: the landing page links here) got a candidate
   // assessment written onto the business user and was then sent to the
@@ -101,7 +90,7 @@ const XimatarJourney = () => {
       <MainLayout>
         <Seo title="XIMAtar Journey — XIMA" description="Your personalized assessment journey." path="/ximatar-journey" noindex />
         <div className="mx-auto max-w-lg px-4 py-16">
-          <Card className="p-6 space-y-4">
+          <Panel className="space-y-4">
             <h1 className="text-xl font-semibold">{t('ximatarJourney.business_account_title')}</h1>
             <p className="text-muted-foreground">{t('ximatarJourney.business_account_body')}</p>
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -110,7 +99,7 @@ const XimatarJourney = () => {
                 {t('ximatarJourney.business_account_sign_out')}
               </Button>
             </div>
-          </Card>
+          </Panel>
         </div>
       </MainLayout>
     );
@@ -140,75 +129,21 @@ const XimatarJourney = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className="container max-w-5xl mx-auto pt-4 px-4 sm:px-6 watermark-bg overflow-x-hidden">
-        {/* While answering, narrow screens get a compact header: logo and
-            subtitle hide, the title shrinks, so the question starts near the
-            top. The step indicator and the question progress bar stay. */}
-        <div className={`text-center relative z-10 ${answering ? 'mb-4 sm:mb-8' : 'mb-8'}`}>
-          <Logo 
-            variant="full"
-            alt="XIMA Logo" 
-            className={`h-14 w-auto mx-auto mb-4 logo-hover ${answering ? 'hidden sm:block' : ''}`}
-          />
-          <h1 className={`font-bold font-heading ${answering ? 'text-xl sm:text-4xl mb-0 sm:mb-2' : 'text-3xl sm:text-4xl mb-2'}`}>
-            {t('ximatarJourney.page_title')}
-          </h1>
-          <p className={`text-muted-foreground text-lg ${answering ? 'hidden sm:block' : ''}`}>
-            {t('ximatarJourney.page_subtitle')}
-          </p>
-        </div>
-        
-        {/* Progress Steps */}
-        <div className={answering ? 'mb-4 sm:mb-8' : 'mb-8'}>
-          <div className="flex justify-between items-start relative gap-2">
-            {steps.map((step, index) => (
-              <div key={step.number} className="flex flex-col items-center z-10 relative flex-1 min-w-0">
-                <div 
-                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 
-                    ${currentStep === step.number 
-                      ? 'bg-primary border-primary text-primary-foreground' 
-                      : currentStep > step.number
-                        ? 'bg-green-500 border-green-500 text-white'
-                        : 'bg-background border-muted-foreground/30 text-muted-foreground'
-                    }`}
-                >
-                  {currentStep > step.number ? <Check size={20} /> : step.icon}
-                </div>
-                <span 
-                  className={`text-xs sm:text-sm mt-2 text-center break-words ${answering ? 'hidden sm:block' : ''}
-                    ${currentStep === step.number 
-                      ? 'text-primary font-medium' 
-                      : currentStep > step.number
-                        ? 'text-green-600 font-medium'
-                        : 'text-muted-foreground'
-                    }`}
-                >
-                  {step.title}
-                </span>
-              </div>
-            ))}
-            
-            <div className="absolute h-1 bg-muted top-6 left-0 right-0 z-0">
-              <div 
-                className="h-full bg-primary transition-all duration-300"
-                style={{ 
-                  width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` 
-                }}
-              ></div>
-            </div>
-          </div>
-        </div>
-        
-        <Card className={`${answering ? 'p-3' : 'p-5'} sm:p-8 shadow-lg border-0`}>
-          {currentStep === 1 && (
-            <BaselineAssessment 
+      <div className="mx-auto w-full max-w-[1200px] px-4 pb-12 pt-5 sm:px-6 sm:pt-7">
+        {currentStep === 1 && (
+          <>
+            <JourneyBar current={1} className="mb-7 sm:mb-9" />
+            <BaselineAssessment
               onComplete={handleStepComplete}
               onCvUpload={setCvUploaded}
             />
-          )}
-          
-          {currentStep === 2 && (
-            <XimatarAssessment 
+          </>
+        )}
+
+        {currentStep === 2 && (
+          <>
+            <JourneyInline current={2} className="mb-6 sm:mb-8" />
+            <XimatarAssessment
               onComplete={handleStepComplete}
               assessmentSetKey={(localStorage.getItem('preferred_field') as 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops') || 'science_tech'}
               currentQuestionIndex={questionIndex}
@@ -220,38 +155,14 @@ const XimatarJourney = () => {
               onGoBack={goBack}
               cvAnalysed={cvUploaded}
             />
-          )}
-          
-          {currentStep === 3 && (
-            <ResultsComparison 
-              onComplete={handleStepComplete}
-              hasCv={cvUploaded}
-            />
-          )}
-        </Card>
-        
-        {/* The results page used to end with a "choose your mentor to continue"
-            banner here. Choosing a mentor is optional now, and the call to
-            action lives next to the register/dashboard button instead. */}
-        {currentStep === 3 && <div className="mb-6" />}
+          </>
+        )}
 
-        {/* Navigation - only show for step 1 */}
-        {currentStep === 1 && (
-          <div className="flex justify-between mt-6">
-            <Button 
-              variant="outline" 
-              onClick={goBack}
-              disabled={currentStep === 1}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft size={16} />
-              {t('journey.back')}
-            </Button>
-            
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              {t('journey.step')} {currentStep} {t('assessment.of')} {steps.length}
-            </div>
-          </div>
+        {currentStep === 3 && (
+          <ResultsComparison
+            onComplete={handleStepComplete}
+            hasCv={cvUploaded}
+          />
         )}
       </div>
     </MainLayout>

@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { OpenAnswerScore } from './OpenAnswerScore';
 import FeaturedProfessionals from '../FeaturedProfessionals';
-import { XimatarProfileCard } from '../results/XimatarProfileCard';
-import { ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
+import { JourneyInline } from './JourneySteps';
+import { PILLAR_ORDER, pillarShortName, formatScore } from './pillarLabels';
+import { Eyebrow, Panel } from '@/components/layout/PageHeader';
+import { cn } from '@/lib/utils';
+import { ArrowUpRight, AlertCircle } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useXimatarsCatalog } from '@/hooks/useXimatarsCatalog';
@@ -351,33 +351,57 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     }
   };
 
+  /** "Decido più avanti": drop the choice; the candidate can pick a mentor later from the dashboard. */
+  const handleDeselectMentor = () => setSelectedProfessional(null);
+
+  const locale = (i18n.language || 'it').split('-')[0];
+  const fmt = (n: number) => formatScore(n, locale);
+  const currentFieldKey = fieldKey || (typeof window !== 'undefined' ? localStorage.getItem('preferred_field') : null);
+  const fieldTitle = currentFieldKey ? t(`field.${currentFieldKey}.title`, { defaultValue: '' }) : '';
+  const firstName = user?.name?.trim().split(/\s+/)[0] || '';
+
+  const header = (
+    <div className="mb-6 flex flex-col gap-4 sm:mb-7 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+      <div className="min-w-0">
+        <Eyebrow className="mb-2.5">
+          {t('guestJourney.results.eyebrow')}{fieldTitle ? ` / ${fieldTitle}` : ''}
+        </Eyebrow>
+        <h1 className="xs-title">
+          {firstName ? t('guestJourney.results.title_named', { name: firstName }) : t('guestJourney.results.title')}
+        </h1>
+        <p className="mt-2.5 max-w-[610px] text-[15px] text-muted-foreground">{t('guestJourney.results.subtitle')}</p>
+      </div>
+      <JourneyInline current={3} className="shrink-0 sm:pb-1" />
+    </div>
+  );
+
   if (isAnalyzing) {
     return (
-      <div className="text-center space-y-6">
-        <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary"></div>
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold mb-2 font-heading">{t('results.analyzing')}</h2>
-          <p className="text-muted-foreground">{t('results.analyzing_subtitle')}</p>
-        </div>
+      <div>
+        {header}
+        <Panel className="flex flex-col items-center gap-5 py-14 text-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-primary" />
+          <div>
+            <h2 className="text-xl font-semibold text-foreground">{t('results.analyzing')}</h2>
+            <p className="mt-1.5 text-sm text-muted-foreground">{t('results.analyzing_subtitle')}</p>
+          </div>
+        </Panel>
       </div>
     );
   }
 
   if (hasNoAssessment) {
     return (
-      <div className="text-center space-y-6 py-12">
-        <div className="flex justify-center">
-          <AlertCircle className="h-16 w-16 text-muted-foreground" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold mb-2 font-heading">{t('results.no_assessment')}</h2>
-          <p className="text-muted-foreground mb-6">{t('results.no_assessment_subtitle')}</p>
-          <Button onClick={() => navigate('/ximatar-journey')} size="lg">
-            {t('results.start_assessment')}
-          </Button>
-        </div>
+      <div>
+        {header}
+        <Panel className="flex flex-col items-center gap-5 py-14 text-center">
+          <AlertCircle className="h-12 w-12 text-muted-foreground" />
+          <div>
+            <h2 className="text-xl font-semibold text-foreground">{t('results.no_assessment')}</h2>
+            <p className="mt-1.5 text-sm text-muted-foreground">{t('results.no_assessment_subtitle')}</p>
+          </div>
+          <Button onClick={() => navigate('/ximatar-journey')}>{t('results.start_assessment')}</Button>
+        </Panel>
       </div>
     );
   }
@@ -397,343 +421,296 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   const strongestPillar = sortedPillars[0];
   const weakestPillar = sortedPillars[sortedPillars.length - 1];
 
+  const legacyPillarKey = (pillar: string) => (pillar === 'computational_power' ? 'computational' : pillar);
+  const orderedScores = PILLAR_ORDER
+    .map((id) => pillarScores.find((p) => p.pillar === id))
+    .filter((p): p is PillarScore => !!p);
+
+  const translations = ximatarData?.translations;
+  const ximatarName = ximatarData
+    ? String(t(`ximatar.${ximatarData.label}.name`, { defaultValue: ximatarData.label }))
+    : '';
+  const traits = splitTraits(translations?.core_traits);
+  const lowEvidence = openAnswerChars !== null && openAnswerChars < 150;
+
+  const savedText = hasCv ? t('ximatarJourney.register_value_saved_with_cv') : t('ximatarJourney.register_value_saved');
+
   return (
-    <div className="space-y-8">
-      {/* Storytelling Introduction */}
-      <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10 animate-fade-in">
-        <div className="text-center space-y-4">
-          <h2 className="text-3xl font-bold font-heading animate-fade-in" style={{ animationDelay: '100ms' }}>
-            {t('ximatarJourney.results_title')}
-          </h2>
-          <div className="prose prose-lg mx-auto text-muted-foreground max-w-2xl space-y-4 animate-fade-in" style={{ animationDelay: '200ms' }}>
-            <p className="italic text-lg">{t('ximatarJourney.results_tagline')}</p>
-            <p>{t('ximatarJourney.results_archetype_body')}</p>
-          </div>
-        </div>
-      </Card>
+    <div>
+      {header}
 
-      {/* XIMAtar Profile */}
-      {ximatarData && (
-        <div className="animate-fade-in" style={{ animationDelay: '300ms' }}>
-          <XimatarProfileCard ximatar={ximatarData} />
-        </div>
-      )}
-
-      {/* How Your XIMAtar Was Determined */}
-      {strongestPillar && weakestPillar && (
-        <Card className="p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20 animate-fade-in" style={{ animationDelay: '400ms' }}>
-          <h3 className="text-xl font-bold mb-4 text-center font-heading">{t('ximatarJourney.assignment_logic')}</h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '500ms' }}>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500 animate-scale-in" />
-                <span className="font-semibold">{t('ximatarJourney.your_edge_label')}</span>
+      <div className="grid gap-5 lg:grid-cols-[1.06fr_1fr] lg:gap-6">
+        {/* 1 · Identity */}
+        <Panel className="p-6 sm:p-7">
+          {ximatarData ? (
+            <>
+              <div className="flex items-center gap-5 sm:gap-6">
+                <img
+                  src={ximatarData.image_url}
+                  alt={ximatarName}
+                  width={138}
+                  height={138}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-[104px] w-[104px] shrink-0 rounded-[14px] bg-[hsl(var(--xs-page))] object-contain p-1 sm:h-[138px] sm:w-[138px]"
+                  onError={(e) => { e.currentTarget.src = '/ximatars/fox.webp'; }}
+                />
+                <div className="min-w-0">
+                  <Eyebrow className="text-primary">{t('ximatarJourney.your_ximatar_label')}</Eyebrow>
+                  <h2 className="my-1 text-[28px] font-semibold capitalize leading-tight tracking-[-0.8px] text-foreground sm:text-[34px] sm:tracking-[-1px]">
+                    {ximatarName}
+                  </h2>
+                  {translations?.title && <p className="text-[15px] text-foreground sm:text-[17px]">{translations.title}</p>}
+                  {traits && (
+                    <ul className="mt-3 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-2">
+                      {traits.map((trait) => (
+                        <li key={trait} className="rounded border border-[hsl(var(--xs-line))] px-2 py-0.5 text-[11px] text-foreground sm:px-2.5 sm:py-1 sm:text-xs">
+                          {trait}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
-              <Badge variant="default" className="px-4 py-2 text-base capitalize hover-scale">
-                {t(`pillars.${strongestPillar.pillar === 'computational_power' ? 'computational' : strongestPillar.pillar}.name`)} ({strongestPillar.score.toFixed(1)})
-              </Badge>
-            </div>
-            
-            <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '600ms' }}>
-              <div className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-orange-500 animate-scale-in" />
-                <span className="font-semibold">{t('ximatarJourney.your_friction_label')}</span>
+              {translations?.behavior && (
+                <p className="mt-6 max-w-[620px] text-[15px] text-muted-foreground">{translations.behavior}</p>
+              )}
+              {!traits && translations?.core_traits && (
+                <p className="mt-3 max-w-[620px] text-sm text-muted-foreground">{translations.core_traits}</p>
+              )}
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground">{t('results.no_assessment_subtitle')}</p>
+          )}
+
+          {strongestPillar && weakestPillar && (
+            <div className="mt-6 grid gap-5 border-t border-[hsl(var(--xs-line))] pt-6 sm:grid-cols-2 sm:gap-6">
+              <div>
+                <Eyebrow>{t('guestJourney.results.strength')}</Eyebrow>
+                <h3 className="mt-1.5 text-[17px] font-semibold text-foreground">
+                  {pillarShortName(t, strongestPillar.pillar)} · <span className="tabular-nums">{fmt(strongestPillar.score)}</span>
+                </h3>
+                <p className="mt-1.5 text-[13px] text-muted-foreground">{t(`pillars.${legacyPillarKey(strongestPillar.pillar)}.as_strength`)}</p>
               </div>
-              <Badge variant="outline" className="px-4 py-2 text-base capitalize hover-scale">
-                {t(`pillars.${weakestPillar.pillar === 'computational_power' ? 'computational' : weakestPillar.pillar}.name`)} ({weakestPillar.score.toFixed(1)})
-              </Badge>
-            </div>
-
-            <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '700ms' }}>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold">{t('ximatarJourney.your_trajectory_label')}</span>
+              <div>
+                <Eyebrow>{t('guestJourney.results.growth')}</Eyebrow>
+                <h3 className="mt-1.5 text-[17px] font-semibold text-foreground">
+                  {pillarShortName(t, weakestPillar.pillar)} · <span className="tabular-nums">{fmt(weakestPillar.score)}</span>
+                </h3>
+                <p className="mt-1.5 text-[13px] text-muted-foreground">{t(`pillars.${legacyPillarKey(weakestPillar.pillar)}.as_weakness`)}</p>
               </div>
-              <Badge 
-                variant="secondary" 
-                className={`
-                  px-4 py-2 text-base capitalize hover-scale
-                  transition-all duration-300
-                  ${driveLevel === 'high' ? 'bg-green-500/10 text-green-700 dark:text-green-400' :
-                    driveLevel === 'medium' ? 'bg-blue-500/10 text-blue-700 dark:text-blue-400' :
-                    'bg-orange-500/10 text-orange-700 dark:text-orange-400'
-                  }
-                `}
-              >
-                {t(`ximatarJourney.drive_${driveLevel}_label`)} ({driveScore.toFixed(1)})
-              </Badge>
             </div>
-          </div>
-          {/* The badges alone left open how to read them: what the scale is, and
-              why an archetype described as driven can sit next to "Low Drive". */}
-          <div className="mt-5 space-y-2 text-sm text-muted-foreground max-w-2xl mx-auto">
-            <p>{t('ximatarJourney.result_reading')}</p>
-            {driveLevel !== 'high' && <p>{t('ximatarJourney.result_drive_separate')}</p>}
-            {openAnswerChars !== null && openAnswerChars < 150 && (
-              <p className="text-foreground">{t('ximatarJourney.result_low_evidence')}</p>
-            )}
-          </div>
-        </Card>
-      )}
+          )}
 
-      {/* Drive Path Explanation */}
-      <Card className="p-6 overflow-hidden">
-        <h3 className="text-xl font-bold mb-4 font-heading">{t('ximatarJourney.drive_section_title')}</h3>
-        <p className="text-muted-foreground mb-4">{t('ximatarJourney.drive_section_body')}</p>
-        <div className="space-y-3">
-          {/* High Drive */}
-          <div 
-            className={`
-              p-4 rounded-lg border-2 
-              transition-all duration-500 ease-out
-              ${driveLevel === 'high' 
-                ? 'bg-green-500/5 border-green-500/20 shadow-lg shadow-green-500/10 scale-[1.02] animate-fade-in' 
-                : 'border-border/50 hover:border-green-500/10 hover:bg-green-500/[0.02]'
-              }
-            `}
-            style={{
-              animation: driveLevel === 'high' ? 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) 1' : 'none'
-            }}
-          >
-            <div className="flex items-center gap-2 mb-2">
-              <span className={`
-                font-semibold text-green-600 dark:text-green-400
-                transition-all duration-300
-                ${driveLevel === 'high' ? 'scale-105' : ''}
-              `}>
-                {t('ximatarJourney.drive_high_label')}
-              </span>
-              {driveLevel === 'high' && (
-                <Badge 
-                  variant="default" 
-                  className="text-xs animate-scale-in bg-green-600 hover:bg-green-700"
-                >
-                  {t('ximatarJourney.drive_you_badge')}
-                </Badge>
-              )}
-            </div>
-            <p className={`
-              text-sm text-muted-foreground
-              transition-opacity duration-300
-              ${driveLevel === 'high' ? 'opacity-100' : 'opacity-75'}
-            `}>
-              {t('ximatarJourney.drive_high_body')}
-            </p>
-          </div>
-          
-          {/* Medium Drive */}
-          <div 
-            className={`
-              p-4 rounded-lg border-2 
-              transition-all duration-500 ease-out
-              ${driveLevel === 'medium' 
-                ? 'bg-blue-500/5 border-blue-500/20 shadow-lg shadow-blue-500/10 scale-[1.02] animate-fade-in' 
-                : 'border-border/50 hover:border-blue-500/10 hover:bg-blue-500/[0.02]'
-              }
-            `}
-            style={{
-              animation: driveLevel === 'medium' ? 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) 1' : 'none'
-            }}
-          >
-            <div className="flex items-center gap-2 mb-2">
-              <span className={`
-                font-semibold text-blue-600 dark:text-blue-400
-                transition-all duration-300
-                ${driveLevel === 'medium' ? 'scale-105' : ''}
-              `}>
-                {t('ximatarJourney.drive_medium_label')}
-              </span>
-              {driveLevel === 'medium' && (
-                <Badge 
-                  variant="default" 
-                  className="text-xs animate-scale-in bg-blue-600 hover:bg-blue-700"
-                >
-                  {t('ximatarJourney.drive_you_badge')}
-                </Badge>
-              )}
-            </div>
-            <p className={`
-              text-sm text-muted-foreground
-              transition-opacity duration-300
-              ${driveLevel === 'medium' ? 'opacity-100' : 'opacity-75'}
-            `}>
-              {t('ximatarJourney.drive_medium_body')}
-            </p>
-          </div>
-          
-          {/* Low Drive */}
-          <div 
-            className={`
-              p-4 rounded-lg border-2 
-              transition-all duration-500 ease-out
-              ${driveLevel === 'low' 
-                ? 'bg-orange-500/5 border-orange-500/20 shadow-lg shadow-orange-500/10 scale-[1.02] animate-fade-in' 
-                : 'border-border/50 hover:border-orange-500/10 hover:bg-orange-500/[0.02]'
-              }
-            `}
-            style={{
-              animation: driveLevel === 'low' ? 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) 1' : 'none'
-            }}
-          >
-            <div className="flex items-center gap-2 mb-2">
-              <span className={`
-                font-semibold text-orange-600 dark:text-orange-400
-                transition-all duration-300
-                ${driveLevel === 'low' ? 'scale-105' : ''}
-              `}>
-                {t('ximatarJourney.drive_low_label')}
-              </span>
-              {driveLevel === 'low' && (
-                <Badge 
-                  variant="default" 
-                  className="text-xs animate-scale-in bg-orange-600 hover:bg-orange-700"
-                >
-                  {t('ximatarJourney.drive_you_badge')}
-                </Badge>
-              )}
-            </div>
-            <p className={`
-              text-sm text-muted-foreground
-              transition-opacity duration-300
-              ${driveLevel === 'low' ? 'opacity-100' : 'opacity-75'}
-            `}>
-              {t('ximatarJourney.drive_low_body')}
-            </p>
-          </div>
-        </div>
-      </Card>
+          {lowEvidence && (
+            <p className="mt-5 text-[13px] text-foreground">{t('ximatarJourney.result_low_evidence')}</p>
+          )}
 
-      {pillarScores.length > 0 && (
-        <Card className="animate-fade-in" style={{ animationDelay: '800ms' }}>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-heading">
-              {t('ximatarJourney.scores_title')}
-            </CardTitle>
+          {translations?.ideal_roles && (
+            <p className="mt-5 text-[13px] text-muted-foreground">
+              <b className="font-semibold text-foreground">{t('guestJourney.results.roles')}</b>
+              <br />
+              {translations.ideal_roles}
+            </p>
+          )}
+
+          <details className="mt-5 border-t border-[hsl(var(--xs-line))] pt-4 text-[13px]">
+            <summary className="cursor-pointer font-semibold text-primary">{t('guestJourney.results.how_to_read')}</summary>
+            <div className="mt-3 space-y-3 text-muted-foreground">
+              <p>{t('ximatarJourney.result_reading')}</p>
+              {driveLevel !== 'high' && <p>{t('ximatarJourney.result_drive_separate')}</p>}
+              {translations?.weaknesses && <p>{translations.weaknesses}</p>}
+            </div>
+          </details>
+        </Panel>
+
+        {/* 2 · The five pillars */}
+        {pillarScores.length > 0 && (
+          <Panel className="p-6 sm:p-7">
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <h2 className="text-[21px] font-semibold tracking-[-0.5px] text-foreground sm:text-[23px]">{t('guestJourney.results.pillars_title')}</h2>
+              <small className="text-[13px] text-muted-foreground">{t('guestJourney.results.pillars_scale')}</small>
+            </div>
+            <p className="text-[13px] text-muted-foreground">{t('guestJourney.results.pillars_intro')}</p>
+            <div className="mt-2">
+              {orderedScores.map((pillar) => {
+                const isStrong = strongestPillar?.pillar === pillar.pillar;
+                const isWeak = weakestPillar?.pillar === pillar.pillar;
+                const pct = Math.max(0, Math.min(100, pillar.score * 10));
+                return (
+                  <div key={pillar.pillar} className="mt-5 sm:mt-6">
+                    <div className="mb-2 flex items-center justify-between gap-4 text-[13px]">
+                      <span className="text-foreground">{pillarShortName(t, pillar.pillar)}</span>
+                      <b className="font-semibold tabular-nums text-foreground">{fmt(pillar.score)}</b>
+                    </div>
+                    <div
+                      className="h-[7px] rounded-sm bg-[hsl(var(--xs-line))]"
+                      role="meter"
+                      aria-valuemin={0}
+                      aria-valuemax={10}
+                      aria-valuenow={Number(pillar.score.toFixed(1))}
+                      aria-label={pillarShortName(t, pillar.pillar)}
+                    >
+                      <span className="block h-full rounded-sm bg-primary transition-[width] duration-500" style={{ width: `${pct}%` }} />
+                    </div>
+                    {(isStrong || isWeak) && (
+                      <small className="mt-1.5 block text-[11px] text-muted-foreground">
+                        {isStrong ? t('guestJourney.results.strength_tag') : t('guestJourney.results.growth_tag')}
+                      </small>
+                    )}
+                  </div>
+                );
+              })}
+              <div className="mt-4 flex justify-between font-mono text-[11px] text-muted-foreground" aria-hidden>
+                <span>0</span><span>5</span><span>10</span>
+              </div>
+            </div>
+            <p className="mt-4 text-[11px] text-muted-foreground">{t('guestJourney.results.pillars_note')}</p>
             {totalScore !== null && (
-              <p className="text-sm text-muted-foreground">
-                {t('ximatarJourney.scores_total_label')} <span className="font-bold text-primary">{totalScore.toFixed(1)}/50</span>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                {t('ximatarJourney.scores_total_label')} <span className="font-semibold tabular-nums text-foreground">{fmt(totalScore)}/50</span>
               </p>
             )}
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {pillarScores.map((pillar, index) => {
-              // Map database pillar names to translation keys
-              const pillarKeyMap: Record<string, string> = {
-                'computational_power': 'computational',
-                'communication': 'communication',
-                'knowledge': 'knowledge',
-                'creativity': 'creativity',
-                'drive': 'drive'
-              };
-              const translationKey = pillarKeyMap[pillar.pillar] || pillar.pillar;
-              
+          </Panel>
+        )}
+
+        {/* 3 · Drive */}
+        <Panel className="flex flex-col justify-center p-6 sm:p-7">
+          <div className="mb-3 flex items-center justify-between gap-4">
+            <h2 className="text-[21px] font-semibold tracking-[-0.5px] text-foreground sm:text-[23px]">{t('guestJourney.results.drive_title')}</h2>
+            <small className="text-[13px] text-muted-foreground">{t('guestJourney.results.drive_small')}</small>
+          </div>
+          <div className="my-3 flex items-baseline gap-3.5">
+            <b className="text-[40px] font-semibold leading-none tracking-[-1.5px] text-foreground sm:text-[52px]">
+              <span className="tabular-nums">{fmt(driveScore)}</span>
+              <small className="text-base font-normal tracking-normal text-muted-foreground"> / 10</small>
+            </b>
+            <span className="rounded bg-primary/10 px-2.5 py-0.5 text-xs text-primary">{t(`guestJourney.results.drive_${driveLevel}`)}</span>
+          </div>
+          <p className="max-w-[450px] text-[13px] text-muted-foreground">{t(`ximatarJourney.drive_${driveLevel}_body`)}</p>
+          <div className="my-5 flex gap-1" role="list" aria-label={t('guestJourney.results.drive_title')}>
+            {(['low', 'medium', 'high'] as const).map((level) => {
+              const active = level === driveLevel;
               return (
-                <div 
-                  key={pillar.pillar} 
-                  className="space-y-2 animate-fade-in"
-                  style={{ animationDelay: `${900 + (index * 100)}ms` }}
+                <span
+                  key={level}
+                  role="listitem"
+                  aria-current={active ? 'true' : undefined}
+                  className={cn(
+                    'flex-1 border-b-[5px] pb-2 text-center text-[11px]',
+                    active ? 'border-primary font-bold text-primary' : 'border-[hsl(var(--xs-line))] text-muted-foreground',
+                  )}
                 >
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium capitalize">
-                      {t(`pillars.${translationKey}.name`)}
-                    </span>
-                    <span className="text-sm font-semibold text-primary">
-                      {pillar.score.toFixed(1)}/10
-                    </span>
-                  </div>
-                  <Progress 
-                    value={pillar.score * 10} 
-                    className="h-2 transition-all duration-500" 
-                  />
-                </div>
+                  {t(`guestJourney.results.drive_${level}`)}
+                  {active && ` · ${t('guestJourney.results.drive_yours')}`}
+                </span>
               );
             })}
-          </CardContent>
-        </Card>
-      )}
+          </div>
+          <p className="max-w-[450px] text-[13px] text-muted-foreground">{t('ximatarJourney.drive_section_body')}</p>
+          <p className="mt-3 text-[11px] text-muted-foreground">{t('guestJourney.results.drive_note')}</p>
+        </Panel>
 
-      <Card className="p-8">
-        <div className="text-center mb-6">
-          <h3 className="text-2xl font-bold mb-2 font-heading">{t('ximatarJourney.mentor_section_title')}</h3>
-          <p className="text-muted-foreground mb-2">{t('ximatarJourney.mentor_section_subtitle')}</p>
-          {!selectedProfessional && (
-            <p className="text-sm font-medium text-primary">{t('ximatarJourney.mentor_optional_hint')}</p>
-          )}
-        </div>
+        {/* 4 · Mentor (optional) */}
+        <Panel className="p-6 sm:p-7">
+          <div className="mb-3 flex items-center justify-between gap-4">
+            <h2 className="text-[21px] font-semibold tracking-[-0.5px] text-foreground sm:text-[23px]">{t('guestJourney.results.mentor_title')}</h2>
+            <small className="text-[13px] text-muted-foreground">{t('guestJourney.results.mentor_optional')}</small>
+          </div>
+          <p className="mb-5 max-w-[590px] text-[13px] text-muted-foreground">{t('guestJourney.results.mentor_intro')}</p>
 
-        <FeaturedProfessionals
-          onSelect={handleMentorSelect}
-          selectedId={selectedProfessional || undefined}
-          pillarScores={pillarScores}
-          ximatar={ximatarData?.label}
-        />
+          <FeaturedProfessionals
+            variant="compact"
+            limit={2}
+            onSelect={handleMentorSelect}
+            selectedId={selectedProfessional || undefined}
+            pillarScores={pillarScores}
+            ximatar={ximatarData?.label}
+          />
 
-        <div className="mt-8 flex flex-col items-center gap-3 text-center">
-          {!isAuthenticated && (
-            <div className="max-w-xl space-y-1 text-sm text-muted-foreground">
-              <p>
-                {hasCv
-                  ? t('ximatarJourney.register_value_saved_with_cv')
-                  : t('ximatarJourney.register_value_saved')}
-              </p>
-              <p>{t('ximatarJourney.register_value_next')}</p>
-            </div>
-          )}
-          <Button
-            size="lg"
-            onClick={handleProceedWithSelection}
-            className="px-8 py-4 hover-scale"
-          >
-            {isAuthenticated ? t('results.proceed_to_dashboard') : t('results.register_to_continue')}
-            <ArrowRight size={20} className="ml-2" />
-          </Button>
-          {!selectedProfessional && (
-            <p className="text-xs text-muted-foreground">{t('ximatarJourney.mentor_choose_later')}</p>
-          )}
-        </div>
-      </Card>
-
-      {!hasCv && !user?.id && guestOpenAnswerCount > 0 && (
-        <Card className="p-6 animate-fade-in" style={{ animationDelay: '1000ms' }}>
-          <p className="text-sm text-muted-foreground text-center">
-            {t('ximatarJourney.open_scores_after_register', { count: guestOpenAnswerCount })}
-          </p>
-        </Card>
-      )}
+          <div className="mt-4 flex flex-col gap-2 border-t border-[hsl(var(--xs-line))] pt-4 text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-4" aria-live="polite">
+            {selectedProfessional ? (
+              <>
+                <span className="text-primary">
+                  {t('guestJourney.results.mentor_selected_note', {
+                    name: (JSON.parse(localStorage.getItem('selected_professional_data') || 'null')?.full_name || '').split(/\s+/)[0],
+                  })}
+                </span>
+                <button type="button" onClick={handleDeselectMentor} className="shrink-0 text-left text-primary hover:underline sm:text-right">
+                  {t('guestJourney.results.mentor_later')}
+                </button>
+              </>
+            ) : (
+              <span className="text-muted-foreground">{t('ximatarJourney.mentor_choose_later')}</span>
+            )}
+          </div>
+        </Panel>
+      </div>
 
       {!hasCv && openResponses.length > 0 && (
-        <div className="space-y-6 animate-fade-in" style={{ animationDelay: '1000ms' }}>
-          <Card className="p-8">
-            <h3 className="text-2xl font-bold mb-6 text-center font-heading">{t('ximatarJourney.open_scores_title')}</h3>
-            <div className="space-y-6">
-              {openResponses.map((response, index) => (
-                <div 
-                  key={response.open_key}
-                  className="animate-fade-in"
-                  style={{ animationDelay: `${1100 + (index * 100)}ms` }}
-                >
-                  <OpenAnswerScore
-                    openKey={response.open_key}
-                    answer={response.answer}
-                    rubric={response.rubric}
-                    fieldKey={fieldKey || undefined}
-                  />
-                </div>
-              ))}
-            </div>
-          </Card>
+        <Panel className="mt-5 p-6 sm:p-7 lg:mt-6">
+          <h2 className="mb-5 text-[21px] font-semibold tracking-[-0.5px] text-foreground sm:text-[23px]">{t('ximatarJourney.open_scores_title')}</h2>
+          <div className="space-y-6">
+            {openResponses.map((response) => (
+              <OpenAnswerScore
+                key={response.open_key}
+                openKey={response.open_key}
+                answer={response.answer}
+                rubric={response.rubric}
+                fieldKey={fieldKey || undefined}
+              />
+            ))}
+          </div>
+        </Panel>
+      )}
+
+      {/* What the account keeps. On a phone it stays here, in the flow: inside
+          the sticky bar it would cover half the screen for the whole page. */}
+      {!isAuthenticated && (
+        <div className="mt-5 px-1 sm:hidden">
+          <p className="text-[13px] text-muted-foreground">{savedText} {t('ximatarJourney.register_value_next')}</p>
+          {!hasCv && guestOpenAnswerCount > 0 && (
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              {t('ximatarJourney.open_scores_after_register', { count: guestOpenAnswerCount })}
+            </p>
+          )}
         </div>
       )}
 
-      {/* Closing Message - The Compass */}
-      <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10 animate-fade-in" style={{ animationDelay: '1200ms' }}>
-        <div className="text-center space-y-4">
-          <p className="text-lg italic text-muted-foreground max-w-2xl mx-auto animate-scale-in" style={{ animationDelay: '1300ms' }}>
-            {t('ximatarJourney.closing_pullquote')}
-          </p>
+      {/* The one translucent surface of the page: the save bar, sticky at the bottom. */}
+      <div className="xs-glass sticky bottom-4 z-20 mt-3 flex flex-col gap-3 !p-4 sm:mt-5 sm:!px-7 sm:!py-6 lg:mt-6 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+        <div className="min-w-0">
+          <h2 className="text-base font-semibold tracking-[-0.3px] text-foreground sm:text-xl">
+            {isAuthenticated ? t('guestJourney.results.save_title_auth') : t('guestJourney.results.save_title')}
+          </h2>
+          {!isAuthenticated && (
+            <div className="hidden sm:block">
+              <p className="mt-1 max-w-[600px] text-[13px] text-muted-foreground">
+                {savedText} {t('ximatarJourney.register_value_next')}
+              </p>
+              {!hasCv && guestOpenAnswerCount > 0 && (
+                <p className="mt-1 max-w-[600px] text-[11px] text-muted-foreground">
+                  {t('ximatarJourney.open_scores_after_register', { count: guestOpenAnswerCount })}
+                </p>
+              )}
+            </div>
+          )}
         </div>
-      </Card>
+        <Button onClick={handleProceedWithSelection} className="h-12 shrink-0 rounded-[7px] px-5 text-[15px] lg:w-auto">
+          {isAuthenticated ? t('results.proceed_to_dashboard') : t('guestJourney.results.save_cta')}
+          <ArrowUpRight size={17} aria-hidden />
+        </Button>
+      </div>
     </div>
   );
 };
+
+/** "Affidabilità, Costanza, Lealtà" → chips; a sentence stays a sentence. */
+function splitTraits(text: string | null | undefined): string[] | null {
+  if (!text) return null;
+  const parts = text.split(/[,;·•\n]+/).map((s) => s.trim().replace(/\.$/, '')).filter(Boolean);
+  if (parts.length < 2 || parts.length > 6 || parts.some((p) => p.length > 32)) return null;
+  return parts;
+}
 
 export default ResultsComparison;

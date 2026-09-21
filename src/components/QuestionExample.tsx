@@ -1,21 +1,21 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { PlayCircle, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { PlayCircle, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { toCategoryId, CategoryId } from '@/lib/assessment/category';
 import { exampleMatchesOptions } from '@/lib/assessment/exampleRelevance';
 
 type FieldKey = 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops';
 
-type Props = {
+type ContentProps = {
   assessmentSetKey: FieldKey;
   qKey: string;               // 'q1'..'q21' | 'open1' | 'open2'
   categoryLabel?: string;     // localized category label (for MC)
   openFallbackCategory?: CategoryId; // default for open questions
-  className?: string;
 };
+
+type Props = ContentProps & { className?: string };
 
 const URL_PATTERN = /(https?:\/\/[^\s)]+)/g;
 const VIDEO_HOSTS = /(^|\.)(youtube\.com|youtu\.be|vimeo\.com)$/i;
@@ -80,19 +80,17 @@ function renderMarkdown(text: string) {
   ));
 }
 
-export default function QuestionExample({
+/**
+ * Picks the example for a question: the question-specific one when it really
+ * describes the options on screen, otherwise the general one for its category.
+ */
+export function useQuestionExampleContent({
   assessmentSetKey,
   qKey,
   categoryLabel,
   openFallbackCategory = 'creativity',
-  className
-}: Props) {
+}: ContentProps): { title: string; body: string; useSpecific: boolean } {
   const { t, i18n } = useTranslation();
-  const [open, setOpen] = React.useState(false);
-  const panelId = `question-example-${qKey}`;
-
-  // Collapsed again on every new question, so it never pushes the next one down.
-  React.useEffect(() => setOpen(false), [assessmentSetKey, qKey]);
 
   const base = `assessmentSets.${assessmentSetKey}`;
   // Examples are help text, kept outside the sealed assessmentSets block so
@@ -117,60 +115,95 @@ export default function QuestionExample({
   const useSpecific =
     !!specificBody && exampleMatchesOptions(specificBody, Array.isArray(options) ? (options as string[]) : null);
 
-  let title: string;
-  let body: string;
   if (useSpecific && specificBody) {
-    title = ownString(`${helpBase}.examples.${qKey}.title`) ?? t('assessment.example.fallbackTitle');
-    body = specificBody;
-  } else {
-    const catId: CategoryId = categoryLabel
-      ? toCategoryId(categoryLabel, i18n.language)
-      : openFallbackCategory;
-    title = categoryLabel
-      ? t('assessment.example.general_title', { category: categoryLabel })
-      : t('assessment.example.general_title_plain');
-    body =
-      ownString(`${helpBase}.examplesByCategory.${catId}`) ??
-      t(`assessment.example.fallback.${catId}`, { defaultValue: '' });
+    return {
+      title: ownString(`${helpBase}.examples.${qKey}.title`) ?? t('assessment.example.fallbackTitle'),
+      body: specificBody,
+      useSpecific: true,
+    };
   }
+  const catId: CategoryId = categoryLabel
+    ? toCategoryId(categoryLabel, i18n.language)
+    : openFallbackCategory;
+  return {
+    title: categoryLabel
+      ? t('assessment.example.general_title', { category: categoryLabel })
+      : t('assessment.example.general_title_plain'),
+    body:
+      ownString(`${helpBase}.examplesByCategory.${catId}`) ??
+      t(`assessment.example.fallback.${catId}`, { defaultValue: '' }),
+    useSpecific: false,
+  };
+}
+
+/** The "Esempio ↗" outline button. */
+export function QuestionExampleToggle({ open, onToggle, panelId, className }: { open: boolean; onToggle: () => void; panelId: string; className?: string }) {
+  const { t } = useTranslation();
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      onClick={onToggle}
+      className={cn('h-8 gap-1 rounded-md px-3 text-xs font-medium', className)}
+      aria-expanded={open}
+      aria-controls={panelId}
+    >
+      {t('assessment.example.button')}
+      <ArrowUpRight size={13} aria-hidden />
+    </Button>
+  );
+}
+
+/** The example itself, as a flat panel that can sit beside the question. */
+export function QuestionExamplePanel({
+  id,
+  title,
+  body,
+  useSpecific,
+  onClose,
+  className,
+}: { id: string; title: string; body: string; useSpecific: boolean; onClose: () => void; className?: string }) {
+  const { t } = useTranslation();
+  return (
+    <aside
+      id={id}
+      className={cn('max-w-full overflow-hidden rounded-[10px] border border-[hsl(var(--xs-line))] bg-primary/5 p-5', className)}
+      aria-label={t('assessment.example.button')}
+    >
+      <div className="mb-3 flex min-w-0 items-start justify-between gap-4">
+        <h3 className="min-w-0 break-words text-[15px] font-semibold text-foreground">{title}</h3>
+        <button
+          type="button"
+          onClick={onClose}
+          className="shrink-0 text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
+        >
+          {t('assessment.example.close')}
+        </button>
+      </div>
+      {!useSpecific && (
+        <p className="mb-3 text-xs italic text-muted-foreground">{t('assessment.example.general_note')}</p>
+      )}
+      <div className="max-h-64 overflow-y-auto break-words pr-1 text-[13px] leading-6 text-muted-foreground lg:max-h-[420px]">
+        {renderMarkdown(body)}
+      </div>
+    </aside>
+  );
+}
+
+/** Toggle and panel together, one under the other. */
+export default function QuestionExample({ assessmentSetKey, qKey, categoryLabel, openFallbackCategory = 'creativity', className }: Props) {
+  const [open, setOpen] = React.useState(false);
+  const panelId = `question-example-${qKey}`;
+
+  // Collapsed again on every new question, so it never pushes the next one down.
+  React.useEffect(() => setOpen(false), [assessmentSetKey, qKey]);
+
+  const content = useQuestionExampleContent({ assessmentSetKey, qKey, categoryLabel, openFallbackCategory });
 
   return (
     <div className={cn(open && 'basis-full', className)}>
-      <Button
-        type="button"
-        variant="outline"
-        onClick={() => setOpen(o => !o)}
-        className="h-8 gap-1 px-3 text-sm"
-        aria-expanded={open}
-        aria-controls={panelId}
-      >
-        {t('assessment.example.button')}
-        {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-      </Button>
-
-      {open && (
-        <Card
-          id={panelId}
-          className="mt-2 p-3 sm:p-4 space-y-2 border-blue-200 bg-blue-50/60 dark:bg-white/5 max-w-full overflow-hidden"
-        >
-          <div className="flex items-start justify-between gap-4 min-w-0">
-            <div className="text-sm font-semibold break-words min-w-0">{title}</div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="text-xs text-muted-foreground hover:underline shrink-0"
-            >
-              {t('assessment.example.close')}
-            </button>
-          </div>
-          {!useSpecific && (
-            <p className="text-xs italic text-muted-foreground">{t('assessment.example.general_note')}</p>
-          )}
-          <div className="max-h-48 sm:max-h-64 overflow-y-auto pr-1 text-sm leading-6 text-muted-foreground break-words">
-            {renderMarkdown(body)}
-          </div>
-        </Card>
-      )}
+      <QuestionExampleToggle open={open} onToggle={() => setOpen((o) => !o)} panelId={panelId} />
+      {open && <QuestionExamplePanel id={panelId} {...content} onClose={() => setOpen(false)} className="mt-2" />}
     </div>
   );
 }
