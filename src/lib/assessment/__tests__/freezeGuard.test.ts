@@ -26,9 +26,9 @@ const ALL_LOCALES = {
   es: esTranslations as Record<string, unknown>,
 };
 
-describe('Assessment Freeze Guard v1.2.1 (content-lock)', () => {
-  it('version is 1.2.1', () => {
-    expect(ASSESSMENT_VERSION).toBe('1.2.1');
+describe('Assessment Freeze Guard v2.0 (content-lock)', () => {
+  it('version is 2.0', () => {
+    expect(ASSESSMENT_VERSION).toBe('2.0');
   });
 
   it('all locales have assessmentSets content', () => {
@@ -67,7 +67,7 @@ describe('Assessment Freeze Guard v1.2.1 (content-lock)', () => {
   });
 
   it('computed hashes match hard-coded sealed values', () => {
-    const SEALED = { en: '3a641dc8', it: '90528337', es: '09f60860' };
+    const SEALED = { en: '177da890', it: '3af7fe59', es: '0591b005' };
     const hashes = computeAllHashes(ALL_LOCALES);
     expect(hashes.en).toBe(SEALED.en);
     expect(hashes.it).toBe(SEALED.it);

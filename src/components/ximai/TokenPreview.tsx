@@ -90,14 +90,14 @@ export const TokenPreview: React.FC<{ onOpenChat: () => void }> = ({ onOpenChat 
     // Listener delegation
     const onEnter = debounce((e: Event) => {
       const target = e.target as HTMLElement;
-      if (!target || !target.dataset.ximaiToken) return;
+      if (!target?.dataset?.ximaiToken) return;
       triggerRectRef.current = target.getBoundingClientRect();
       setPos(calculatePosition(triggerRectRef.current));
       setVisible(true);
     }, 150);
     const onLeave = (e: Event) => {
       const target = e.target as HTMLElement;
-      if (!target || !target.dataset.ximaiToken) return;
+      if (!target?.dataset?.ximaiToken) return;
       setVisible(false);
     };
     const onFocus = (e: Event) => onEnter(e);
@@ -107,7 +107,7 @@ export const TokenPreview: React.FC<{ onOpenChat: () => void }> = ({ onOpenChat 
     };
     const onFirstTap = (e: Event) => {
       const target = e.target as HTMLElement;
-      if (!target || !target.dataset.ximaiToken) return;
+      if (!target?.dataset?.ximaiToken) return;
       triggerRectRef.current = target.getBoundingClientRect();
       setPos(calculatePosition(triggerRectRef.current));
       setVisible(true);

@@ -1,5 +1,5 @@
 // lib/scoring/openResponse.ts
-export type FieldKey = 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops';
+export type FieldKey = 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops' | 'trades_operations' | 'restaurant';
 
 export type Rubric = {
   length: number;       // 0–20
@@ -13,6 +13,16 @@ export type Rubric = {
 };
 
 const FIELD_KEYWORDS: Record<FieldKey, string[]> = {
+  trades_operations: [
+    'cantiere', 'officina', 'magazzino', 'macchina', 'attrezzo', 'impianto', 'turno', 'squadra',
+    'sicurezza', 'materiale', 'montare', 'riparare', 'misura', 'consegna', 'capo',
+    'site', 'workshop', 'warehouse', 'machine', 'tool', 'shift', 'crew', 'safety', 'repair',
+  ],
+  restaurant: [
+    'cucina', 'sala', 'piatto', 'cliente', 'tavolo', 'servizio', 'menù', 'menu', 'chef', 'bar',
+    'ordine', 'porzione', 'turno', 'prenotazione', 'ingrediente',
+    'kitchen', 'dining', 'dish', 'customer', 'table', 'service', 'shift', 'order', 'portion',
+  ],
   science_tech: [
     'data', 'experiment', 'model', 'hypothesis', 'metrics', 'algorithm', 'prototype', 'deploy',
     'analysis', 'evidence', 'test', 'validate', 'iterate', 'dataset', 'performance'

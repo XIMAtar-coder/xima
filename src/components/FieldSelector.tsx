@@ -2,13 +2,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
-export type FieldKey = 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops';
+export type FieldKey = 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops' | 'trades_operations' | 'restaurant';
 
 const FIELDS: { key: FieldKey; titleKey: string; descKey: string }[] = [
   { key: 'science_tech',        titleKey: 'field.science_tech.title',        descKey: 'field.science_tech.desc' },
   { key: 'business_leadership', titleKey: 'field.business_leadership.title', descKey: 'field.business_leadership.desc' },
   { key: 'arts_creative',       titleKey: 'field.arts_creative.title',       descKey: 'field.arts_creative.desc' },
   { key: 'service_ops',         titleKey: 'field.service_ops.title',         descKey: 'field.service_ops.desc' },
+  { key: 'trades_operations',   titleKey: 'field.trades_operations.title',   descKey: 'field.trades_operations.desc' },
+  { key: 'restaurant',          titleKey: 'field.restaurant.title',          descKey: 'field.restaurant.desc' },
 ];
 
 interface Props {

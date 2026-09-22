@@ -1,57 +1,37 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import {
-  Cpu, MessageCircle, BookOpen, Lightbulb, Zap,
-  ChevronDown, ChevronUp, ArrowRight, Check, AlertTriangle,
-} from 'lucide-react';
+import { ArrowRight, Check, AlertTriangle, ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type PillarKey = 'drive' | 'computational' | 'knowledge' | 'communication' | 'creativity';
 
-const ICONS: Record<PillarKey, React.ReactNode> = {
-  drive: <Zap className="w-8 h-8" strokeWidth={1.6} />,
-  computational: <Cpu className="w-8 h-8" strokeWidth={1.6} />,
-  knowledge: <BookOpen className="w-8 h-8" strokeWidth={1.6} />,
-  communication: <MessageCircle className="w-8 h-8" strokeWidth={1.6} />,
-  creativity: <Lightbulb className="w-8 h-8" strokeWidth={1.6} />,
-};
-
 const ORDER: PillarKey[] = ['drive', 'computational', 'knowledge', 'communication', 'creativity'];
 
-const NAVY = 'var(--xima-text)';
-const MUTED = 'var(--xima-text-muted)';
-const BLUE = 'var(--xima-blue)';
-
+/**
+ * "Five dimensions to read your profile", in the same language as the signed-in
+ * product: mono eyebrow, flat panels on the page background, numbers in
+ * tabular figures, no lifted cards and no coloured glows.
+ */
 export const LandingPillars: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState<PillarKey | null>(null);
 
   return (
-    <section className="py-24 px-6 lg:px-10" style={{ background: 'var(--xima-bg)' }}>
-      <div className="max-w-[1200px] mx-auto">
-        <p
-          className="text-center"
-          style={{
-            fontSize: 12, fontWeight: 600, letterSpacing: 2,
-            color: BLUE, textTransform: 'uppercase', marginBottom: 18,
-          }}
-        >
-          {t('landing.pillars.label')}
-        </p>
-        <h2
-          className="text-center mb-4"
-          style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700, color: NAVY, letterSpacing: '-0.01em' }}
-        >
+    <section className="px-6 py-24 lg:px-10" style={{ background: 'var(--xima-bg)' }}>
+      <div className="mx-auto max-w-[1200px]">
+        <p className="xs-eyebrow text-center">{t('landing.pillars.label')}</p>
+        <h2 className="mx-auto mt-3 max-w-3xl text-center text-[clamp(28px,4vw,40px)] font-semibold leading-[1.1] tracking-[-0.9px] text-foreground">
           {t('landing.pillars.title')}
         </h2>
-        <p className="text-center mb-14" style={{ fontSize: 18, color: MUTED, lineHeight: 1.6 }}>
+        <p className="mx-auto mt-4 max-w-2xl text-center text-[17px] leading-relaxed text-muted-foreground">
           {t('landing.pillars.subtitle')}
         </p>
 
-        {/* Cards row */}
-        <div className="grid gap-4 sm:gap-5" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))' }}>
-          {ORDER.map((key) => {
+        {/* The five, side by side: same width, same height, numbered */}
+        <div className="mt-12 grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))' }}>
+          {ORDER.map((key, i) => {
             const isOpen = expanded === key;
             return (
               <button
@@ -59,37 +39,24 @@ export const LandingPillars: React.FC = () => {
                 type="button"
                 onClick={() => setExpanded(isOpen ? null : key)}
                 aria-expanded={isOpen}
-                className="text-left transition-all duration-300 relative"
-                style={{
-                  background: 'var(--xima-surface)',
-                  border: `1px solid ${isOpen ? 'rgba(11,107,255,0.35)' : 'var(--xima-border)'}`,
-                  borderRadius: 16,
-                  padding: 22,
-                  boxShadow: isOpen
-                    ? '0 16px 40px rgba(7,30,58,0.10)'
-                    : '0 4px 18px rgba(7,30,58,0.04)',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isOpen) {
-                    e.currentTarget.style.transform = 'translateY(-3px)';
-                    e.currentTarget.style.boxShadow = '0 12px 28px rgba(7,30,58,0.08)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isOpen) {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 18px rgba(7,30,58,0.04)';
-                  }
-                }}
+                className={cn(
+                  'xs-panel flex h-full flex-col p-5 text-left transition-colors',
+                  isOpen ? 'border-primary bg-primary/[0.04]' : 'hover:border-primary/40',
+                )}
               >
-                <div className="absolute top-4 right-4" style={{ color: MUTED }}>
-                  {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                </div>
-                <div className="mb-4" style={{ color: BLUE }}>{ICONS[key]}</div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: NAVY, marginBottom: 6 }}>
+                <span className="flex items-center justify-between">
+                  <span className="font-mono text-[12px] font-semibold tabular-nums text-primary">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <ChevronDown
+                    className={cn('h-4 w-4 text-muted-foreground transition-transform', isOpen && 'rotate-180')}
+                    aria-hidden="true"
+                  />
+                </span>
+                <h3 className="mt-4 text-[16px] font-semibold text-foreground">
                   {t(`landing.pillars.items.${key}.title`)}
                 </h3>
-                <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.5 }}>
+                <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">
                   {t(`landing.pillars.items.${key}.subtitle`)}
                 </p>
               </button>
@@ -97,109 +64,64 @@ export const LandingPillars: React.FC = () => {
           })}
         </div>
 
-        {/* Expanded panel below the row */}
+        {/* The open one, in full */}
         {expanded && (
-          <div
-            className="mt-6 animate-fade-in"
-            style={{
-              background: 'var(--xima-surface-soft, #F7FAFF)',
-              border: '1px solid var(--xima-border)',
-              borderRadius: 20,
-              padding: 32,
-            }}
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <span style={{ color: BLUE }}>{ICONS[expanded]}</span>
-              <h3 style={{ fontSize: 22, fontWeight: 700, color: NAVY, letterSpacing: '-0.01em' }}>
-                {t(`landing.pillars.items.${expanded}.title`)}
-              </h3>
-            </div>
+          <div className="xs-panel xs-panel-accent mt-4 animate-fade-in p-6 sm:p-8">
+            <p className="xs-eyebrow">
+              {String(ORDER.indexOf(expanded) + 1).padStart(2, '0')} · {t('landing.pillars.label')}
+            </p>
+            <h3 className="mt-2 text-[22px] font-semibold leading-tight tracking-[-0.4px] text-foreground">
+              {t(`landing.pillars.items.${expanded}.title`)}
+            </h3>
 
-            {/* What */}
-            <div className="mb-6">
-              <h4 style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: MUTED, textTransform: 'uppercase', marginBottom: 10 }}>
-                {t('landing.pillars.what_label')}
-              </h4>
-              <p style={{ fontSize: 16, color: NAVY, lineHeight: 1.7 }}>
-                {t(`landing.pillars.items.${expanded}.what`)}
-              </p>
-            </div>
+            <p className="mt-4 max-w-3xl text-[16px] leading-relaxed text-foreground">
+              {t(`landing.pillars.items.${expanded}.what`)}
+            </p>
 
-            {/* Strong / Weak */}
-            <div className="grid md:grid-cols-2 gap-4 mb-6">
-              <div
-                style={{
-                  background: 'var(--xima-surface)',
-                  border: '1px solid rgba(11,107,255,0.18)',
-                  borderRadius: 14,
-                  padding: 20,
-                }}
-              >
-                <div className="flex items-center gap-2 mb-2" style={{ color: BLUE }}>
-                  <Check className="w-4 h-4" strokeWidth={2.5} />
-                  <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>
-                    {t('landing.pillars.strong_label')}
-                  </span>
-                </div>
-                <p style={{ fontSize: 15, color: NAVY, lineHeight: 1.6 }}>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <div className="rounded-xl border border-[hsl(var(--xs-line))] bg-background p-5">
+                <p className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-wider text-primary">
+                  <Check className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />
+                  {t('landing.pillars.strong_label')}
+                </p>
+                <p className="mt-2 text-[15px] leading-relaxed text-foreground">
                   {t(`landing.pillars.items.${expanded}.strong`)}
                 </p>
               </div>
-              <div
-                style={{
-                  background: 'var(--xima-surface)',
-                  border: '1px solid rgba(194,65,12,0.18)',
-                  borderRadius: 14,
-                  padding: 20,
-                }}
-              >
-                <div className="flex items-center gap-2 mb-2" style={{ color: '#C2410C' }}>
-                  <AlertTriangle className="w-4 h-4" strokeWidth={2.2} />
-                  <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>
-                    {t('landing.pillars.weak_label')}
-                  </span>
-                </div>
-                <p style={{ fontSize: 15, color: NAVY, lineHeight: 1.6 }}>
+              <div className="rounded-xl border border-[hsl(var(--xs-line))] bg-background p-5">
+                <p className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-wider text-[#C2410C]">
+                  <AlertTriangle className="h-4 w-4" strokeWidth={2.2} aria-hidden="true" />
+                  {t('landing.pillars.weak_label')}
+                </p>
+                <p className="mt-2 text-[15px] leading-relaxed text-foreground">
                   {t(`landing.pillars.items.${expanded}.weak`)}
                 </p>
               </div>
             </div>
 
-            {/* How */}
-            <div>
-              <h4 style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: MUTED, textTransform: 'uppercase', marginBottom: 10 }}>
-                {t('landing.pillars.how_label')}
-              </h4>
-              <p style={{ fontSize: 15, color: NAVY, lineHeight: 1.7 }}>
+            <div className="mt-6 border-t border-[hsl(var(--xs-line))] pt-5">
+              <p className="xs-eyebrow">{t('landing.pillars.how_label')}</p>
+              <p className="mt-2 max-w-3xl text-[15px] leading-relaxed text-foreground">
                 {t(`landing.pillars.items.${expanded}.how`)}
               </p>
             </div>
           </div>
         )}
 
-        {/* Free CTA */}
-        <div className="max-w-[720px] mx-auto text-center mt-20">
-          <h3 style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 700, color: NAVY, marginBottom: 10 }}>
+        {/* Free assessment */}
+        <div className="mx-auto mt-20 max-w-[720px] text-center">
+          <h3 className="text-[clamp(24px,3vw,32px)] font-semibold leading-tight tracking-[-0.6px] text-foreground">
             {t('landing.free_cta_title')}
           </h3>
-          <p style={{ fontSize: 17, color: MUTED, marginBottom: 28, lineHeight: 1.5 }}>
+          <p className="mt-3 text-[17px] leading-relaxed text-muted-foreground">
             {t('landing.free_cta_subtitle')}
           </p>
           <button
             onClick={() => navigate('/ximatar-journey')}
-            className="inline-flex items-center justify-center gap-2 transition-all"
-            style={{
-              background: BLUE,
-              color: 'white',
-              borderRadius: 14,
-              padding: '16px 32px',
-              fontWeight: 600,
-              fontSize: 16,
-              boxShadow: '0 16px 35px rgba(11,107,255,0.20)',
-            }}
+            className="mt-7 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 text-[16px] font-semibold text-white transition-colors hover:bg-primary/90"
           >
             {t('landing.free_cta_button')}
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
       </div>

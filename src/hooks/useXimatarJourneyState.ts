@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { log } from '@/lib/log';
+import type { McAnswerV2, DriveAnswerV2 } from '@/lib/assessment/v2/model';
 
 const STORAGE_KEY = 'xima.ximatarJourney.v1';
 
@@ -9,6 +10,14 @@ interface JourneyState {
   questionIndex: number; // within assessment (0-based)
   mcAnswers: Record<number, number>; // multiple choice answers
   openAnswers: Record<string, string>; // open question answers
+  // Assessment 2.0 (four answers = four pillars, Drive apart): the chosen
+  // pillar with its intensity per question, the Drive choices, and the
+  // per-question option order so a resumed session shows the same order.
+  v2: {
+    mc: Record<number, McAnswerV2>;
+    drive: Record<number, DriveAnswerV2>;
+    order: Record<number, number[]>;
+  };
   baselineCompleted: boolean;
   cvUploaded: boolean;
   completed: boolean;
@@ -20,6 +29,7 @@ const defaultState: JourneyState = {
   questionIndex: 0,
   mcAnswers: {},
   openAnswers: {},
+  v2: { mc: {}, drive: {}, order: {} },
   baselineCompleted: false,
   cvUploaded: false,
   completed: false,
@@ -37,7 +47,7 @@ export function useXimatarJourneyState() {
       try {
         const parsed = JSON.parse(saved) as JourneyState;
         if (!parsed.completed) {
-          return parsed;
+          return { ...parsed, v2: parsed.v2 ?? { mc: {}, drive: {}, order: {} } };
         }
       } catch (e) {
         log.warn('Failed to parse journey state:', e);
@@ -134,6 +144,18 @@ export function useXimatarJourneyState() {
     }));
   }, []);
 
+  const setV2McAnswer = useCallback((questionId: number, answer: McAnswerV2) => {
+    setState(prev => ({ ...prev, v2: { ...prev.v2, mc: { ...prev.v2.mc, [questionId]: answer } } }));
+  }, []);
+
+  const setV2DriveAnswer = useCallback((driveId: number, answer: DriveAnswerV2) => {
+    setState(prev => ({ ...prev, v2: { ...prev.v2, drive: { ...prev.v2.drive, [driveId]: answer } } }));
+  }, []);
+
+  const setV2Order = useCallback((questionId: number, order: number[]) => {
+    setState(prev => ({ ...prev, v2: { ...prev.v2, order: { ...prev.v2.order, [questionId]: order } } }));
+  }, []);
+
   const setBaselineCompleted = useCallback((completed: boolean) => {
     setState(prev => ({ ...prev, baselineCompleted: completed }));
   }, []);
@@ -185,6 +207,7 @@ export function useXimatarJourneyState() {
     questionIndex: state.questionIndex,
     mcAnswers: state.mcAnswers,
     openAnswers: state.openAnswers,
+    v2: state.v2,
     baselineCompleted: state.baselineCompleted,
     cvUploaded: state.cvUploaded,
     completed: state.completed,
@@ -195,6 +218,9 @@ export function useXimatarJourneyState() {
     setQuestionIndex,
     setMcAnswer,
     setOpenAnswer,
+    setV2McAnswer,
+    setV2DriveAnswer,
+    setV2Order,
     setBaselineCompleted,
     setCvUploaded,
     goToNextQuestion,

@@ -19,7 +19,7 @@
 
 import { log } from '@/lib/log';
 
-export const ASSESSMENT_VERSION = "1.2.1";
+export const ASSESSMENT_VERSION = "2.0";
 
 /**
  * Recursively stable-stringify any value with sorted object keys.
@@ -59,7 +59,9 @@ function djb2Hash(str: string): string {
 function getAssessmentSubtree(locale: Record<string, unknown>): string {
   const sets = (locale as any)?.assessmentSets;
   if (!sets) return '';
-  return stableStringify(sets);
+  // v2.0: the 2.0 domains (assessmentV2) are sealed together with the v1 sets.
+  const v2 = (locale as any)?.assessmentV2 ?? null;
+  return stableStringify({ assessmentSets: sets, assessmentV2: v2 });
 }
 
 export function computeHash(locale: Record<string, unknown>): string {
@@ -94,9 +96,9 @@ export function computeAllHashes(
 // categories are byte-identical to the v1.2.1 seal (en 11ffb15d, it e7b14a09,
 // es d7d4491d); only the examples left the hashed subtree.
 export const ASSESSMENT_FREEZE_HASHES: Record<string, string> = {
-  en: "3a641dc8",
-  it: "90528337",
-  es: "09f60860",
+  en: "177da890",
+  it: "3af7fe59",
+  es: "0591b005",
 };
 
 const validatedLocales = new Set<string>();

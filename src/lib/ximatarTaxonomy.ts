@@ -1,3 +1,5 @@
+import { archetypeFromScores } from '@/lib/assessment/v2/model';
+
 /**
  * Canonical XIMAtar Taxonomy - Single Source of Truth
  * 
@@ -365,32 +367,15 @@ export interface DerivedArchetypeResult {
 export function selectArchetypeFromAssessmentPillars(
   scores: AssessmentPillarScores
 ): DerivedArchetypeResult {
-  const pillarEntries = (Object.entries(scores) as [AssessmentPillarKey, number][])
-    .sort((a, b) => b[1] - a[1]);
-  const top2 = [pillarEntries[0][0], pillarEntries[1][0]];
-
-  let label = 'fox';
-  if (top2.includes('creativity') && top2.includes('communication')) label = 'parrot';
-  else if (top2.includes('knowledge') && top2.includes('computational_power')) label = 'owl';
-  else if (top2.includes('drive') && top2.includes('knowledge')) label = 'elephant';
-  else if (top2.includes('communication') && top2.includes('drive')) label = 'dolphin';
-  else if (top2.includes('computational_power') && top2.includes('creativity')) label = 'cat';
-  else if (top2.includes('drive')) label = 'horse';
-  else if (top2.includes('creativity')) label = 'fox';
-  else if (top2.includes('computational_power')) label = 'bee';
-  else if (top2.includes('knowledge')) label = 'owl';
-  else if (top2.includes('communication')) label = 'dolphin';
-  else label = 'chameleon';
-
-  const driveScore = scores.drive ?? 0;
-  const driveLevel: 'high' | 'medium' | 'low' =
-    driveScore >= 7.5 ? 'high' : driveScore >= 5 ? 'medium' : 'low';
-
+  // Taxonomy 2.0: the animal is the ordered pair (strongest, weakest) of the
+  // four content pillars; Drive is its energy. The old rule looked at the top
+  // two of five and could not tell Owl, Bee and Horse apart.
+  const a = archetypeFromScores(scores as Record<string, number>);
   return {
-    label,
-    name: label.charAt(0).toUpperCase() + label.slice(1),
-    driveLevel,
-    strongest: pillarEntries[0][0],
-    weakest: pillarEntries[pillarEntries.length - 1][0],
+    label: a.label,
+    name: a.label.charAt(0).toUpperCase() + a.label.slice(1),
+    driveLevel: a.driveLevel,
+    strongest: a.strongest,
+    weakest: a.weakest,
   };
 }

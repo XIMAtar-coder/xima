@@ -44,6 +44,14 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype, variant = 'desktop'
     }).join(' ') + 'Z';
 
   const isMobile = variant === 'mobile';
+  // Same rule as the archetype card: dark surface on mobile, light frosted
+  // glass over the photo on desktop, with the strokes following the surface.
+  const ink = isMobile ? 'white' : 'var(--xima-text)';
+  const inkOpacity = isMobile ? { value: 0.95, label: 0.75, sub: 0.6 } : { value: 1, label: 0.85, sub: 0.7 };
+  const web = isMobile ? 'rgba(255,255,255,0.22)' : 'rgba(23,42,71,0.18)';
+  const spoke = isMobile ? 'rgba(255,255,255,0.18)' : 'rgba(23,42,71,0.14)';
+  const dot = isMobile ? 'white' : 'var(--xima-blue)';
+  const dotGlow = isMobile ? 'drop-shadow(0 0 4px rgba(255,255,255,0.9))' : 'drop-shadow(0 0 3px rgba(11,107,255,0.45))';
 
   return (
     <div
@@ -66,12 +74,12 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype, variant = 'desktop'
               top: 60,
               width: 380,
               height: 300,
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              border: '1px solid rgba(255,255,255,0.28)',
+              background: 'rgba(255,255,255,0.62)',
+              backdropFilter: 'blur(18px) saturate(140%)',
+              WebkitBackdropFilter: 'blur(18px) saturate(140%)',
+              border: '1px solid rgba(255,255,255,0.75)',
               borderRadius: 28,
-              boxShadow: '0 24px 70px rgba(7,30,58,0.18)',
+              boxShadow: '0 20px 50px rgba(7,30,58,0.12)',
             }
       }
     >
@@ -81,7 +89,7 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype, variant = 'desktop'
             key={idx}
             d={ringPath(maxR * s)}
             fill="none"
-            stroke="rgba(255,255,255,0.22)"
+            stroke={web}
             strokeWidth={1}
           />
         ))}
@@ -94,7 +102,7 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype, variant = 'desktop'
               y1={cy}
               x2={p.x}
               y2={p.y}
-              stroke="rgba(255,255,255,0.18)"
+              stroke={spoke}
               strokeWidth={1}
             />
           );
@@ -117,8 +125,8 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype, variant = 'desktop'
               cx={pt.x}
               cy={pt.y}
               r={3.5}
-              fill="white"
-              style={{ filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.9))', transition: 'all 0.4s ease' }}
+              fill={dot}
+              style={{ filter: dotGlow, transition: 'all 0.4s ease' }}
             />
           );
         })}
@@ -130,14 +138,14 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype, variant = 'desktop'
           const anchor = pt.x < cx - 5 ? 'end' : pt.x > cx + 5 ? 'start' : 'middle';
           return (
             <g key={i} style={{ transition: 'opacity 0.3s ease' }}>
-              <text x={pt.x} y={pt.y - 6} textAnchor={anchor} fill="white" fontSize={13} fontWeight={600} opacity={0.95}>
+              <text x={pt.x} y={pt.y - 6} textAnchor={anchor} fill={ink} fontSize={13} fontWeight={600} opacity={inkOpacity.value}>
                 {p.value.toFixed(1)}
               </text>
-              <text x={pt.x} y={pt.y + 8} textAnchor={anchor} fill="white" fontSize={10} opacity={0.75}>
+              <text x={pt.x} y={pt.y + 8} textAnchor={anchor} fill={ink} fontSize={10} opacity={inkOpacity.label}>
                 {p.label}
               </text>
               {p.sub && (
-                <text x={pt.x} y={pt.y + 20} textAnchor={anchor} fill="white" fontSize={9} opacity={0.6}>
+                <text x={pt.x} y={pt.y + 20} textAnchor={anchor} fill={ink} fontSize={9} opacity={inkOpacity.sub}>
                   {p.sub}
                 </text>
               )}

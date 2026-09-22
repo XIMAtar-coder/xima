@@ -7,6 +7,8 @@ import { useUser } from '../context/UserContext';
 import { RotateCcw } from 'lucide-react';
 import BaselineAssessment from '../components/ximatar-journey/BaselineAssessment';
 import XimatarAssessment from '../components/ximatar-journey/XimatarAssessment';
+import AssessmentV2 from '../components/ximatar-journey/AssessmentV2';
+import { isV2Field } from '@/lib/assessment/v2/model';
 import ResultsComparison from '../components/ximatar-journey/ResultsComparison';
 import { JourneyBar, JourneyInline } from '../components/ximatar-journey/JourneySteps';
 import { Panel } from '@/components/layout/PageHeader';
@@ -22,6 +24,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import Seo from '@/components/Seo';
+import type { FieldKey } from '@/components/FieldSelector';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 
 /**
@@ -40,6 +43,10 @@ const XimatarJourney = () => {
     questionIndex,
     mcAnswers,
     openAnswers,
+    v2,
+    setV2McAnswer,
+    setV2DriveAnswer,
+    setV2Order,
     cvUploaded,
     showResumeModal,
     setStep,
@@ -143,9 +150,25 @@ const XimatarJourney = () => {
         {currentStep === 2 && (
           <>
             <JourneyInline current={2} className="mb-6 sm:mb-8" />
+            {isV2Field(localStorage.getItem('preferred_field')) ? (
+              <AssessmentV2
+                fieldKey={localStorage.getItem('preferred_field') as 'trades_operations' | 'restaurant'}
+                onComplete={handleStepComplete}
+                onGoBack={goBack}
+                cvAnalysed={cvUploaded}
+                questionIndex={questionIndex}
+                onQuestionChange={setQuestionIndex}
+                v2={v2}
+                openAnswers={openAnswers}
+                onMcAnswer={setV2McAnswer}
+                onDriveAnswer={setV2DriveAnswer}
+                onOrder={setV2Order}
+                onOpenAnswerChange={setOpenAnswer}
+              />
+            ) : (
             <XimatarAssessment
               onComplete={handleStepComplete}
-              assessmentSetKey={(localStorage.getItem('preferred_field') as 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops') || 'science_tech'}
+              assessmentSetKey={(localStorage.getItem('preferred_field') as FieldKey) || 'science_tech'}
               currentQuestionIndex={questionIndex}
               savedMcAnswers={mcAnswers}
               savedOpenAnswers={openAnswers}
@@ -155,6 +178,7 @@ const XimatarJourney = () => {
               onGoBack={goBack}
               cvAnalysed={cvUploaded}
             />
+            )}
           </>
         )}
 

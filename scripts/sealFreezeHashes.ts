@@ -44,7 +44,9 @@ function djb2Hash(str: string): string {
 function getAssessmentSubtree(locale: Record<string, unknown>): string {
   const sets = (locale as any)?.assessmentSets;
   if (!sets) return '';
-  return stableStringify(sets);
+  // v2.0: the 2.0 domains (assessmentV2) are sealed together with the v1 sets.
+  const v2 = (locale as any)?.assessmentV2 ?? null;
+  return stableStringify({ assessmentSets: sets, assessmentV2: v2 });
 }
 
 function computeHash(locale: Record<string, unknown>): string {

@@ -1368,7 +1368,18 @@
     "listen_stop": "Stop",
     "dictate": "Answer by voice",
     "dictate_stop": "Stop dictating",
-    "option_spoken": "Answer {{letter}}"
+    "option_spoken": "Answer {{letter}}",
+    "v2_mc_hint": "Pick the one you would actually do. Then, if you like, say how much it is like you.",
+    "v2_intensity_prompt": "How much is this like you?",
+    "v2_intensity_1": "A little",
+    "v2_intensity_2": "Fairly",
+    "v2_intensity_3": "Very",
+    "v2_drive_tag": "A choice with a cost either way",
+    "v2_drive_hint": "Both are serious choices. Pick the one you would really make.",
+    "v2_final_drive_tag": "Last one · on the side you chose least",
+    "v2_progress": "{{n}} of {{total}}",
+    "finish": "Finish",
+    "v2_scenario": "Scenario {{n}}"
   },
   "dashboard": {
     "page_label": "DASHBOARD",
@@ -4414,6 +4425,14 @@
     "service_ops": {
       "title": "Service & Operations",
       "desc": "Healthcare, education, hospitality, public sector, support."
+    },
+    "trades_operations": {
+      "title": "Trades and hands-on work",
+      "desc": "Building sites, workshops, warehouses, plants, farms."
+    },
+    "restaurant": {
+      "title": "Food and hospitality",
+      "desc": "Kitchen, dining room, bar, banquets, deliveries."
     }
   },
   "professionals": {
@@ -7580,51 +7599,535 @@
   "ximatar": {
     "bear": {
       "name": "Bear",
-      "title": "The Grounded Protector"
+      "title": "Solid, quiet"
     },
     "bee": {
       "name": "Bee",
-      "title": "The Purposeful Contributor"
+      "title": "Methodical, follows the procedure"
     },
     "cat": {
       "name": "Cat",
-      "title": "The Independent Specialist"
+      "title": "Precise and self-reliant, says little"
     },
     "chameleon": {
       "name": "Chameleon",
-      "title": "The Adaptive Generalist"
+      "title": "Invents and adapts in silence"
     },
     "dolphin": {
       "name": "Dolphin",
-      "title": "The Team Facilitator"
+      "title": "Plays and invents, does not calculate"
     },
     "elephant": {
       "name": "Elephant",
-      "title": "The Wise Mentor"
+      "title": "Memory and experience"
     },
     "fox": {
       "name": "Fox",
-      "title": "The Strategic Opportunist"
+      "title": "Intuits, does not study"
     },
     "horse": {
       "name": "Horse",
-      "title": "The Relentless Performer"
+      "title": "Does and goes, without theory"
     },
     "lion": {
       "name": "Lion",
-      "title": "The Executive Leader"
+      "title": "Leads and delegates the knowing"
     },
     "owl": {
       "name": "Owl",
-      "title": "The Analytical Thinker"
+      "title": "Analyses and reasons, does not improvise"
     },
     "parrot": {
       "name": "Parrot",
-      "title": "The Charismatic Communicator"
+      "title": "Convinces, does not count"
     },
     "wolf": {
       "name": "Wolf",
-      "title": "The Pack Strategist"
+      "title": "The pack, with proven patterns"
+    }
+  },
+  "assessmentV2": {
+    "trades_operations": {
+      "title": "Trades and hands-on work",
+      "subtitle": "Building sites, workshops, warehouses, plants, farms.",
+      "questions": {
+        "q1": {
+          "question": "A tool breaks halfway through the job and the spare arrives tomorrow. You:",
+          "options": [
+            "Look at what I can finish today without that tool and reorganise the day.",
+            "Tell the boss and the crew right away, so we decide together.",
+            "Do what has always been done in these cases: there is a way that works.",
+            "Make do with another tool, adapting it."
+          ]
+        },
+        "q2": {
+          "question": "A new colleague arrives and does not know where to start. You:",
+          "options": [
+            "Explain the job myself, step by step, and stay available.",
+            "Give them an ordered list of things to do, easiest first.",
+            "Show them how it is done here, by the rules of the place.",
+            "Let them try their own way and step in if needed."
+          ]
+        },
+        "q3": {
+          "question": "The customer asks for something that you think cannot be done that way. You:",
+          "options": [
+            "Explain how it is usually done and why.",
+            "Ask what they really want to get, then we talk it through.",
+            "Do the sums and show them what would happen.",
+            "Look for a different way to give them what they want."
+          ]
+        },
+        "q4": {
+          "question": "You have to assemble something you have never assembled. You:",
+          "options": [
+            "Try, watch how it reacts and correct.",
+            "Look for the instructions or for someone who has done it before.",
+            "Study the parts and work out the right order before starting.",
+            "Call a colleague and we do it together."
+          ]
+        },
+        "q5": {
+          "question": "At the end of the day you notice a mistake in the work done. You:",
+          "options": [
+            "Tell whoever needs to know right away, before the job moves on.",
+            "Check everything to see how far the mistake goes.",
+            "Fix it the way I know it gets fixed: I have seen it before.",
+            "Look for a way to put it right without redoing everything."
+          ]
+        },
+        "q6": {
+          "question": "The boss says that from Monday we work in a new way. You:",
+          "options": [
+            "Want to understand what changes compared with how we did it.",
+            "Good: maybe it can be done even better than that.",
+            "Write down the new steps so I do not get them wrong.",
+            "Talk it over with colleagues to see how they see it."
+          ]
+        },
+        "q7": {
+          "question": "There is an urgent job and there are few of you. You:",
+          "options": [
+            "Split the job into parts and see what can be done at the same time.",
+            "Go round the colleagues and we agree who does what.",
+            "Start from the things I do fastest and safest.",
+            "Look for a shortcut nobody has tried yet."
+          ]
+        },
+        "q8": {
+          "question": "You have to explain to a colleague why a job is done a certain way. You:",
+          "options": [
+            "Tell them what happened when it was done differently.",
+            "Say it plainly and make sure they understood.",
+            "Show them the numbers: time, cost, risk.",
+            "Show them with a practical example, there and then."
+          ]
+        },
+        "q9": {
+          "question": "A machine makes a strange noise. You:",
+          "options": [
+            "I know that noise: I know where to look.",
+            "Stop it and check one thing at a time until I find the cause.",
+            "Call someone who knows it better than I do.",
+            "Try changing something and listen whether the noise changes."
+          ]
+        },
+        "q10": {
+          "question": "You are given a task without a clear explanation of what they want. You:",
+          "options": [
+            "Ask until it is clear: better one question too many.",
+            "Work out on my own what is needed, one piece at a time.",
+            "Do it the way that kind of job is usually done.",
+            "Interpret it my own way and propose the result."
+          ]
+        },
+        "q11": {
+          "question": "You find a way to do a job faster. You:",
+          "options": [
+            "Tell the others, so everyone benefits.",
+            "Try it several times first, to be sure it holds up.",
+            "Check it does not go against the safety rules.",
+            "Use it and meanwhile think about how to improve it further."
+          ]
+        },
+        "q12": {
+          "question": "A colleague does a job in a way that looks wrong to you. You:",
+          "options": [
+            "Tell them calmly and hear their reasons.",
+            "Show them how we have always done it.",
+            "Compare the two ways: which costs less time and fewer mistakes?",
+            "Maybe their way has something good: I try to combine the two."
+          ]
+        },
+        "q13": {
+          "question": "The material you need has run out. You:",
+          "options": [
+            "Look at what there is and see if I can use something else.",
+            "Work out how much is really needed and how long I can wait.",
+            "Tell whoever does the orders and organise with them.",
+            "I know where it is usually found: I go and get it."
+          ]
+        },
+        "q14": {
+          "question": "You are asked for an idea to reduce accidents in the department. You:",
+          "options": [
+            "Start from what worked in other places I have worked.",
+            "Look at where and when they happen most often.",
+            "Propose something that does not exist yet, even if it seems odd.",
+            "Ask the colleagues what puts them at risk: they know."
+          ]
+        },
+        "q15": {
+          "question": "You have to hand over a job and you are not sure it came out well. You:",
+          "options": [
+            "Check it point by point before handing it over.",
+            "Ask a colleague to take a look.",
+            "Compare it with how it should be done, by the book.",
+            "Find a way to put it to the test before handing it over."
+          ]
+        },
+        "q16": {
+          "question": "New shift, a crew you do not know. You:",
+          "options": [
+            "Introduce myself, ask how they work and get stuck in.",
+            "Watch how they do things and adapt to their habits.",
+            "Work out who does what and where I can be most useful.",
+            "Bring my own way of working and see if it works with them."
+          ]
+        },
+        "q17": {
+          "question": "A job always goes wrong at the same point. You:",
+          "options": [
+            "Try to understand exactly what happens at that point.",
+            "Change the way it is done and see if it improves.",
+            "Ask those who have done it for years what they do.",
+            "Talk about it with the crew: maybe someone already has the answer."
+          ]
+        },
+        "q18": {
+          "question": "You are offered two new people to train. You:",
+          "options": [
+            "Accept: I like explaining and seeing people learn.",
+            "Accept: I pass on everything I have learnt over the years.",
+            "Prepare a path: first this, then that, with checks.",
+            "Have them try on real things from day one."
+          ]
+        },
+        "q19": {
+          "question": "The boss asks how long a job will take. You:",
+          "options": [
+            "Do the sums on the steps and give a precise number.",
+            "Answer from experience: a job like this usually takes this long.",
+            "Ask what they need it for, so I give a useful answer.",
+            "Suggest a way to do it faster, if they agree to change something."
+          ]
+        },
+        "q20": {
+          "question": "A new tool arrives that nobody knows how to use. You:",
+          "options": [
+            "Try it right away and learn by doing.",
+            "Read the manual or find a video before touching it.",
+            "Understand how it works inside before using it.",
+            "Call the seller and have them explain."
+          ]
+        },
+        "q21": {
+          "question": "At the end of the week the boss asks what could be improved. You:",
+          "options": [
+            "Report what I heard from colleagues, not only my own view.",
+            "Bring the points where we lost the most time.",
+            "Point out what is no longer done by the book.",
+            "Propose something new to try the following week."
+          ]
+        }
+      },
+      "drive": [
+        {
+          "question": "The boss is looking for someone to explain to the new people how the machine is used. Talking in front of others does not come easily to you. You:",
+          "comfort": "Point to the colleague who explains best and prepare the machine and the examples for them: the new people learn sooner.",
+          "stretch": "Put myself forward: the first days I will be awkward and take longer, but I learn to explain."
+        },
+        {
+          "question": "Someone is needed to keep the weekly count of material used: measures, quantities, waste. Numbers are not your favourite part. You:",
+          "comfort": "Leave it to whoever is quicker with numbers and keep the work where I do most: the crew loses no time.",
+          "stretch": "Take it on: the first weeks I will be slow and check everything twice, but then I can do it."
+        },
+        {
+          "question": "There is a two-evening course on the new rules of your trade. Studying has never been your strong point. You:",
+          "comfort": "Skip it: what I need I get explained by whoever goes, and I keep the evenings for the family.",
+          "stretch": "Sign up: two long evenings and theory that weighs on me, but then I know the rules myself."
+        },
+        {
+          "question": "The department is looking for proposals to arrange the workplace your own way. Inventing new things does not come naturally to you. You:",
+          "comfort": "Do not propose: what is there works, and it is not worth making everyone change habits for an unsure idea.",
+          "stretch": "Bring an idea of my own, knowing it may not please or may not work."
+        }
+      ],
+      "driveFinal": {
+        "communication": {
+          "question": "The most important customer wants a daily update, in person. Talking with them puts you on the spot. You:",
+          "comfort": "Ask the boss to handle it: they tell it better, and meanwhile I keep the work moving.",
+          "stretch": "Do it myself, one day at a time: at first I will fumble, but I learn to stand in front of the customer."
+        },
+        "computational_power": {
+          "question": "From Monday a precise time plan is needed for every job: sums and tables, every day. You:",
+          "comfort": "Leave it to whoever is more precise: one wrong sum costs the whole crew.",
+          "stretch": "Do it myself: a few wrong sums at the start are part of the deal."
+        },
+        "knowledge": {
+          "question": "A new machine requires a licence: a month of evening study. You:",
+          "comfort": "Carry on with the machines I know: I get the most out of them, and a month of evenings is a lot.",
+          "stretch": "Get the licence, evenings included."
+        },
+        "creativity": {
+          "question": "The boss leaves it to you to organise a job from scratch, with no instructions. You:",
+          "comfort": "Ask for a procedure to follow: with a guide I do better and make fewer mistakes.",
+          "stretch": "Organise it my own way and take the risk of getting it wrong."
+        }
+      },
+      "open1": "Tell about a time you solved a problem at work in your own way. What did you do and how did it go?",
+      "open2": "Tell about something in your work that you could not do at first and now you can. How did you get there?"
+    },
+    "restaurant": {
+      "title": "Food and hospitality",
+      "subtitle": "Kitchen, dining room, bar, banquets, deliveries.",
+      "questions": {
+        "q1": {
+          "question": "Saturday night, a table of twelve turns up without a booking. You:",
+          "options": [
+            "Count covers and timings and see where to seat them without upsetting the other tables.",
+            "Tell the kitchen and colleagues right away, so we organise ourselves.",
+            "Do what is always done here in these cases: there is a way that works.",
+            "Move two tables, improvise a layout and seat them."
+          ]
+        },
+        "q2": {
+          "question": "A dish comes back: the customer says it is cold. You:",
+          "options": [
+            "Go to the table, apologise and ask what they would prefer.",
+            "Work out where time was lost between kitchen and dining room, so it does not happen again.",
+            "I already know what to do: it is remade and something is offered.",
+            "Suggest an alternative that comes out right away and surprises them."
+          ]
+        },
+        "q3": {
+          "question": "An ingredient for the dish of the day is missing. You:",
+          "options": [
+            "Replace it with what there is and tweak the recipe a little.",
+            "Make the other recipes as I know them: that dish is off today.",
+            "See how many portions I can make with what is left.",
+            "Tell the dining room right away, so they warn the customers."
+          ]
+        },
+        "q4": {
+          "question": "New arrival in the kitchen, first day. You:",
+          "options": [
+            "Explain station and pace myself and keep an eye on them.",
+            "Show them how it is done here, in the order we have always done it.",
+            "Give them the simple tasks first, then the hard ones, step by step.",
+            "Put them straight to work and correct as they go."
+          ]
+        },
+        "q5": {
+          "question": "Table six has been waiting too long. You:",
+          "options": [
+            "Check what is missing in the kitchen and how long it really takes.",
+            "Go to the table, explain and offer something while they wait.",
+            "I know it happens at this hour: I start with the dish that comes out first.",
+            "Send a taster from the kitchen to make the wait pass."
+          ]
+        },
+        "q6": {
+          "question": "The owner changes the menu from Monday. You:",
+          "options": [
+            "Want to know what changes from before, dish by dish.",
+            "Try the new dishes right away, my own way.",
+            "Write down timings and steps of the new dishes.",
+            "Talk it over with colleagues to work out how to organise ourselves."
+          ]
+        },
+        "q7": {
+          "question": "Full house and one person short. You:",
+          "options": [
+            "Split tables and tasks so that nobody is left uncovered.",
+            "We agree on the fly who covers what.",
+            "Start from what I do fastest and safest.",
+            "Change the way of serving to be quicker, even if it is not the usual."
+          ]
+        },
+        "q8": {
+          "question": "You have to explain to a colleague why a dish is plated this way. You:",
+          "options": [
+            "Tell them what happened the last time it was done differently.",
+            "Say it plainly and check they understood.",
+            "Show them timings and waste of the two ways.",
+            "Show them with an example, there and then."
+          ]
+        },
+        "q9": {
+          "question": "The coffee machine makes a strange noise. You:",
+          "options": [
+            "I know it: I know what to check.",
+            "Switch it off and try one thing at a time.",
+            "Call whoever knows it, or the service line.",
+            "Try changing something and listen whether it changes."
+          ]
+        },
+        "q10": {
+          "question": "You are asked to \"sort out the cellar\" without being told how. You:",
+          "options": [
+            "Ask what they mean before starting.",
+            "Work out on my own what is needed, one step at a time.",
+            "Sort it out the way it is usually done.",
+            "Organise it my own way and then show them."
+          ]
+        },
+        "q11": {
+          "question": "You find a way to set the tables faster. You:",
+          "options": [
+            "Tell the others, so everyone does it.",
+            "Try it a few evenings before trusting it.",
+            "Check that nothing the customer expects gets skipped.",
+            "Use it and meanwhile think about how to improve it."
+          ]
+        },
+        "q12": {
+          "question": "A colleague does the portions in a way that looks wrong to you. You:",
+          "options": [
+            "Tell them calmly and hear why.",
+            "Show them the portion as it has always been done.",
+            "Compare the two ways: how much does each cost and how much is left over?",
+            "Maybe their way has something good: I try to combine the two."
+          ]
+        },
+        "q13": {
+          "question": "A customer asks for a dish that is not on the menu. You:",
+          "options": [
+            "See what I can invent with what there is.",
+            "Work out whether I really have the time and ingredients to make it.",
+            "Ask what they like and suggest something similar.",
+            "Recommend the dish I know pleases people who ask for that."
+          ]
+        },
+        "q14": {
+          "question": "You are asked for an idea to waste less food. You:",
+          "options": [
+            "Start from what worked where I worked before.",
+            "Look at what is left over most, and when.",
+            "Propose something nobody does yet.",
+            "Ask kitchen and dining room where they see the waste."
+          ]
+        },
+        "q15": {
+          "question": "You have to send out a dish and you are not sure it came out well. You:",
+          "options": [
+            "Check it piece by piece.",
+            "Ask a colleague to taste it.",
+            "Compare it with how it should be.",
+            "Adjust it on the fly and send it."
+          ]
+        },
+        "q16": {
+          "question": "New shift, a team you do not know. You:",
+          "options": [
+            "Introduce myself and ask how they work.",
+            "Watch how they do things and adapt.",
+            "Work out who does what and where I am most needed.",
+            "Bring my own way and see if it works."
+          ]
+        },
+        "q17": {
+          "question": "A dish always goes wrong at the same step. You:",
+          "options": [
+            "Understand exactly what happens at that step.",
+            "Change the way it is done and see if it improves.",
+            "Ask those who have made it for years.",
+            "Talk about it with the team: maybe someone already has the answer."
+          ]
+        },
+        "q18": {
+          "question": "You are offered two new people to train in the dining room. You:",
+          "options": [
+            "Accept: I like explaining and seeing people learn.",
+            "Accept: I pass on everything I have learnt.",
+            "Prepare a path in stages, with checks.",
+            "Put them on real tables from day one."
+          ]
+        },
+        "q19": {
+          "question": "The owner asks how long a banquet for sixty will take. You:",
+          "options": [
+            "Do the sums on portions and steps and give a precise number.",
+            "Answer from experience: a banquet like this usually takes this long.",
+            "Ask what they need to know, so I give a useful answer.",
+            "Suggest a different menu that is quicker to make."
+          ]
+        },
+        "q20": {
+          "question": "New equipment arrives that nobody knows how to use. You:",
+          "options": [
+            "Try it right away and learn by doing.",
+            "Read the manual or find a video before touching it.",
+            "Understand how it works before using it.",
+            "Call the seller and have them explain."
+          ]
+        },
+        "q21": {
+          "question": "At the end of the week the owner asks what could be improved. You:",
+          "options": [
+            "Report what I heard from colleagues and customers.",
+            "Bring the points where we lost the most time.",
+            "Point out what is no longer done properly.",
+            "Propose something new to try."
+          ]
+        }
+      },
+      "drive": [
+        {
+          "question": "Someone is needed to welcome foreign customers and explain the menu. Talking with people you do not know does not come easily to you. You:",
+          "comfort": "Point to the colleague who is most at ease and keep the part where I perform: service runs smoothly.",
+          "stretch": "Try it myself: the first evenings I will be awkward, but I learn to stand in front of the customer."
+        },
+        {
+          "question": "Someone is needed to keep the weekly count of stock and orders. Numbers are not your favourite part. You:",
+          "comfort": "Leave it to whoever is quicker with numbers and keep the service, where I do most.",
+          "stretch": "Take it on: the first weeks I will be slow and check twice, but then I can do it."
+        },
+        {
+          "question": "There is a two-evening course on food safety. Studying has never been your strong point. You:",
+          "comfort": "Skip it: I get it explained by whoever goes, and I keep the evenings for myself.",
+          "stretch": "Sign up: long evenings and theory that weighs on me, but then I know it myself."
+        },
+        {
+          "question": "They are looking for a new dish for the menu of the month. Inventing does not come naturally to you. You:",
+          "comfort": "Do not propose: the dishes we have work, and it is not worth risking it for an unsure idea.",
+          "stretch": "Try proposing one of my own, knowing it may not please."
+        }
+      ],
+      "driveFinal": {
+        "communication": {
+          "question": "The most important regular wants to talk every time with whoever cooked or served. You:",
+          "comfort": "Ask the owner to handle it: they know how, and I keep the service moving.",
+          "stretch": "Go myself, a little at a time: at first I will fumble, but I learn."
+        },
+        "computational_power": {
+          "question": "From Monday a precise count of costs and portions is needed for every dish. You:",
+          "comfort": "Leave it to whoever is more precise: one wrong count costs the whole place.",
+          "stretch": "Do it myself: a few mistakes at the start are part of the deal."
+        },
+        "knowledge": {
+          "question": "A new oven requires a month-long evening course. You:",
+          "comfort": "Carry on with what I know: I get the most out of it, and a month of evenings is a lot.",
+          "stretch": "Do the course, evenings included."
+        },
+        "creativity": {
+          "question": "The owner leaves the menu of one evening to you, from scratch. You:",
+          "comfort": "Ask for a guideline to follow: with a base I do better and make fewer mistakes.",
+          "stretch": "Invent it myself and take the risk."
+        }
+      },
+      "open1": "Tell about a time you solved a problem in the kitchen or dining room in your own way. What did you do and how did it go?",
+      "open2": "Tell about something in your work that you could not do at first and now you can. How did you get there?"
     }
   }
 }

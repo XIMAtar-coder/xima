@@ -58,7 +58,9 @@ const FIELD_CONTEXTS: Record<string, string> = {
   science_tech: 'science, technology, engineering, data analysis, and technical problem-solving',
   business_leadership: 'business strategy, leadership, management, and organizational development',
   arts_creative: 'creative arts, design, storytelling, and artistic expression',
-  service_ops: 'service delivery, operations, customer experience, and process optimization'
+  service_ops: 'service delivery, operations, customer experience, and process optimization',
+  trades_operations: 'hands-on trades: building sites, workshops, warehouses, plants, maintenance and safety',
+  restaurant: 'food and hospitality: kitchen, dining room, bar, banquets and customer service',
 };
 
 const MAX_ANSWER_LENGTH = 5000;

@@ -1207,7 +1207,18 @@
     "listen_stop": "Ferma",
     "dictate": "Rispondi a voce",
     "dictate_stop": "Ferma la dettatura",
-    "option_spoken": "Risposta {{letter}}"
+    "option_spoken": "Risposta {{letter}}",
+    "v2_mc_hint": "Scegli quella che faresti davvero. Poi, se vuoi, di’ quanto ti somiglia.",
+    "v2_intensity_prompt": "Quanto ti somiglia?",
+    "v2_intensity_1": "Un po’",
+    "v2_intensity_2": "Abbastanza",
+    "v2_intensity_3": "Molto",
+    "v2_drive_tag": "Una scelta con un costo da entrambe le parti",
+    "v2_drive_hint": "Sono tutte e due scelte da persona seria. Scegli quella che faresti davvero.",
+    "v2_final_drive_tag": "L’ultima · sul lato che hai scelto meno",
+    "v2_progress": "{{n}} di {{total}}",
+    "finish": "Concludi",
+    "v2_scenario": "Scenario {{n}}"
   },
   "results": {
     "title": "I tuoi risultati",
@@ -4413,6 +4424,14 @@
     "service_ops": {
       "title": "Servizi e operations",
       "desc": "Sanità, istruzione, hospitality, settore pubblico, supporto."
+    },
+    "trades_operations": {
+      "title": "Mestieri e lavoro operativo",
+      "desc": "Cantiere, officina, magazzino, impianti, campagna."
+    },
+    "restaurant": {
+      "title": "Ristorazione",
+      "desc": "Cucina, sala, bar, banchetti, consegne."
     }
   },
   "professionals": {
@@ -7580,51 +7599,535 @@
   "ximatar": {
     "bear": {
       "name": "Orso",
-      "title": "Solidità e protezione"
+      "title": "Solido, silenzioso"
     },
     "bee": {
       "name": "Ape",
-      "title": "Contributo e collaborazione"
+      "title": "Metodica, segue il procedimento"
     },
     "cat": {
       "name": "Gatto",
-      "title": "Specializzazione e autonomia"
+      "title": "Preciso e autonomo, parla poco"
     },
     "chameleon": {
       "name": "Camaleonte",
-      "title": "Adattamento e versatilità"
+      "title": "Inventa e si adatta in silenzio"
     },
     "dolphin": {
       "name": "Delfino",
-      "title": "Coesione del gruppo"
+      "title": "Gioca e inventa, non calcola"
     },
     "elephant": {
       "name": "Elefante",
-      "title": "Esperienza e memoria"
+      "title": "Memoria ed esperienza"
     },
     "fox": {
       "name": "Volpe",
-      "title": "Agilità e intuizione"
+      "title": "Intuisce, non studia"
     },
     "horse": {
       "name": "Cavallo",
-      "title": "Costanza e determinazione"
+      "title": "Fa e va, senza teoria"
     },
     "lion": {
       "name": "Leone",
-      "title": "Guida e decisione"
+      "title": "Guida e delega il sapere"
     },
     "owl": {
       "name": "Gufo",
-      "title": "Pensiero analitico"
+      "title": "Analizza e ragiona, non improvvisa"
     },
     "parrot": {
       "name": "Pappagallo",
-      "title": "Comunicazione e carisma"
+      "title": "Convince, non conta"
     },
     "wolf": {
       "name": "Lupo",
-      "title": "Strategia di squadra"
+      "title": "Il branco, con schemi collaudati"
+    }
+  },
+  "assessmentV2": {
+    "trades_operations": {
+      "title": "Mestieri e lavoro operativo",
+      "subtitle": "Cantiere, officina, magazzino, impianti, campagna. Da leggere prima di toccare codice e sigillo.",
+      "questions": {
+        "q1": {
+          "question": "Un attrezzo si rompe a metà lavoro e il ricambio arriva domani. Tu:",
+          "options": [
+            "Guardo cosa posso finire oggi senza quell'attrezzo e riorganizzo la giornata.",
+            "Avviso subito il capo e i colleghi, così decidiamo insieme cosa fare.",
+            "Faccio come si è sempre fatto in questi casi: c'è un modo che funziona.",
+            "Mi arrangio con un altro attrezzo, adattandolo."
+          ]
+        },
+        "q2": {
+          "question": "Arriva un collega nuovo e non sa da dove cominciare. Tu:",
+          "options": [
+            "Gli spiego io il lavoro, passo per passo, e resto a disposizione.",
+            "Gli do una lista ordinata di cose da fare, dalla più semplice.",
+            "Gli mostro come si fa qui, secondo le regole del posto.",
+            "Lo lascio provare a modo suo e intervengo se serve."
+          ]
+        },
+        "q3": {
+          "question": "Il cliente chiede una cosa che secondo te non si può fare così. Tu:",
+          "options": [
+            "Gli spiego come si fa di solito e perché.",
+            "Gli chiedo cosa vuole ottenere davvero, poi ne parliamo.",
+            "Faccio due conti e gli mostro cosa succederebbe.",
+            "Cerco un modo diverso per dargli quello che vuole."
+          ]
+        },
+        "q4": {
+          "question": "Devi montare una cosa che non hai mai montato. Tu:",
+          "options": [
+            "Provo, guardo come reagisce e correggo.",
+            "Cerco le istruzioni o chi l'ha già fatto.",
+            "Studio i pezzi e capisco l'ordine giusto prima di iniziare.",
+            "Chiamo un collega e lo facciamo insieme."
+          ]
+        },
+        "q5": {
+          "question": "A fine giornata ti accorgi di un errore nel lavoro fatto. Tu:",
+          "options": [
+            "Lo dico subito a chi di dovere, prima che il lavoro vada avanti.",
+            "Controllo tutto per capire fin dove arriva l'errore.",
+            "Lo sistemo come so che va sistemato: l'ho già visto.",
+            "Cerco un modo per rimediare senza rifare tutto."
+          ]
+        },
+        "q6": {
+          "question": "Il capo dice che da lunedì si lavora in un modo nuovo. Tu:",
+          "options": [
+            "Voglio capire cosa cambia rispetto a come facevamo.",
+            "Bene: magari si può fare anche meglio di così.",
+            "Mi segno i passaggi nuovi per non sbagliare.",
+            "Ne parlo con i colleghi per capire come la vedono."
+          ]
+        },
+        "q7": {
+          "question": "C'è un lavoro urgente e siete in pochi. Tu:",
+          "options": [
+            "Divido il lavoro in parti e vedo cosa si può fare in contemporanea.",
+            "Faccio il giro dei colleghi e ci mettiamo d'accordo su chi fa cosa.",
+            "Parto dalle cose che so fare più in fretta e sicure.",
+            "Cerco una scorciatoia che nessuno ha ancora provato."
+          ]
+        },
+        "q8": {
+          "question": "Devi spiegare a un collega perché un lavoro va fatto in un certo modo. Tu:",
+          "options": [
+            "Gli racconto cosa è successo quando è stato fatto diversamente.",
+            "Glielo dico chiaro e mi assicuro che abbia capito.",
+            "Gli mostro i numeri: tempi, costi, rischi.",
+            "Glielo faccio vedere con un esempio pratico, lì per lì."
+          ]
+        },
+        "q9": {
+          "question": "Una macchina fa un rumore strano. Tu:",
+          "options": [
+            "Quel rumore lo conosco: so dove guardare.",
+            "La fermo e controllo una cosa alla volta finché trovo la causa.",
+            "Chiamo chi la conosce meglio di me.",
+            "Provo a cambiare qualcosa e sento se il rumore cambia."
+          ]
+        },
+        "q10": {
+          "question": "Ti danno un compito senza spiegarti bene cosa vogliono. Tu:",
+          "options": [
+            "Chiedo finché non è chiaro: meglio una domanda in più.",
+            "Ricostruisco da solo cosa serve, un pezzo alla volta.",
+            "Faccio come si fa di solito con quel tipo di lavoro.",
+            "Lo interpreto a modo mio e propongo il risultato."
+          ]
+        },
+        "q11": {
+          "question": "Trovi un modo per fare un lavoro più in fretta. Tu:",
+          "options": [
+            "Lo racconto agli altri, così ne approfittano tutti.",
+            "Prima lo provo più volte, per essere sicuro che regga.",
+            "Controllo che non vada contro le regole di sicurezza.",
+            "Lo uso e intanto penso a come migliorarlo ancora."
+          ]
+        },
+        "q12": {
+          "question": "Un collega fa un lavoro in un modo che ti sembra sbagliato. Tu:",
+          "options": [
+            "Glielo dico con calma e sento le sue ragioni.",
+            "Gli faccio vedere come lo abbiamo sempre fatto.",
+            "Confronto i due modi: quale costa meno tempo ed errori?",
+            "Magari il suo modo ha qualcosa di buono: provo a unire i due."
+          ]
+        },
+        "q13": {
+          "question": "Il materiale che ti serve è finito. Tu:",
+          "options": [
+            "Guardo cosa c'è e vedo se posso usare qualcos'altro.",
+            "Calcolo quanto ne serve davvero e quanto posso aspettare.",
+            "Avviso chi fa gli ordini e mi organizzo con lui.",
+            "So dove se ne trova di solito: vado a prenderlo."
+          ]
+        },
+        "q14": {
+          "question": "Ti chiedono un'idea per ridurre gli incidenti nel reparto. Tu:",
+          "options": [
+            "Parto da quello che ha funzionato in altri posti dove ho lavorato.",
+            "Guardo dove e quando succedono più spesso.",
+            "Propongo qualcosa che non c'è ancora, anche se sembra strano.",
+            "Chiedo ai colleghi cosa li mette a rischio: loro lo sanno."
+          ]
+        },
+        "q15": {
+          "question": "Devi consegnare un lavoro e non sei sicuro che sia venuto bene. Tu:",
+          "options": [
+            "Lo ricontrollo punto per punto prima di consegnarlo.",
+            "Chiedo a un collega di darci un'occhiata.",
+            "Lo confronto con come deve essere fatto a regola d'arte.",
+            "Cerco un modo per metterlo alla prova prima di consegnarlo."
+          ]
+        },
+        "q16": {
+          "question": "Nuovo turno, squadra che non conosci. Tu:",
+          "options": [
+            "Mi presento, chiedo come lavorano e mi metto in mezzo.",
+            "Guardo come fanno e mi adeguo alle loro abitudini.",
+            "Capisco chi fa cosa e dove posso essere più utile.",
+            "Porto il mio modo di fare e vediamo se funziona con loro."
+          ]
+        },
+        "q17": {
+          "question": "Un lavoro viene sempre male allo stesso punto. Tu:",
+          "options": [
+            "Cerco di capire cosa succede esattamente in quel punto.",
+            "Cambio il modo di farlo e vedo se migliora.",
+            "Chiedo a chi lo fa da più anni cosa fanno loro.",
+            "Ne parlo in squadra: forse qualcuno ha già la soluzione."
+          ]
+        },
+        "q18": {
+          "question": "Ti propongono di seguire due nuovi. Tu:",
+          "options": [
+            "Accetto: mi piace spiegare e vedere che imparano.",
+            "Accetto: gli passo tutto quello che ho imparato negli anni.",
+            "Preparo un percorso: prima questo, poi quello, con dei controlli.",
+            "Li faccio provare su cose vere fin dal primo giorno."
+          ]
+        },
+        "q19": {
+          "question": "Il capo ti chiede quanto tempo ci vuole per un lavoro. Tu:",
+          "options": [
+            "Faccio i conti sui passaggi e do un numero preciso.",
+            "Rispondo con l'esperienza: un lavoro così di solito ci mette tanto.",
+            "Gli chiedo cosa serve a lui, così gli do una risposta utile.",
+            "Gli propongo un modo per farlo più in fretta, se accetta di cambiare qualcosa."
+          ]
+        },
+        "q20": {
+          "question": "Arriva un attrezzo nuovo che nessuno sa usare. Tu:",
+          "options": [
+            "Lo provo subito e imparo facendo.",
+            "Leggo il libretto o cerco un video prima di toccarlo.",
+            "Capisco come funziona dentro prima di usarlo.",
+            "Chiamo chi lo vende e mi faccio spiegare."
+          ]
+        },
+        "q21": {
+          "question": "A fine settimana il capo chiede cosa si può migliorare. Tu:",
+          "options": [
+            "Riporto quello che ho sentito dai colleghi, non solo il mio.",
+            "Porto i punti dove abbiamo perso più tempo.",
+            "Segnalo quello che non si fa più a regola d'arte.",
+            "Propongo una cosa nuova da provare la settimana dopo."
+          ]
+        }
+      },
+      "drive": [
+        {
+          "question": "Il capo cerca qualcuno che spieghi ai nuovi come si usa la macchina. Parlare davanti agli altri non ti riesce facile. Tu:",
+          "comfort": "Indico il collega che spiega meglio e gli preparo io la macchina e gli esempi: i nuovi imparano prima.",
+          "stretch": "Mi propongo io: i primi giorni sarò impacciato e ci metterò di più, ma imparo a spiegare."
+        },
+        {
+          "question": "Serve qualcuno che tenga i conti del materiale usato ogni settimana: misure, quantità, scarti. I numeri non sono la tua parte preferita. Tu:",
+          "comfort": "Lo lascio a chi è più veloce coi numeri e tengo il lavoro dove rendo di più: la squadra non perde tempo.",
+          "stretch": "Lo prendo io: le prime settimane sarò lento e controllerò tutto due volte, ma poi lo so fare."
+        },
+        {
+          "question": "C'è un corso di due sere sulle nuove norme del vostro lavoro. Studiare non è mai stato il tuo forte. Tu:",
+          "comfort": "Passo: quello che serve me lo faccio spiegare da chi ci va, e le sere le tengo per la famiglia.",
+          "stretch": "Mi iscrivo: due sere lunghe e teoria che mi pesa, ma poi le norme le conosco io."
+        },
+        {
+          "question": "Nel reparto cercano proposte per sistemare il posto di lavoro a modo vostro. Inventare cose nuove non ti viene naturale. Tu:",
+          "comfort": "Non propongo: quello che c'è funziona, e non vale far cambiare abitudini a tutti per un'idea non sicura.",
+          "stretch": "Porto un'idea mia, sapendo che può non piacere o non funzionare."
+        }
+      ],
+      "driveFinal": {
+        "communication": {
+          "question": "Il cliente più importante vuole essere aggiornato ogni giorno, di persona. Parlare con lui ti mette in difficoltà. Tu:",
+          "comfort": "Chiedo che se ne occupi il capo: lui lo racconta meglio, io intanto faccio andare avanti il lavoro.",
+          "stretch": "Lo faccio io, un giorno alla volta: all'inizio andrò a tentoni, ma imparo a stare davanti al cliente."
+        },
+        "computational_power": {
+          "question": "Da lunedì serve un piano preciso dei tempi per ogni lavoro: conti e tabelle, ogni giorno. Tu:",
+          "comfort": "Lo lascio a chi è più preciso: un conto sbagliato lo paga tutta la squadra.",
+          "stretch": "Lo faccio io: qualche conto sbagliato all'inizio lo metto in conto."
+        },
+        "knowledge": {
+          "question": "Un macchinario nuovo richiede un patentino: un mese di studio la sera. Tu:",
+          "comfort": "Continuo con le macchine che conosco: quelle le faccio rendere al massimo, e un mese di sere è tanto.",
+          "stretch": "Prendo il patentino, sere comprese."
+        },
+        "creativity": {
+          "question": "Il capo lascia a te decidere come organizzare un lavoro da zero, senza istruzioni. Tu:",
+          "comfort": "Chiedo una procedura da seguire: con una traccia rendo meglio e sbaglio meno.",
+          "stretch": "Lo organizzo a modo mio e mi prendo il rischio di sbagliare."
+        }
+      },
+      "open1": "Racconta una volta in cui hai risolto un problema sul lavoro in un modo tuo. Cosa hai fatto e come è andata?",
+      "open2": "Racconta una cosa del tuo lavoro che all'inizio non ti riusciva e adesso sì. Come ci sei arrivato?"
+    },
+    "restaurant": {
+      "title": "Ristorazione",
+      "subtitle": "Cucina, sala, bar, banchetti, consegne. Da leggere prima di toccare codice e sigillo.",
+      "questions": {
+        "q1": {
+          "question": "Sabato sera, arriva un tavolo da dodici senza prenotazione. Tu:",
+          "options": [
+            "Conto i coperti e i tempi e vedo dove farli stare senza far saltare gli altri tavoli.",
+            "Avviso subito cucina e colleghi, così ci organizziamo.",
+            "Faccio come si fa sempre qui in questi casi: c'è un modo che funziona.",
+            "Sposto due tavoli, invento una sistemazione e li faccio sedere."
+          ]
+        },
+        "q2": {
+          "question": "Un piatto torna indietro: il cliente dice che è freddo. Tu:",
+          "options": [
+            "Vado al tavolo, mi scuso e chiedo cosa preferisce.",
+            "Capisco dove si è perso tempo tra cucina e sala, per non rifarlo.",
+            "So già cosa fare: si rifà e si offre qualcosa.",
+            "Propongo un'alternativa che esce subito e lo sorprende."
+          ]
+        },
+        "q3": {
+          "question": "Manca un ingrediente per il piatto del giorno. Tu:",
+          "options": [
+            "Lo sostituisco con quello che c'è e cambio un po' la ricetta.",
+            "Faccio le altre ricette come le conosco: quel piatto oggi salta.",
+            "Vedo quante porzioni posso fare con quello che resta.",
+            "Lo dico subito alla sala, così avvisano i clienti."
+          ]
+        },
+        "q4": {
+          "question": "Nuovo arrivato in cucina, primo giorno. Tu:",
+          "options": [
+            "Gli spiego io postazione e ritmi e lo tengo d'occhio.",
+            "Gli mostro come si fa qui, nell'ordine in cui lo abbiamo sempre fatto.",
+            "Gli do prima i compiti semplici, poi quelli difficili, a scalare.",
+            "Lo metto subito a fare e correggo mentre lavora."
+          ]
+        },
+        "q5": {
+          "question": "Il tavolo sei aspetta da troppo. Tu:",
+          "options": [
+            "Controllo cosa manca in cucina e quanto ci vuole davvero.",
+            "Vado al tavolo, spiego e offro qualcosa nell'attesa.",
+            "So che a quest'ora succede: parto dal piatto che esce prima.",
+            "Mando un assaggio dalla cucina per far passare l'attesa."
+          ]
+        },
+        "q6": {
+          "question": "Il titolare cambia il menù da lunedì. Tu:",
+          "options": [
+            "Voglio sapere cosa cambia rispetto a prima, piatto per piatto.",
+            "Provo subito i piatti nuovi a modo mio.",
+            "Mi segno tempi e passaggi dei piatti nuovi.",
+            "Ne parlo con i colleghi per capire come organizzarci."
+          ]
+        },
+        "q7": {
+          "question": "Serata piena e una persona in meno. Tu:",
+          "options": [
+            "Divido tavoli e compiti in modo che nessuno resti scoperto.",
+            "Ci mettiamo d'accordo al volo su chi copre cosa.",
+            "Parto da quello che so fare più in fretta e sicuro.",
+            "Cambio il modo di servire per fare prima, anche se non è il solito."
+          ]
+        },
+        "q8": {
+          "question": "Devi spiegare a un collega perché un piatto si impiatta così. Tu:",
+          "options": [
+            "Gli racconto cos'è successo l'ultima volta che è stato fatto diversamente.",
+            "Glielo dico chiaro e guardo che abbia capito.",
+            "Gli mostro tempi e sprechi dei due modi.",
+            "Glielo faccio vedere con un esempio, lì per lì."
+          ]
+        },
+        "q9": {
+          "question": "La macchina del caffè fa un rumore strano. Tu:",
+          "options": [
+            "Lo conosco: so cosa controllare.",
+            "La spengo e provo una cosa alla volta.",
+            "Chiamo chi la conosce o l'assistenza.",
+            "Provo a cambiare qualcosa e sento se cambia."
+          ]
+        },
+        "q10": {
+          "question": "Ti chiedono di «sistemare la cantina» senza dire come. Tu:",
+          "options": [
+            "Chiedo cosa intendono prima di iniziare.",
+            "Ragiono da solo su cosa serve, un passo alla volta.",
+            "La sistemo come si fa di solito.",
+            "La organizzo a modo mio e poi faccio vedere."
+          ]
+        },
+        "q11": {
+          "question": "Trovi un modo per preparare i tavoli più in fretta. Tu:",
+          "options": [
+            "Lo dico agli altri, così lo fanno tutti.",
+            "Lo provo qualche sera prima di fidarmi.",
+            "Controllo che non salti niente di quello che il cliente si aspetta.",
+            "Lo uso e intanto penso a come migliorarlo."
+          ]
+        },
+        "q12": {
+          "question": "Un collega fa le porzioni in un modo che ti sembra sbagliato. Tu:",
+          "options": [
+            "Glielo dico con calma e sento perché.",
+            "Gli faccio vedere la porzione come si è sempre fatta.",
+            "Confronto i due modi: quanto costa e quanto avanza?",
+            "Magari il suo modo ha qualcosa di buono: provo a unire i due."
+          ]
+        },
+        "q13": {
+          "question": "Un cliente chiede un piatto che non c'è. Tu:",
+          "options": [
+            "Vedo cosa posso inventare con quello che c'è.",
+            "Capisco se ho tempo e ingredienti per farlo davvero.",
+            "Gli chiedo cosa gli piace e gli propongo qualcosa di simile.",
+            "Gli consiglio il piatto che so che piace a chi chiede quello."
+          ]
+        },
+        "q14": {
+          "question": "Ti chiedono un'idea per sprecare meno cibo. Tu:",
+          "options": [
+            "Parto da quello che funzionava dove ho lavorato prima.",
+            "Guardo cosa avanza di più e quando.",
+            "Propongo qualcosa che nessuno fa ancora.",
+            "Chiedo a cucina e sala dove vedono lo spreco."
+          ]
+        },
+        "q15": {
+          "question": "Devi mandare fuori un piatto e non sei sicuro che sia venuto bene. Tu:",
+          "options": [
+            "Lo ricontrollo pezzo per pezzo.",
+            "Chiedo a un collega di assaggiare.",
+            "Lo confronto con come dev'essere.",
+            "Lo aggiusto al volo e lo mando."
+          ]
+        },
+        "q16": {
+          "question": "Nuovo turno, squadra che non conosci. Tu:",
+          "options": [
+            "Mi presento e chiedo come lavorano.",
+            "Guardo come fanno e mi adeguo.",
+            "Capisco chi fa cosa e dove servo di più.",
+            "Porto il mio modo e vedo se funziona."
+          ]
+        },
+        "q17": {
+          "question": "Un piatto esce sempre male allo stesso passaggio. Tu:",
+          "options": [
+            "Capisco cosa succede esattamente in quel passaggio.",
+            "Cambio il modo di farlo e vedo se migliora.",
+            "Chiedo a chi lo fa da anni.",
+            "Ne parlo in squadra: forse qualcuno ha già la soluzione."
+          ]
+        },
+        "q18": {
+          "question": "Ti propongono di seguire due nuovi in sala. Tu:",
+          "options": [
+            "Accetto: mi piace spiegare e vedere che imparano.",
+            "Accetto: gli passo tutto quello che ho imparato.",
+            "Preparo un percorso a tappe, con dei controlli.",
+            "Li metto ai tavoli veri dal primo giorno."
+          ]
+        },
+        "q19": {
+          "question": "Il titolare chiede quanto ci vuole per un banchetto da sessanta. Tu:",
+          "options": [
+            "Faccio i conti su porzioni e passaggi e do un numero preciso.",
+            "Rispondo con l'esperienza: un banchetto così di solito ci mette tanto.",
+            "Gli chiedo cosa gli serve sapere, così gli do una risposta utile.",
+            "Gli propongo un menù diverso che si fa più in fretta."
+          ]
+        },
+        "q20": {
+          "question": "Arriva un'attrezzatura nuova che nessuno sa usare. Tu:",
+          "options": [
+            "La provo subito e imparo facendo.",
+            "Leggo il libretto o cerco un video prima di toccarla.",
+            "Capisco come funziona prima di usarla.",
+            "Chiamo chi l'ha venduta e mi faccio spiegare."
+          ]
+        },
+        "q21": {
+          "question": "A fine settimana il titolare chiede cosa si può migliorare. Tu:",
+          "options": [
+            "Riporto quello che ho sentito da colleghi e clienti.",
+            "Porto i punti dove abbiamo perso più tempo.",
+            "Segnalo quello che non si fa più come si deve.",
+            "Propongo una cosa nuova da provare."
+          ]
+        }
+      },
+      "drive": [
+        {
+          "question": "Serve qualcuno che accolga i clienti stranieri e spieghi il menù. Parlare con chi non conosci non ti riesce facile. Tu:",
+          "comfort": "Indico il collega più a suo agio e mi tengo la parte dove rendo: il servizio fila.",
+          "stretch": "Provo io: le prime sere sarò impacciato, ma imparo a stare davanti al cliente."
+        },
+        {
+          "question": "Serve qualcuno che tenga i conti di scorte e ordini della settimana. I numeri non sono la tua parte preferita. Tu:",
+          "comfort": "Lo lascio a chi è più veloce coi numeri e tengo il servizio, dove rendo di più.",
+          "stretch": "Lo prendo io: le prime settimane sarò lento e controllerò due volte, ma poi lo so fare."
+        },
+        {
+          "question": "C'è un corso di due sere sulla sicurezza alimentare. Studiare non è mai stato il tuo forte. Tu:",
+          "comfort": "Passo: me lo faccio spiegare da chi ci va, e le sere le tengo per me.",
+          "stretch": "Mi iscrivo: sere lunghe e teoria che pesa, ma poi lo so io."
+        },
+        {
+          "question": "Cercano un piatto nuovo per il menù del mese. Inventare non ti viene naturale. Tu:",
+          "comfort": "Non propongo: i piatti che ci sono funzionano, e non vale rischiare per un'idea non sicura.",
+          "stretch": "Provo a proporne uno mio, sapendo che può non piacere."
+        }
+      ],
+      "driveFinal": {
+        "communication": {
+          "question": "Il cliente abituale più importante vuole parlare ogni volta con chi ha cucinato o servito. Tu:",
+          "comfort": "Chiedo al titolare di occuparsene: lui lo sa fare, io mando avanti il servizio.",
+          "stretch": "Ci vado io, un po' alla volta: all'inizio andrò a tentoni, ma imparo."
+        },
+        "computational_power": {
+          "question": "Da lunedì serve un conto preciso di costi e porzioni per ogni piatto. Tu:",
+          "comfort": "Lo lascio a chi è più preciso: un conto sbagliato lo paga tutto il locale.",
+          "stretch": "Lo faccio io: qualche errore all'inizio lo metto in conto."
+        },
+        "knowledge": {
+          "question": "Un forno nuovo richiede un corso di un mese la sera. Tu:",
+          "comfort": "Continuo con quello che conosco: quello lo faccio rendere, e un mese di sere è tanto.",
+          "stretch": "Faccio il corso, sere comprese."
+        },
+        "creativity": {
+          "question": "Il titolare lascia a te il menù di una serata, da zero. Tu:",
+          "comfort": "Chiedo una traccia da seguire: con una base rendo meglio e sbaglio meno.",
+          "stretch": "Lo invento io e mi prendo il rischio."
+        }
+      },
+      "open1": "Racconta una volta in cui hai risolto un problema in cucina o in sala in un modo tuo. Cosa hai fatto e come è andata?",
+      "open2": "Racconta una cosa del tuo lavoro che all'inizio non ti riusciva e adesso sì. Come ci sei arrivato?"
     }
   }
 }
