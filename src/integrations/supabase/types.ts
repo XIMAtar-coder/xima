@@ -4482,6 +4482,7 @@ export type Database = {
           business_id: string
           business_interested_at: string | null
           candidate_accepted_at: string | null
+          candidate_user_id: string | null
           candidate_ximatar_id: string
           chat_thread_id: string | null
           created_at: string | null
@@ -4494,6 +4495,7 @@ export type Database = {
           business_id: string
           business_interested_at?: string | null
           candidate_accepted_at?: string | null
+          candidate_user_id?: string | null
           candidate_ximatar_id: string
           chat_thread_id?: string | null
           created_at?: string | null
@@ -4506,6 +4508,7 @@ export type Database = {
           business_id?: string
           business_interested_at?: string | null
           candidate_accepted_at?: string | null
+          candidate_user_id?: string | null
           candidate_ximatar_id?: string
           chat_thread_id?: string | null
           created_at?: string | null
