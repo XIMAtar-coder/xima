@@ -9129,5 +9129,748 @@
     "facts_line": "Sui fatti: {{attempts}} tentativi sui livelli difficili, {{retries}} riprove dopo un fallimento.",
     "how_to": "Tocca una tessera per girarla. Il livello è fatto quando ogni tubo incontra il vicino e nessuno punta fuori.",
     "how_to_timed": "Questo livello è a tempo."
+  },
+  "pauses": {
+    "common": {
+      "chip": "Pausa · una cosa vera",
+      "breathe": "Stacchiamo un attimo dalle domande.",
+      "calm": "Con calma. Puoi anche saltare.",
+      "skip": "Salta pausa",
+      "continue": "Continua",
+      "done_text": "Non era una domanda e non c’è un voto: serve a vedere come ti muovi quando la situazione è concreta.",
+      "back_to_questions": "Torniamo alle domande: ne mancano {{count}}."
+    },
+    "van": {
+      "note_title": "Prelievo",
+      "col_item": "Materiale",
+      "col_qty": "Qtà",
+      "col_onboard": "A bordo",
+      "bed": "Pianale",
+      "bed_sub": "Vista dall’alto · porte in basso",
+      "warehouse": "A magazzino",
+      "warehouse_sub": "Trascina un pezzo alla volta",
+      "hint": "Trascina sul pianale, oppure tocca un pezzo e poi il pianale. Tocca un pezzo a bordo per scaricarlo.",
+      "unload": "Scarica",
+      "no_room": "Non ci sta. Il superfluo occupa lo spazio del necessario.",
+      "close": "Chiudi il carico"
+    },
+    "handover": {
+      "knows": "{{name}} sa già",
+      "draft": "Il tuo messaggio · bozza",
+      "lines": "righe",
+      "drop_here": "Trascina qui una riga",
+      "remove": "Togli",
+      "pieces": "Pezzi di messaggio",
+      "pieces_sub": "Scegli cosa gli manca sapere",
+      "full": "Tre righe al massimo: togline una per cambiarla.",
+      "send": "Invia a {{name}}"
+    },
+    "stock": {
+      "jobs": "I lavori di oggi",
+      "jobs_sub": "Un’unità alla volta",
+      "pallet": "Sul bancale",
+      "pallet_sub": "Etichette in vista",
+      "drop_here": "Trascina qui",
+      "remove": "Rimetti sul bancale",
+      "open_label": "Leggi l’etichetta",
+      "label_hint": "Tutto quello che serve è sull’etichetta. Tocca un prodotto per leggerla o ascoltarla.",
+      "none_left": "Sul bancale non ce n’è più.",
+      "ready": "Materiale pronto"
+    },
+    "yard": {
+      "plan_sub": "Trascina per disporre · tocca per ruotare",
+      "tray": "Da sistemare",
+      "rotate_hint": "Trascina un modulo sulla pianta; un tocco lo ruota. Riportalo sotto per toglierlo.",
+      "save": "Salva disposizione",
+      "saved_n": "Soluzione {{n}}",
+      "gallery": "Le tue disposizioni",
+      "gallery_empty": "Nessuna ancora. Ci sono più modi: trova il tuo.",
+      "done": "Fatto",
+      "new_need_title": "Nuova esigenza · domani",
+      "no_room": "Lì non ci sta: sopra qualcosa, o dentro la fascia.",
+      "not_all_placed": "Mancano moduli da sistemare.",
+      "same_family": "Questa è già salvata. Cambia davvero qualcosa: un modulo da un’altra parte.",
+      "saved_ok": "Salvata."
+    },
+    "fields": {
+      "trades_operations": {
+        "done_title": "Fatto. Era una cosa da cantiere.",
+        "van": {
+          "title": "Il furgone",
+          "lead": "Carica quello che serve domani.",
+          "sub": "Segui la bolla e trova posto per tutto.",
+          "doc_ref": "N. 0284",
+          "doc_place": "Cantiere via Roma · bagno piano terra",
+          "items": {
+            "adhesive": "Colla per piastrelle · 25 kg",
+            "tiles": "Piastrelle 60×60 · pacco",
+            "boards": "Tavole · 2 m",
+            "mixer": "Betoniera piccola",
+            "ladder": "Scala",
+            "buckets": "Secchi",
+            "trestle": "Cavalletto"
+          }
+        },
+        "handover": {
+          "title": "Il messaggio al turno dopo",
+          "lead": "Sono le 17, stai andando via.",
+          "sub": "Lascia a Luca un messaggio: al massimo tre righe.",
+          "name": "Luca",
+          "role": "passaggio di turno · via Roma",
+          "request": "Domani arrivo alle 7. Mi lasci scritto cosa c’è da fare?",
+          "situation": "Il cliente passa alle 10. Il pavimento del bagno è da finire. Le piastrelle sono nel furgone. Il capo domani non c’è; la chiave è sotto lo zerbino.",
+          "pieces": {
+            "client": "Cliente alle 10",
+            "floor": "Pavimento bagno da finire",
+            "material": "Piastrelle nel furgone",
+            "boss": "Il capo non c’è",
+            "key": "Chiave sotto lo zerbino",
+            "goodluck": "Buon lavoro!",
+            "bye": "Ciao"
+          }
+        },
+        "stock": {
+          "title": "Il magazzino",
+          "lead": "Prepara il materiale per i tre lavori.",
+          "sub": "Uso e quantità sono scritti sulle etichette.",
+          "jobs": {
+            "job1": {
+              "name": "Piastrelle del bagno",
+              "meta": "8 m² · interno"
+            },
+            "job2": {
+              "name": "Intonaco muro esterno",
+              "meta": "6 m² · esterno"
+            },
+            "job3": {
+              "name": "Pavimento garage",
+              "meta": "10 m² · livellare, 3 mm"
+            }
+          },
+          "products": {
+            "p1": {
+              "name": "Colla C2TE",
+              "l1": "Per la posa di piastrelle ceramiche",
+              "l2": "Interno / esterno",
+              "yield": "1 sacco ogni 4 m²",
+              "pack": "Sacco da 25 kg",
+              "unit": "1 sacco"
+            },
+            "p2": {
+              "name": "Intonaco",
+              "l1": "Per muri in laterizio, spessore 10 mm",
+              "l2": "Uso esterno",
+              "yield": "1 sacco ogni 3 m²",
+              "pack": "Sacco da 25 kg",
+              "unit": "1 sacco"
+            },
+            "p3": {
+              "name": "Livellante",
+              "l1": "Per pavimenti, spessore 3 mm",
+              "l2": "Uso interno",
+              "yield": "1 secchio ogni 5 m²",
+              "pack": "Secchio da 20 kg",
+              "unit": "1 secchio"
+            },
+            "p4": {
+              "name": "Colla C1 rapida",
+              "l1": "Per piastrelle su pareti",
+              "l2": "Solo esterno",
+              "yield": "1 sacco ogni 6 m²",
+              "pack": "Sacco da 25 kg",
+              "unit": "1 sacco"
+            }
+          }
+        },
+        "yard": {
+          "title": "Il piazzale",
+          "lead": "Cantiere nuovo: sistema il piazzale.",
+          "sub": "Ogni disposizione che funziona si salva; poi provane un’altra.",
+          "plan": "Cantiere via Roma · pianta",
+          "zones": {
+            "home": "Casa",
+            "dig": "Scavo",
+            "gate": "Cancello"
+          },
+          "modules": {
+            "cabin": "Baracca",
+            "toilet": "WC",
+            "store": "Deposito",
+            "machine": "Betoniera"
+          },
+          "new_need": "Arriva l’autobetoniera: deve poter raggiungere lo scavo dal cancello.",
+          "check_walk": "Si va a piedi dal cancello alla casa, lontani dalla betoniera",
+          "check_walk_fail": "A piedi non si arriva alla casa senza passare accanto alla betoniera.",
+          "check_buffer": "La fascia dello scavo resta libera",
+          "check_truck": "L’autobetoniera arriva allo scavo dal cancello",
+          "check_truck_fail": "L’autobetoniera non passa: libera la strada dal cancello allo scavo."
+        }
+      },
+      "restaurant": {
+        "done_title": "Fatto. Era una cosa da cucina.",
+        "van": {
+          "title": "Il furgone",
+          "lead": "Carica quello che serve per il catering di domani.",
+          "sub": "Segui la lista e trova posto per tutto.",
+          "doc_ref": "N. 0284",
+          "doc_place": "Catering villa Serra · pranzo per 40",
+          "items": {
+            "adhesive": "Farina · sacco 25 kg",
+            "tiles": "Cassa verdure",
+            "boards": "Casse d’acqua",
+            "mixer": "Cassa carne sottovuoto",
+            "ladder": "Teglie da forno · set",
+            "buckets": "Secchi detersivo",
+            "trestle": "Cavalletto buffet"
+          }
+        },
+        "handover": {
+          "title": "Il messaggio al turno dopo",
+          "lead": "Sono le 23, stai chiudendo.",
+          "sub": "Lascia a Luca, che apre alle 7, un messaggio: al massimo tre righe.",
+          "name": "Luca",
+          "role": "apertura · domattina",
+          "request": "Domani apro io alle 7. Mi lasci scritto cosa c’è da sapere?",
+          "situation": "Alle 12:30 arriva un tavolo da 12. Il forno grande non parte. Il pane è nella cella 2. Il titolare domani non c’è; le chiavi sono nel cassetto della cassa.",
+          "pieces": {
+            "client": "Tavolo da 12 alle 12:30",
+            "floor": "Forno grande non parte",
+            "material": "Pane nella cella 2",
+            "boss": "Il titolare non c’è",
+            "key": "Chiavi nel cassetto cassa",
+            "goodluck": "Buon servizio!",
+            "bye": "Ciao"
+          }
+        },
+        "stock": {
+          "title": "La dispensa",
+          "lead": "Prepara quello che serve per le tre preparazioni.",
+          "sub": "Uso e resa sono scritti sulle confezioni.",
+          "jobs": {
+            "job1": {
+              "name": "Impasto pizza",
+              "meta": "8 kg · pranzo"
+            },
+            "job2": {
+              "name": "Sugo di pomodoro",
+              "meta": "6 pentole · cena"
+            },
+            "job3": {
+              "name": "Brodo",
+              "meta": "10 litri · settimana"
+            }
+          },
+          "products": {
+            "p1": {
+              "name": "Farina tipo 0",
+              "l1": "Per impasti da forno e pizza",
+              "l2": "Uso quotidiano",
+              "yield": "1 sacco ogni 4 kg di impasto",
+              "pack": "Sacco da 5 kg",
+              "unit": "1 sacco"
+            },
+            "p2": {
+              "name": "Pelati",
+              "l1": "Per sughi e basi",
+              "l2": "Da cucinare",
+              "yield": "1 cartone ogni 3 pentole",
+              "pack": "Cartone da 6 latte",
+              "unit": "1 cartone"
+            },
+            "p3": {
+              "name": "Preparato per brodo",
+              "l1": "Per brodi e fondi",
+              "l2": "Da diluire",
+              "yield": "1 barattolo ogni 5 litri",
+              "pack": "Barattolo da 1 kg",
+              "unit": "1 barattolo"
+            },
+            "p4": {
+              "name": "Farina per dolci",
+              "l1": "Per torte e pasta frolla",
+              "l2": "Solo pasticceria",
+              "yield": "1 sacco ogni 6 kg",
+              "pack": "Sacco da 5 kg",
+              "unit": "1 sacco"
+            }
+          }
+        },
+        "yard": {
+          "title": "La sala",
+          "lead": "Sala nuova: sistema tavoli e passaggi.",
+          "sub": "Ogni disposizione che funziona si salva; poi provane un’altra.",
+          "plan": "Sala grande · pianta",
+          "zones": {
+            "home": "Cucina",
+            "dig": "Forno a legna",
+            "gate": "Ingresso"
+          },
+          "modules": {
+            "cabin": "Tavolo da 6",
+            "toilet": "Carrello",
+            "store": "Tavolo da 4",
+            "machine": "Isola buffet"
+          },
+          "new_need": "Arriva il forno nuovo su carrello: deve passare dall’ingresso alla zona forno.",
+          "check_walk": "I camerieri passano dall’ingresso alla cucina, lontani dal buffet",
+          "check_walk_fail": "Dall’ingresso non si arriva alla cucina senza sfiorare il buffet.",
+          "check_buffer": "La fascia intorno al forno resta libera",
+          "check_truck": "Il carrello del forno arriva alla zona forno dall’ingresso",
+          "check_truck_fail": "Il carrello non passa: libera la strada dall’ingresso alla zona forno."
+        }
+      },
+      "service_ops": {
+        "done_title": "Fatto. Era una cosa da lavoro vero.",
+        "van": {
+          "title": "Il furgone",
+          "lead": "Carica quello che serve per l’intervento di domani.",
+          "sub": "Segui la scheda e trova posto per tutto.",
+          "doc_ref": "N. 0284",
+          "doc_place": "Uffici Bianchi · pulizia straordinaria",
+          "items": {
+            "adhesive": "Detergente · tanica 5 l",
+            "tiles": "Aspiratore",
+            "boards": "Aste telescopiche",
+            "mixer": "Lavasciuga",
+            "ladder": "Scala",
+            "buckets": "Secchi",
+            "trestle": "Cavalletto"
+          }
+        },
+        "handover": {
+          "title": "Il messaggio al turno dopo",
+          "lead": "Sono le 17, stai andando via.",
+          "sub": "Lascia a Luca, che apre lo sportello alle 7, un messaggio: al massimo tre righe.",
+          "name": "Luca",
+          "role": "passaggio di turno · sportello",
+          "request": "Domani arrivo alle 7. Mi lasci scritto cosa c’è da sapere?",
+          "situation": "Il signor Rossi passa alle 10 per la sua pratica. La stampante non funziona. I moduli nuovi sono nell’armadio. Il responsabile domani non c’è; la chiave è nel cassetto.",
+          "pieces": {
+            "client": "Sig. Rossi alle 10",
+            "floor": "Stampante non funziona",
+            "material": "Moduli nuovi nell’armadio",
+            "boss": "Il responsabile non c’è",
+            "key": "Chiave nel cassetto",
+            "goodluck": "Buon lavoro!",
+            "bye": "Ciao"
+          }
+        },
+        "stock": {
+          "title": "Il magazzino",
+          "lead": "Prepara il materiale per i tre interventi.",
+          "sub": "Uso e resa sono scritti sulle etichette.",
+          "jobs": {
+            "job1": {
+              "name": "Uffici",
+              "meta": "8 stanze · pavimenti"
+            },
+            "job2": {
+              "name": "Vetrate ingresso",
+              "meta": "6 vetrate · esterno"
+            },
+            "job3": {
+              "name": "Bagni",
+              "meta": "10 bagni · igienizzare"
+            }
+          },
+          "products": {
+            "p1": {
+              "name": "Detergente pavimenti",
+              "l1": "Per pavimenti in gres e pvc",
+              "l2": "Interno",
+              "yield": "1 tanica ogni 4 stanze",
+              "pack": "Tanica da 5 l",
+              "unit": "1 tanica"
+            },
+            "p2": {
+              "name": "Pulivetri",
+              "l1": "Per vetri e specchi",
+              "l2": "Interno / esterno",
+              "yield": "1 flacone ogni 3 vetrate",
+              "pack": "Flacone da 1 l",
+              "unit": "1 flacone"
+            },
+            "p3": {
+              "name": "Igienizzante",
+              "l1": "Per sanitari e bagni",
+              "l2": "Da diluire",
+              "yield": "1 tanica ogni 5 bagni",
+              "pack": "Tanica da 5 l",
+              "unit": "1 tanica"
+            },
+            "p4": {
+              "name": "Cera protettiva",
+              "l1": "Per pavimenti in legno",
+              "l2": "Solo legno",
+              "yield": "1 tanica ogni 6 stanze",
+              "pack": "Tanica da 5 l",
+              "unit": "1 tanica"
+            }
+          }
+        },
+        "yard": {
+          "title": "L’ufficio al pubblico",
+          "lead": "Sede nuova: sistema l’area di attesa.",
+          "sub": "Ogni disposizione che funziona si salva; poi provane un’altra.",
+          "plan": "Sede via Roma · pianta",
+          "zones": {
+            "home": "Sportelli",
+            "dig": "Area lavori",
+            "gate": "Ingresso"
+          },
+          "modules": {
+            "cabin": "Sedute attesa",
+            "toilet": "Totem",
+            "store": "Banco informazioni",
+            "machine": "Stampante grande"
+          },
+          "new_need": "Arriva il nuovo bancone su carrello: deve passare dall’ingresso all’area lavori.",
+          "check_walk": "Il pubblico va dall’ingresso agli sportelli, lontano dalla stampante",
+          "check_walk_fail": "Dall’ingresso non si arriva agli sportelli senza passare accanto alla stampante.",
+          "check_buffer": "La fascia intorno all’area lavori resta libera",
+          "check_truck": "Il carrello arriva all’area lavori dall’ingresso",
+          "check_truck_fail": "Il carrello non passa: libera la strada dall’ingresso all’area lavori."
+        }
+      },
+      "science_tech": {
+        "done_title": "Fatto. Era una cosa da laboratorio.",
+        "van": {
+          "title": "Il furgone",
+          "lead": "Carica quello che serve per il campionamento di domani.",
+          "sub": "Segui la lista e trova posto per tutto.",
+          "doc_ref": "N. 0284",
+          "doc_place": "Campionamento fiume Serio · 6 punti",
+          "items": {
+            "adhesive": "Reagente · tanica 5 l",
+            "tiles": "Cassa strumenti",
+            "boards": "Aste telescopiche",
+            "mixer": "Generatore",
+            "ladder": "Treppiede",
+            "buckets": "Secchi",
+            "trestle": "Cavalletto"
+          }
+        },
+        "handover": {
+          "title": "Il messaggio al turno dopo",
+          "lead": "Sono le 17, stai andando via.",
+          "sub": "Lascia a Luca, che entra in laboratorio alle 7, un messaggio: al massimo tre righe.",
+          "name": "Luca",
+          "role": "passaggio di turno · laboratorio",
+          "request": "Domani arrivo alle 7. Mi lasci scritto cosa c’è da sapere?",
+          "situation": "Il cliente passa alle 10 per i risultati. La centrifuga è ferma. I campioni sono nel frigo 2. Il responsabile domani non c’è; il badge è alla reception.",
+          "pieces": {
+            "client": "Cliente alle 10 per i risultati",
+            "floor": "Centrifuga ferma",
+            "material": "Campioni nel frigo 2",
+            "boss": "Il responsabile non c’è",
+            "key": "Badge alla reception",
+            "goodluck": "Buon lavoro!",
+            "bye": "Ciao"
+          }
+        },
+        "stock": {
+          "title": "Il magazzino reagenti",
+          "lead": "Prepara il materiale per le tre analisi.",
+          "sub": "Uso e resa sono scritti sulle etichette.",
+          "jobs": {
+            "job1": {
+              "name": "Analisi acque",
+              "meta": "8 campioni · oggi"
+            },
+            "job2": {
+              "name": "Colture",
+              "meta": "6 piastre · incubare"
+            },
+            "job3": {
+              "name": "Calibrazione",
+              "meta": "10 punti · strumento A"
+            }
+          },
+          "products": {
+            "p1": {
+              "name": "Reagente A",
+              "l1": "Per analisi di acque e reflui",
+              "l2": "Conservare a 4 °C",
+              "yield": "1 flacone ogni 4 campioni",
+              "pack": "Flacone da 100 ml",
+              "unit": "1 flacone"
+            },
+            "p2": {
+              "name": "Terreno B",
+              "l1": "Per colture su piastra",
+              "l2": "Sterile",
+              "yield": "1 flacone ogni 3 piastre",
+              "pack": "Flacone da 250 ml",
+              "unit": "1 flacone"
+            },
+            "p3": {
+              "name": "Standard C",
+              "l1": "Per calibrazione strumenti",
+              "l2": "Da diluire",
+              "yield": "1 fiala ogni 5 punti",
+              "pack": "Fiala da 10 ml",
+              "unit": "1 fiala"
+            },
+            "p4": {
+              "name": "Reagente A-plus",
+              "l1": "Per analisi di suoli",
+              "l2": "Solo suoli",
+              "yield": "1 flacone ogni 6 campioni",
+              "pack": "Flacone da 100 ml",
+              "unit": "1 flacone"
+            }
+          }
+        },
+        "yard": {
+          "title": "Il laboratorio",
+          "lead": "Laboratorio nuovo: sistema i banchi.",
+          "sub": "Ogni disposizione che funziona si salva; poi provane un’altra.",
+          "plan": "Laboratorio 2 · pianta",
+          "zones": {
+            "home": "Cappa",
+            "dig": "Zona gas",
+            "gate": "Porta"
+          },
+          "modules": {
+            "cabin": "Banco lungo",
+            "toilet": "Carrello",
+            "store": "Frigo campioni",
+            "machine": "Centrifuga"
+          },
+          "new_need": "Arriva lo spettrometro nuovo su carrello: deve passare dalla porta alla zona gas.",
+          "check_walk": "Si va dalla porta alla cappa, lontani dalla centrifuga",
+          "check_walk_fail": "Dalla porta non si arriva alla cappa senza passare accanto alla centrifuga.",
+          "check_buffer": "La fascia intorno alla zona gas resta libera",
+          "check_truck": "Il carrello arriva alla zona gas dalla porta",
+          "check_truck_fail": "Il carrello non passa: libera la strada dalla porta alla zona gas."
+        }
+      },
+      "arts_creative": {
+        "done_title": "Fatto. Era una cosa da allestimento.",
+        "van": {
+          "title": "Il furgone",
+          "lead": "Carica quello che serve per l’allestimento di domani.",
+          "sub": "Segui la lista e trova posto per tutto.",
+          "doc_ref": "N. 0284",
+          "doc_place": "Mostra galleria Nord · sala 2",
+          "items": {
+            "adhesive": "Vernice · latta 5 l",
+            "tiles": "Cassa cornici",
+            "boards": "Listelli · 2 m",
+            "mixer": "Pannello espositivo",
+            "ladder": "Scala",
+            "buckets": "Secchi",
+            "trestle": "Cavalletto"
+          }
+        },
+        "handover": {
+          "title": "Il messaggio al turno dopo",
+          "lead": "Sono le 17, stai andando via.",
+          "sub": "Lascia a Luca, che arriva in galleria alle 7, un messaggio: al massimo tre righe.",
+          "name": "Luca",
+          "role": "passaggio di turno · galleria",
+          "request": "Domani arrivo alle 7. Mi lasci scritto cosa c’è da sapere?",
+          "situation": "La curatrice passa alle 10 a vedere l’allestimento. La parete di fondo è da finire. Le stampe sono nel furgone. La direttrice domani non c’è; la chiave è in portineria.",
+          "pieces": {
+            "client": "Curatrice alle 10",
+            "floor": "Parete di fondo da finire",
+            "material": "Stampe nel furgone",
+            "boss": "La direttrice non c’è",
+            "key": "Chiave in portineria",
+            "goodluck": "Buon lavoro!",
+            "bye": "Ciao"
+          }
+        },
+        "stock": {
+          "title": "Il deposito",
+          "lead": "Prepara il materiale per i tre lavori.",
+          "sub": "Uso e resa sono scritti sulle etichette.",
+          "jobs": {
+            "job1": {
+              "name": "Parete A",
+              "meta": "8 m² · tinteggiare"
+            },
+            "job2": {
+              "name": "Cornici",
+              "meta": "6 pezzi · appendere"
+            },
+            "job3": {
+              "name": "Pavimento",
+              "meta": "10 m² · proteggere"
+            }
+          },
+          "products": {
+            "p1": {
+              "name": "Pittura opaca",
+              "l1": "Per pareti interne",
+              "l2": "Interno",
+              "yield": "1 latta ogni 4 m²",
+              "pack": "Latta da 2,5 l",
+              "unit": "1 latta"
+            },
+            "p2": {
+              "name": "Kit ganci",
+              "l1": "Per appendere cornici e quadri",
+              "l2": "Pareti in cartongesso",
+              "yield": "1 kit ogni 3 cornici",
+              "pack": "Kit da 6 pezzi",
+              "unit": "1 kit"
+            },
+            "p3": {
+              "name": "Telo protettivo",
+              "l1": "Per pavimenti durante i lavori",
+              "l2": "Antiscivolo",
+              "yield": "1 rotolo ogni 5 m²",
+              "pack": "Rotolo da 5 m",
+              "unit": "1 rotolo"
+            },
+            "p4": {
+              "name": "Pittura lucida",
+              "l1": "Per infissi e legno",
+              "l2": "Solo esterno",
+              "yield": "1 latta ogni 6 m²",
+              "pack": "Latta da 2,5 l",
+              "unit": "1 latta"
+            }
+          }
+        },
+        "yard": {
+          "title": "Lo spazio della mostra",
+          "lead": "Sala nuova: sistema l’allestimento.",
+          "sub": "Ogni disposizione che funziona si salva; poi provane un’altra.",
+          "plan": "Sala 2 · pianta",
+          "zones": {
+            "home": "Accoglienza",
+            "dig": "Opera fragile",
+            "gate": "Ingresso"
+          },
+          "modules": {
+            "cabin": "Pannello lungo",
+            "toilet": "Piedistallo",
+            "store": "Vetrina",
+            "machine": "Proiettore"
+          },
+          "new_need": "Arriva la scultura grande su carrello: deve passare dall’ingresso alla zona dell’opera fragile.",
+          "check_walk": "Il pubblico va dall’ingresso all’accoglienza, fuori dal fascio del proiettore",
+          "check_walk_fail": "Dall’ingresso non si arriva all’accoglienza senza attraversare il fascio del proiettore.",
+          "check_buffer": "La fascia intorno all’opera fragile resta libera",
+          "check_truck": "Il carrello arriva alla zona dell’opera dall’ingresso",
+          "check_truck_fail": "Il carrello non passa: libera la strada dall’ingresso alla zona dell’opera."
+        }
+      },
+      "business_leadership": {
+        "done_title": "Fatto. Era una cosa da ufficio.",
+        "van": {
+          "title": "Il furgone",
+          "lead": "Carica quello che serve per l’evento di domani.",
+          "sub": "Segui la lista e trova posto per tutto.",
+          "doc_ref": "N. 0284",
+          "doc_place": "Evento clienti · hotel Belvedere",
+          "items": {
+            "adhesive": "Brochure · scatola",
+            "tiles": "Roll-up",
+            "boards": "Tavoli pieghevoli",
+            "mixer": "Monitor 55”",
+            "ladder": "Asta con bandiera",
+            "buckets": "Scatole archivio",
+            "trestle": "Cavalletto lavagna"
+          }
+        },
+        "handover": {
+          "title": "Il messaggio al turno dopo",
+          "lead": "Sono le 17, stai andando via.",
+          "sub": "Lascia a Luca, che arriva in ufficio alle 7, un messaggio: al massimo tre righe.",
+          "name": "Luca",
+          "role": "passaggio di consegne · ufficio",
+          "request": "Domani arrivo alle 7. Mi lasci scritto cosa c’è da sapere?",
+          "situation": "Il cliente passa alle 10 per firmare. Il contratto è da finire. Le cartelline sono in sala riunioni. Il direttore domani non c’è; il badge è alla reception.",
+          "pieces": {
+            "client": "Cliente alle 10 per la firma",
+            "floor": "Contratto da finire",
+            "material": "Cartelline in sala riunioni",
+            "boss": "Il direttore non c’è",
+            "key": "Badge alla reception",
+            "goodluck": "Buon lavoro!",
+            "bye": "Ciao"
+          }
+        },
+        "stock": {
+          "title": "Il magazzino",
+          "lead": "Prepara il materiale per le tre attività.",
+          "sub": "Uso e resa sono scritti sulle confezioni.",
+          "jobs": {
+            "job1": {
+              "name": "Kit partecipanti",
+              "meta": "8 persone · workshop"
+            },
+            "job2": {
+              "name": "Sala riunioni",
+              "meta": "6 posti · consiglio"
+            },
+            "job3": {
+              "name": "Coffee break",
+              "meta": "10 persone · mattina"
+            }
+          },
+          "products": {
+            "p1": {
+              "name": "Cartelline",
+              "l1": "Per kit partecipanti",
+              "l2": "Con blocco e penna",
+              "yield": "1 pacco ogni 4 persone",
+              "pack": "Pacco da 4",
+              "unit": "1 pacco"
+            },
+            "p2": {
+              "name": "Blocchi note",
+              "l1": "Per tavoli riunione",
+              "l2": "Formato A5",
+              "yield": "1 pacco ogni 3 posti",
+              "pack": "Pacco da 3",
+              "unit": "1 pacco"
+            },
+            "p3": {
+              "name": "Kit caffè",
+              "l1": "Per pause caffè",
+              "l2": "Bicchieri, zucchero, palette",
+              "yield": "1 scatola ogni 5 persone",
+              "pack": "Scatola da 5",
+              "unit": "1 scatola"
+            },
+            "p4": {
+              "name": "Cartelline premium",
+              "l1": "Per il consiglio di amministrazione",
+              "l2": "Solo board",
+              "yield": "1 pacco ogni 6 persone",
+              "pack": "Pacco da 6",
+              "unit": "1 pacco"
+            }
+          }
+        },
+        "yard": {
+          "title": "La sala dell’evento",
+          "lead": "Sala nuova: sistema l’allestimento.",
+          "sub": "Ogni disposizione che funziona si salva; poi provane un’altra.",
+          "plan": "Sala Belvedere · pianta",
+          "zones": {
+            "home": "Palco",
+            "dig": "Regia",
+            "gate": "Ingresso"
+          },
+          "modules": {
+            "cabin": "Tavolo registrazione",
+            "toilet": "Totem",
+            "store": "Area caffè",
+            "machine": "Impianto audio"
+          },
+          "new_need": "Arriva il ledwall su carrello: deve passare dall’ingresso alla regia.",
+          "check_walk": "Gli ospiti vanno dall’ingresso al palco, lontani dall’impianto audio",
+          "check_walk_fail": "Dall’ingresso non si arriva al palco senza passare accanto all’impianto audio.",
+          "check_buffer": "La fascia intorno alla regia resta libera",
+          "check_truck": "Il carrello arriva alla regia dall’ingresso",
+          "check_truck_fail": "Il carrello non passa: libera la strada dall’ingresso alla regia."
+        }
+      }
+    }
   }
 }

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { log } from '@/lib/log';
 import type { McAnswerV2, DriveAnswerV2 } from '@/lib/assessment/v2/model';
+import type { PauseKind, PauseResult, PauseResults } from '@/lib/pauses/model';
 
 const STORAGE_KEY = 'xima.ximatarJourney.v1';
 
@@ -17,6 +18,8 @@ interface JourneyState {
     mc: Record<number, McAnswerV2>;
     drive: Record<number, DriveAnswerV2>;
     order: Record<number, number[]>;
+    /** The four work-sample pauses, done or skipped. */
+    pauses: PauseResults;
   };
   baselineCompleted: boolean;
   cvUploaded: boolean;
@@ -29,7 +32,7 @@ const defaultState: JourneyState = {
   questionIndex: 0,
   mcAnswers: {},
   openAnswers: {},
-  v2: { mc: {}, drive: {}, order: {} },
+  v2: { mc: {}, drive: {}, order: {}, pauses: {} },
   baselineCompleted: false,
   cvUploaded: false,
   completed: false,
@@ -47,7 +50,8 @@ export function useXimatarJourneyState() {
       try {
         const parsed = JSON.parse(saved) as JourneyState;
         if (!parsed.completed) {
-          return { ...parsed, v2: parsed.v2 ?? { mc: {}, drive: {}, order: {} } };
+          const v2 = (parsed.v2 ?? {}) as Partial<JourneyState['v2']>;
+          return { ...parsed, v2: { mc: v2.mc ?? {}, drive: v2.drive ?? {}, order: v2.order ?? {}, pauses: v2.pauses ?? {} } };
         }
       } catch (e) {
         log.warn('Failed to parse journey state:', e);
@@ -156,6 +160,10 @@ export function useXimatarJourneyState() {
     setState(prev => ({ ...prev, v2: { ...prev.v2, order: { ...prev.v2.order, [questionId]: order } } }));
   }, []);
 
+  const setV2Pause = useCallback((kind: PauseKind, result: PauseResult) => {
+    setState(prev => ({ ...prev, v2: { ...prev.v2, pauses: { ...prev.v2.pauses, [kind]: result } } }));
+  }, []);
+
   const setBaselineCompleted = useCallback((completed: boolean) => {
     setState(prev => ({ ...prev, baselineCompleted: completed }));
   }, []);
@@ -221,6 +229,7 @@ export function useXimatarJourneyState() {
     setV2McAnswer,
     setV2DriveAnswer,
     setV2Order,
+    setV2Pause,
     setBaselineCompleted,
     setCvUploaded,
     goToNextQuestion,

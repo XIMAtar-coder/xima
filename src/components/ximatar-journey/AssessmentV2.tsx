@@ -20,6 +20,12 @@ import {
   computeScoresV2, weakestContentPillar,
   type AnswersV2, type ContentPillar, type DriveAnswerV2, type Intensity, type McAnswerV2, type V2Field,
 } from '@/lib/assessment/v2/model';
+import { pauseAfter, type PauseKind, type PauseResult, type PauseResults } from '@/lib/pauses/model';
+import { PauseDone } from '@/components/pauses/PauseShell';
+import { VanPause } from '@/components/pauses/VanPause';
+import { HandoverPause } from '@/components/pauses/HandoverPause';
+import { StockPause } from '@/components/pauses/StockPause';
+import { YardPause } from '@/components/pauses/YardPause';
 
 /**
  * The 2.0 questionnaire: 21 scenarios with one answer per content pillar,
@@ -31,7 +37,8 @@ import {
 type FlowItem =
   | { kind: 'mc'; q: number }
   | { kind: 'drive'; d: number; pillar?: ContentPillar }   // pillar known for 1-4; 5 is adaptive
-  | { kind: 'open'; key: 'open1' | 'open2' };
+  | { kind: 'open'; key: 'open1' | 'open2' }
+  | { kind: 'pause'; pause: PauseKind };   // a work-sample break, after the Drive scenario at 5/10/15/20
 
 const buildFlow = (): FlowItem[] => {
   const flow: FlowItem[] = [];
@@ -39,6 +46,8 @@ const buildFlow = (): FlowItem[] => {
     flow.push({ kind: 'mc', q });
     const at = (DRIVE_AFTER_QUESTION as readonly number[]).indexOf(q);
     if (at >= 0) flow.push({ kind: 'drive', d: at + 1 });
+    const pause = pauseAfter(q);
+    if (pause) flow.push({ kind: 'pause', pause });
   }
   flow.push({ kind: 'drive', d: V2_DRIVE_COUNT });
   flow.push({ kind: 'open', key: 'open1' });
@@ -62,17 +71,18 @@ interface Props {
   cvAnalysed: boolean;
   questionIndex: number;
   onQuestionChange: (index: number) => void;
-  v2: AnswersV2 & { order: Record<number, number[]> };
+  v2: AnswersV2 & { order: Record<number, number[]>; pauses: PauseResults };
   openAnswers: Record<string, string>;
   onMcAnswer: (q: number, a: McAnswerV2) => void;
   onDriveAnswer: (d: number, a: DriveAnswerV2) => void;
   onOrder: (q: number, order: number[]) => void;
   onOpenAnswerChange: (key: string, value: string) => void;
+  onPause: (kind: PauseKind, result: PauseResult) => void;
 }
 
 const AssessmentV2: React.FC<Props> = ({
   fieldKey, onComplete, onGoBack, questionIndex, onQuestionChange,
-  v2, openAnswers, onMcAnswer, onDriveAnswer, onOrder, onOpenAnswerChange,
+  v2, openAnswers, onMcAnswer, onDriveAnswer, onOrder, onOpenAnswerChange, onPause,
 }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
@@ -97,11 +107,17 @@ const AssessmentV2: React.FC<Props> = ({
   const isAnswered = (it: FlowItem): boolean => {
     if (it.kind === 'mc') return Boolean(v2.mc[it.q]);
     if (it.kind === 'drive') return Boolean(v2.drive[it.d]);
+    if (it.kind === 'pause') return Boolean(v2.pauses[it.pause]);
     return (openAnswers[it.key] || '').trim().length >= OPEN_ANSWER_MIN_CHARS;
   };
   const canContinue = isAnswered(item);
   const isLast = index === flow.length - 1;
   const answeredCount = flow.filter(isAnswered).length;
+  // The pauses are breaks, not questions: the progress counts questions only.
+  const questions = flow.filter((it) => it.kind !== 'pause');
+  const questionNumber = flow.slice(0, index + 1).filter((it) => it.kind !== 'pause').length;
+  const questionsAnswered = questions.filter(isAnswered).length;
+  const questionsLeft = flow.slice(index + 1).filter((it) => it.kind !== 'pause').length;
 
   // What "Listen" reads out.
   const spoken = (() => {
@@ -115,6 +131,7 @@ const AssessmentV2: React.FC<Props> = ({
       const k = item.d <= 4 ? `${base}.drive.${item.d - 1}` : `${base}.driveFinal.${drivePillar(5)}`;
       return [t(`${k}.question`), `A: ${t(`${k}.comfort`)}`, `B: ${t(`${k}.stretch`)}`].join('. ');
     }
+    if (item.kind === 'pause') return '';
     return t(`${base}.${item.key}`);
   })();
 
@@ -130,7 +147,7 @@ const AssessmentV2: React.FC<Props> = ({
         // Guest: the same keys the v1 flow leaves for the results page and
         // for the sync after registration.
         sessionStorage.setItem('guest_assessment_data', JSON.stringify({
-          version: '2.0', field: fieldKey, answers: v2.mc, drive: v2.drive, openAnswers,
+          version: '2.0', field: fieldKey, answers: v2.mc, drive: v2.drive, openAnswers, pauses: v2.pauses,
           timestamp: new Date().toISOString(),
         }));
         sessionStorage.setItem('guest_pillar_scores', JSON.stringify(scores));
@@ -170,7 +187,7 @@ const AssessmentV2: React.FC<Props> = ({
 
       const { data: result, error: resultError } = await supabase
         .from('assessment_results')
-        .insert({ user_id: user.id, attempt_id: attemptId, field_key: fieldKey, language, completed: false, rationale: { version: '2.0' } } as never)
+        .insert({ user_id: user.id, attempt_id: attemptId, field_key: fieldKey, language, completed: false, rationale: { version: '2.0', pauses: v2.pauses } } as never)
         .select()
         .single();
       if (resultError) throw resultError;
@@ -280,14 +297,28 @@ const AssessmentV2: React.FC<Props> = ({
       <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2">
         <h1 className="text-[22px] font-semibold tracking-[-0.5px] text-foreground sm:text-[26px]">{t(`${base}.title`)}</h1>
         <p className="font-mono text-[12px] tabular-nums text-muted-foreground">
-          {t('assessment.v2_progress', { n: index + 1, total: flow.length, defaultValue: '{{n}} of {{total}}' })}
+          {t('assessment.v2_progress', { n: questionNumber, total: questions.length, defaultValue: '{{n}} of {{total}}' })}
         </p>
       </div>
-      <div className="mb-6 h-1 w-full overflow-hidden rounded-full bg-[hsl(var(--xs-line))]" role="progressbar" aria-valuemin={0} aria-valuemax={flow.length} aria-valuenow={answeredCount}>
-        <div className="h-full bg-primary transition-[width]" style={{ width: `${(answeredCount / flow.length) * 100}%` }} />
+      <div className={cn('mb-6 h-1 w-full overflow-hidden rounded-full bg-[hsl(var(--xs-line))] transition-opacity', item.kind === 'pause' && 'opacity-30')} role="progressbar" aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={questionsAnswered}>
+        <div className="h-full bg-primary transition-[width]" style={{ width: `${(questionsAnswered / questions.length) * 100}%` }} />
       </div>
 
       <Panel className="p-5 sm:p-8">
+        {item.kind === 'pause' && (() => {
+          const kind = item.pause;
+          const done = (r: PauseResult) => { onPause(kind, r); go(index + 1); };
+          const skip = () => done({ kind, skipped: true });
+          if (v2.pauses[kind]) {
+            return <PauseDone field={fieldKey} kind={kind} remaining={questionsLeft} onContinue={() => go(index + 1)} onBack={() => go(index - 1)} />;
+          }
+          const props = { field: fieldKey, onSkip: skip };
+          if (kind === 'van') return <VanPause {...props} onDone={done} />;
+          if (kind === 'handover') return <HandoverPause {...props} onDone={done} />;
+          if (kind === 'stock') return <StockPause {...props} onDone={done} />;
+          return <YardPause {...props} onDone={done} />;
+        })()}
+
         {item.kind === 'mc' && (() => {
           const order = v2.order[item.q] ?? [0, 1, 2, 3];
           const current = v2.mc[item.q];

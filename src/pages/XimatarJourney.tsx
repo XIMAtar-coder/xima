@@ -47,6 +47,7 @@ const XimatarJourney = () => {
     setV2McAnswer,
     setV2DriveAnswer,
     setV2Order,
+    setV2Pause,
     cvUploaded,
     showResumeModal,
     setStep,
@@ -163,6 +164,7 @@ const XimatarJourney = () => {
                 onMcAnswer={setV2McAnswer}
                 onDriveAnswer={setV2DriveAnswer}
                 onOrder={setV2Order}
+                onPause={setV2Pause}
                 onOpenAnswerChange={setOpenAnswer}
               />
             ) : (
