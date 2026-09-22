@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   VAN, HANDOVER, STOCK, YARD_MODULES, YARD_FIXED,
   evaluateVan, vanCanLoad, vanUsed, evaluateHandover, evaluateStock, unitsNeeded,
-  placementOk, checkYard, yardValid, layoutFamily, evaluateYard, pauseAfter, type Placement,
+  placementOk, checkYard, yardValid, layoutFamily, evaluateYard, pauseAfter, PARKED_PAUSE, SALITA_AFTER, type Placement,
 } from '../model';
 
 describe('pauses — the van', () => {
@@ -119,9 +119,12 @@ describe('pauses — the yard', () => {
     expect(evaluateYard([a, a, layoutFamily(moved)], true, 3).validLayouts).toBe(2);
   });
 
-  it('has four modules and a pause after 5, 10, 15, 20', () => {
+  it('has four modules, and is parked: the fourth slot is the climb', () => {
     expect(YARD_MODULES).toHaveLength(4);
-    expect([5, 10, 15, 20].map(pauseAfter)).toEqual(['van', 'handover', 'stock', 'yard']);
+    expect(PARKED_PAUSE).toBe('yard');
+    expect([5, 10, 15].map(pauseAfter)).toEqual(['van', 'handover', 'stock']);
+    expect(pauseAfter(SALITA_AFTER)).toBeNull();
+    expect(SALITA_AFTER).toBe(20);
     expect(pauseAfter(7)).toBeNull();
   });
 });

@@ -20,12 +20,12 @@ import {
   computeScoresV2, weakestContentPillar,
   type AnswersV2, type ContentPillar, type DriveAnswerV2, type Intensity, type McAnswerV2, type V2Field,
 } from '@/lib/assessment/v2/model';
-import { pauseAfter, type PauseKind, type PauseResult, type PauseResults } from '@/lib/pauses/model';
+import { pauseAfter, SALITA_AFTER, type PauseResult, type PauseResults, type PauseSlot } from '@/lib/pauses/model';
 import { PauseDone } from '@/components/pauses/PauseShell';
 import { VanPause } from '@/components/pauses/VanPause';
 import { HandoverPause } from '@/components/pauses/HandoverPause';
 import { StockPause } from '@/components/pauses/StockPause';
-import { YardPause } from '@/components/pauses/YardPause';
+import { SalitaGame } from '@/components/salita/SalitaGame';
 
 /**
  * The 2.0 questionnaire: 21 scenarios with one answer per content pillar,
@@ -38,7 +38,7 @@ type FlowItem =
   | { kind: 'mc'; q: number }
   | { kind: 'drive'; d: number; pillar?: ContentPillar }   // pillar known for 1-4; 5 is adaptive
   | { kind: 'open'; key: 'open1' | 'open2' }
-  | { kind: 'pause'; pause: PauseKind };   // a work-sample break, after the Drive scenario at 5/10/15/20
+  | { kind: 'pause'; pause: PauseSlot };   // a break: a work sample at 5/10/15, the climb at 20
 
 const buildFlow = (): FlowItem[] => {
   const flow: FlowItem[] = [];
@@ -48,6 +48,7 @@ const buildFlow = (): FlowItem[] => {
     if (at >= 0) flow.push({ kind: 'drive', d: at + 1 });
     const pause = pauseAfter(q);
     if (pause) flow.push({ kind: 'pause', pause });
+    if (q === SALITA_AFTER) flow.push({ kind: 'pause', pause: 'salita' });
   }
   flow.push({ kind: 'drive', d: V2_DRIVE_COUNT });
   flow.push({ kind: 'open', key: 'open1' });
@@ -77,7 +78,7 @@ interface Props {
   onDriveAnswer: (d: number, a: DriveAnswerV2) => void;
   onOrder: (q: number, order: number[]) => void;
   onOpenAnswerChange: (key: string, value: string) => void;
-  onPause: (kind: PauseKind, result: PauseResult) => void;
+  onPause: (kind: PauseSlot, result: PauseResult) => void;
 }
 
 const AssessmentV2: React.FC<Props> = ({
@@ -310,13 +311,36 @@ const AssessmentV2: React.FC<Props> = ({
           const done = (r: PauseResult) => { onPause(kind, r); go(index + 1); };
           const skip = () => done({ kind, skipped: true });
           if (v2.pauses[kind]) {
-            return <PauseDone field={fieldKey} kind={kind} remaining={questionsLeft} onContinue={() => go(index + 1)} onBack={() => go(index - 1)} />;
+            return (
+              <PauseDone
+                field={fieldKey}
+                kind={kind}
+                title={kind === 'salita' ? t('salita.debrief_title') : undefined}
+                remaining={questionsLeft}
+                onContinue={() => go(index + 1)}
+                onBack={() => go(index - 1)}
+              />
+            );
+          }
+          if (kind === 'salita') {
+            // The climb closes the questionnaire and is the same for every
+            // field; it keeps its own signals and hands back what was observed.
+            return (
+              <SalitaGame
+                as="h2"
+                backLabel={t('common.previous', 'Back')}
+                onBack={() => go(index - 1)}
+                onSkip={skip}
+                onDone={(summary) => done(summary
+                  ? { kind: 'salita', hardAttempts: summary.hardAttempts, retries: summary.retries, changes: summary.changes, reached: summary.reached, finished: summary.finished, evidence: summary.evidence }
+                  : { kind: 'salita', skipped: true })}
+              />
+            );
           }
           const props = { field: fieldKey, onSkip: skip };
           if (kind === 'van') return <VanPause {...props} onDone={done} />;
           if (kind === 'handover') return <HandoverPause {...props} onDone={done} />;
-          if (kind === 'stock') return <StockPause {...props} onDone={done} />;
-          return <YardPause {...props} onDone={done} />;
+          return <StockPause {...props} onDone={done} />;
         })()}
 
         {item.kind === 'mc' && (() => {

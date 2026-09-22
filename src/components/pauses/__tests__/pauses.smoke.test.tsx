@@ -5,7 +5,7 @@ import { VanPause } from '../VanPause';
 import { HandoverPause } from '../HandoverPause';
 import { StockPause } from '../StockPause';
 import { YardPause } from '../YardPause';
-import { PAUSES, VAN } from '@/lib/pauses/model';
+import { PAUSES, SALITA_AFTER, VAN } from '@/lib/pauses/model';
 
 // The locale files carry the words; here the key is enough to tell the
 // pieces apart, and interpolation is spelled out so counters stay readable.
@@ -23,10 +23,12 @@ vi.mock('react-i18next', () => ({
 
 const noop = () => undefined;
 
-describe('the four pauses', () => {
-  it('follow the scenarios 5, 10, 15 and 20, one per content pillar', () => {
-    expect(PAUSES.map((p) => p.after)).toEqual([5, 10, 15, 20]);
-    expect(new Set(PAUSES.map((p) => p.pillar)).size).toBe(4);
+describe('the pauses', () => {
+  it('follow the scenarios 5, 10 and 15, one per pillar, and leave the 20th to the climb', () => {
+    expect(PAUSES.map((p) => p.after)).toEqual([5, 10, 15]);
+    expect(new Set(PAUSES.map((p) => p.pillar)).size).toBe(3);
+    expect(SALITA_AFTER).toBe(20);
+    expect(PAUSES.some((p) => p.after === SALITA_AFTER)).toBe(false);
   });
 
   it('van: loading from the warehouse ticks the note and the load can be closed', () => {
@@ -94,7 +96,7 @@ describe('the four pauses', () => {
     expect(onDone).toHaveBeenCalledWith(expect.objectContaining({ kind: 'stock', productRight: 1, quantityRight: 0, labelsOpened: 1 }));
   });
 
-  it('yard: nothing can be handed over before a layout works', () => {
+  it('yard: parked, but still whole — nothing is handed over before a layout works', () => {
     const onDone = vi.fn();
     render(<YardPause field="arts_creative" onDone={onDone} onSkip={noop} />);
     expect(screen.getByRole('button', { name: /pauses\.yard\.done/ })).toBeDisabled();

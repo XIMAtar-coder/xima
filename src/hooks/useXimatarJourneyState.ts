@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { log } from '@/lib/log';
 import type { McAnswerV2, DriveAnswerV2 } from '@/lib/assessment/v2/model';
-import type { PauseKind, PauseResult, PauseResults } from '@/lib/pauses/model';
+import type { PauseResult, PauseResults, PauseSlot } from '@/lib/pauses/model';
 
 const STORAGE_KEY = 'xima.ximatarJourney.v1';
 
@@ -160,7 +160,7 @@ export function useXimatarJourneyState() {
     setState(prev => ({ ...prev, v2: { ...prev.v2, order: { ...prev.v2.order, [questionId]: order } } }));
   }, []);
 
-  const setV2Pause = useCallback((kind: PauseKind, result: PauseResult) => {
+  const setV2Pause = useCallback((kind: PauseSlot, result: PauseResult) => {
     setState(prev => ({ ...prev, v2: { ...prev.v2, pauses: { ...prev.v2.pauses, [kind]: result } } }));
   }, []);
 

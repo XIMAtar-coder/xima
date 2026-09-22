@@ -77,14 +77,14 @@ export const PauseShell: React.FC<Props> = ({ field, kind, spoken, primaryLabel,
 };
 
 /** What the person sees after the pause: no grade, a human line, back to the questions. */
-export const PauseDone: React.FC<{ field: V2Field; kind: PauseKind; remaining: number; onContinue: () => void; onBack?: () => void }> = ({ field, kind, remaining, onContinue, onBack }) => {
+export const PauseDone: React.FC<{ field: V2Field; kind: string; title?: string; remaining: number; onContinue: () => void; onBack?: () => void }> = ({ field, kind, title, remaining, onContinue, onBack }) => {
   const { t } = useTranslation();
   return (
     <div className="py-6 text-center">
       <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-primary/10 text-primary">
         <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7" /></svg>
       </div>
-      <h2 className="text-[22px] font-semibold tracking-[-0.5px] text-foreground">{t(`pauses.fields.${field}.done_title`)}</h2>
+      <h2 className="text-[22px] font-semibold tracking-[-0.5px] text-foreground">{title ?? t(`pauses.fields.${field}.done_title`)}</h2>
       <p className="mx-auto mt-2 max-w-md text-[14px] leading-[1.55] text-muted-foreground">{t('pauses.common.done_text')}</p>
       <p className="mt-4 text-[14px] text-foreground">{t('pauses.common.back_to_questions', { count: remaining })}</p>
       <div className={cn('mt-5 flex items-center justify-center gap-3')}>

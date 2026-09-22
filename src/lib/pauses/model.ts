@@ -1,13 +1,13 @@
 /**
- * «Pause»: four work-sample breaks inside the 2.0 questionnaire.
+ * «Pause»: the work-sample breaks inside the 2.0 questionnaire.
  *
- * After the 5th, 10th, 15th and 20th scenario the questionnaire stops and the
+ * After the 5th, 10th and 15th scenario the questionnaire stops and the
  * person does something real from their own line of work with one finger:
  * load the van, leave a message for the next shift, pick the right product
- * from the label, lay out a space. One break per content pillar. They are
- * framed as a pause — no timer, no grade, always skippable — and what is
- * recorded are facts (needed items on board, necessary lines sent, right
- * product on the right job, distinct valid layouts), never a judgement.
+ * from the label. After the 20th comes La Salita, the climb. They are framed
+ * as a pause — no timer, no grade, always skippable — and what is recorded
+ * are facts (needed items on board, necessary lines sent, right product on
+ * the right job), never a judgement.
  *
  * The structure below (quantities, sizes, grid, constraints) is the same for
  * every field so that the six fields stay comparable; only the words and the
@@ -19,13 +19,28 @@ import type { ContentPillar } from '@/lib/assessment/v2/model';
 
 export type PauseKind = 'van' | 'handover' | 'stock' | 'yard';
 
-/** Which pause follows which scenario, and which pillar it looks at. */
+/**
+ * Which pause follows which scenario, and which pillar it looks at.
+ *
+ * Three breaks, then La Salita after the 20th scenario: the climb closes the
+ * questionnaire and is the same for every field, while these three change
+ * their objects with the person's line of work.
+ */
 export const PAUSES: readonly { kind: PauseKind; after: number; pillar: ContentPillar }[] = [
   { kind: 'van', after: 5, pillar: 'computational_power' },
   { kind: 'handover', after: 10, pillar: 'communication' },
   { kind: 'stock', after: 15, pillar: 'knowledge' },
-  { kind: 'yard', after: 20, pillar: 'creativity' },
 ];
+
+/** La Salita, the Drive trial, is the fourth and last chapter. */
+export const SALITA_AFTER = 20;
+
+/**
+ * «Lo spazio possibile» (creativity) is built and translated but kept out of
+ * the flow: the fourth slot is the climb. Putting it back is adding its line
+ * to PAUSES above.
+ */
+export const PARKED_PAUSE: PauseKind = 'yard';
 
 export const pauseAfter = (q: number): PauseKind | null => PAUSES.find((p) => p.after === q)?.kind ?? null;
 
@@ -308,7 +323,20 @@ export function evaluateYard(families: string[], truckSolved: boolean, saves: nu
 
 // ---------------------------------------------------------------------------
 
-export type PauseResult = VanResult | HandoverResult | StockResult | YardResult | { kind: PauseKind; skipped: true };
-export type PauseResults = Partial<Record<PauseKind, PauseResult>>;
+/** What the climb leaves behind: the behaviour around failure, never a score. */
+export interface SalitaResult {
+  kind: 'salita';
+  hardAttempts: number;
+  retries: number;
+  changes: number;
+  reached: number;
+  finished: boolean;
+  /** 0-10 evidence of Drive from behaviour; blended later, never shown as a grade. */
+  evidence: number;
+}
+
+export type PauseSlot = PauseKind | 'salita';
+export type PauseResult = VanResult | HandoverResult | StockResult | YardResult | SalitaResult | { kind: PauseSlot; skipped: true };
+export type PauseResults = Partial<Record<PauseSlot, PauseResult>>;
 
 export const isSkipped = (r: PauseResult | undefined): boolean => Boolean(r && 'skipped' in r && r.skipped);
