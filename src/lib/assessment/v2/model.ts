@@ -14,7 +14,7 @@ export const CONTENT_PILLARS = ['computational_power', 'communication', 'knowled
 export type ContentPillar = (typeof CONTENT_PILLARS)[number];
 export type Pillar = ContentPillar | 'drive';
 
-export const V2_FIELDS = ['trades_operations', 'restaurant'] as const;
+export const V2_FIELDS = ['science_tech', 'business_leadership', 'arts_creative', 'service_ops', 'trades_operations', 'restaurant'] as const;
 export type V2Field = (typeof V2_FIELDS)[number];
 export const isV2Field = (f: string | null | undefined): f is V2Field =>
   (V2_FIELDS as readonly string[]).includes(f ?? '');

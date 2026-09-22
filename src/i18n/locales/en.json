@@ -4411,19 +4411,19 @@
   },
   "field": {
     "science_tech": {
-      "title": "Science & Technology",
+      "title": "Science and technology",
       "desc": "Engineering, data, research, product, development."
     },
     "business_leadership": {
-      "title": "Business & Leadership",
+      "title": "Business and leadership",
       "desc": "Strategy, management, consulting, sales, HR."
     },
     "arts_creative": {
-      "title": "Arts & Creative",
-      "desc": "Design, content, marketing creative, media, UX/UI."
+      "title": "Arts and creative",
+      "desc": "Design, content, creative marketing, media, UX/UI."
     },
     "service_ops": {
-      "title": "Service & Operations",
+      "title": "Service and operations",
       "desc": "Healthcare, education, hospitality, public sector, support."
     },
     "trades_operations": {
@@ -8128,6 +8128,970 @@
       },
       "open1": "Tell about a time you solved a problem in the kitchen or dining room in your own way. What did you do and how did it go?",
       "open2": "Tell about something in your work that you could not do at first and now you can. How did you get there?"
+    },
+    "arts_creative": {
+      "title": "Arts and creative",
+      "subtitle": "Design, content, creative marketing, media, UX/UI.",
+      "questions": {
+        "q1": {
+          "question": "The client turns down your first proposal without really saying why. You:",
+          "options": [
+            "Look at what in the proposal may have jarred and start again from there.",
+            "Ask them what does not work, calmly, until I understand.",
+            "Redo it following what usually pleases that kind of taste.",
+            "Try a completely different direction."
+          ]
+        },
+        "q2": {
+          "question": "The brief is vague: \"make something nice\". You:",
+          "options": [
+            "Ask for examples of what they like and what they do not.",
+            "Write the boundaries myself: who it speaks to, where it goes, when it is out.",
+            "Start from how this kind of job is usually done.",
+            "Sketch three different routes and show them."
+          ]
+        },
+        "q3": {
+          "question": "Delivery is tomorrow and the work does not convince you. You:",
+          "options": [
+            "Work out which piece does not hold and fix only that.",
+            "Show it to someone I trust and listen.",
+            "Bring it to the standard I know is acceptable and deliver.",
+            "Turn it upside down: better alive than correct."
+          ]
+        },
+        "q4": {
+          "question": "You have two good ideas and time for one. You:",
+          "options": [
+            "Weigh which costs less time and gives more.",
+            "Show both and we decide together.",
+            "Pick the one closest to what usually works.",
+            "Pick the one I have never tried."
+          ]
+        },
+        "q5": {
+          "question": "The client asks for a change that, to you, makes the work worse. You:",
+          "options": [
+            "Explain what is lost, then they decide.",
+            "Show them the two results side by side.",
+            "Do it: it is their project and those are the rules.",
+            "Look for a third way that holds both together."
+          ]
+        },
+        "q6": {
+          "question": "You are asked to work in a style that is not yours. You:",
+          "options": [
+            "Study how that style is done before starting.",
+            "Ask for examples and have them explain what they are after.",
+            "Break the style down into rules and apply them.",
+            "Interpret it my own way, staying inside that world."
+          ]
+        },
+        "q7": {
+          "question": "You are stuck: nothing comes. You:",
+          "options": [
+            "Switch completely: do something else and come back with a clear head.",
+            "Go back to method: list, discard, rebuild.",
+            "Go and see how others solved the same problem.",
+            "Talk it through with someone: saying things out loud unblocks them."
+          ]
+        },
+        "q8": {
+          "question": "A colleague presents as theirs an idea that came from you. You:",
+          "options": [
+            "Talk to them directly, without making a case of it.",
+            "Reconstruct when and how it came about before saying anything.",
+            "Let it go: in this trade ideas travel.",
+            "Move on: I have others, and I will bring them myself."
+          ]
+        },
+        "q9": {
+          "question": "You have to present the work to decision makers who are not from the trade. You:",
+          "options": [
+            "Tell the why of each choice in plain words.",
+            "Show the numbers: what the people we are speaking to expect.",
+            "Present it the way this work is presented.",
+            "Show them the work before explaining it."
+          ]
+        },
+        "q10": {
+          "question": "The project is bigger than the time you have. You:",
+          "options": [
+            "Cut: decide what to do well and what to drop.",
+            "Say so immediately and renegotiate time or scope.",
+            "Use what I have already made in similar jobs.",
+            "Change the way of doing it to get more done in less time."
+          ]
+        },
+        "q11": {
+          "question": "In the meeting your work is criticised in front of everyone. You:",
+          "options": [
+            "Listen right to the end and ask for the criticism to be specific.",
+            "Note the points and check which ones actually hold.",
+            "Answer by explaining the choices with what the trade knows.",
+            "Take the criticism as a push and propose another route there and then."
+          ]
+        },
+        "q12": {
+          "question": "You have to work on a subject you know nothing about. You:",
+          "options": [
+            "Read up until I understand it properly.",
+            "Talk to those who live it every day.",
+            "Break it down to see how it works.",
+            "Use not knowing as an advantage: I see what experts no longer see."
+          ]
+        },
+        "q13": {
+          "question": "You realise the work looks too much like something already seen. You:",
+          "options": [
+            "Check how close it really is, point by point.",
+            "Say it to the team before someone else notices.",
+            "Change what is needed to stay within the rules.",
+            "Push it somewhere else until it is ours."
+          ]
+        },
+        "q14": {
+          "question": "You are asked for an idea to stand out on a small budget. You:",
+          "options": [
+            "Look at what worked and what it cost.",
+            "Ask the people we speak to what would strike them.",
+            "Reuse a mechanism I know works.",
+            "Propose something nobody has done."
+          ]
+        },
+        "q15": {
+          "question": "Last check before delivery. You:",
+          "options": [
+            "Check everything point by point: sizes, texts, formats.",
+            "Have another pair of eyes look at it.",
+            "Verify it meets the specifications asked for.",
+            "Add one last touch that lets it breathe."
+          ]
+        },
+        "q16": {
+          "question": "First day in a new studio. You:",
+          "options": [
+            "Introduce myself and ask how they work here.",
+            "Look at their past work and learn their language.",
+            "Work out who does what and where I can be useful.",
+            "Bring a proposal of my own in the first week."
+          ]
+        },
+        "q17": {
+          "question": "The same step always comes out badly. You:",
+          "options": [
+            "Work out exactly what happens at that step.",
+            "Do it another way and see if it improves.",
+            "Find out how the good ones solve it.",
+            "Ask a colleague to watch me while I do it."
+          ]
+        },
+        "q18": {
+          "question": "You are given two interns. You:",
+          "options": [
+            "Accept: I like explaining and seeing them grow.",
+            "Accept: I pass on the trade, not just the software.",
+            "Prepare a path in stages, with reviews set in advance.",
+            "Put them on real work and correct them as they go."
+          ]
+        },
+        "q19": {
+          "question": "You are asked how long the project will take. You:",
+          "options": [
+            "Count the phases and give a date.",
+            "Answer from experience: work like this takes about so long.",
+            "Ask what they really need, so I give a useful answer.",
+            "Propose a different way of doing it that shortens the time."
+          ]
+        },
+        "q20": {
+          "question": "New software comes out that promises to do half your job. You:",
+          "options": [
+            "Try it straight away on a real job.",
+            "Read and watch how others use it before touching it.",
+            "Work out what it really does and what it does not.",
+            "Talk it over with colleagues: we decide together whether to adopt it."
+          ]
+        },
+        "q21": {
+          "question": "At the end of the project you take stock. You:",
+          "options": [
+            "Report what the client and the team said.",
+            "Bring the points where we lost the most time.",
+            "Flag where we drifted from how it is done properly.",
+            "Propose something to try next time round."
+          ]
+        }
+      },
+      "drive": [
+        {
+          "question": "The most important client wants the person who made the work to present it. Speaking in front of a room does not come easily to you. You:",
+          "comfort": "It is presented by whoever does it better and I prepare all the material: the work gets told as it deserves.",
+          "stretch": "I present it: the first times I will be awkward and prepare for hours, but I learn to defend my own work."
+        },
+        {
+          "question": "Someone is needed to keep the project figures: hours, costs, deadlines. Numbers are not the part you love. You:",
+          "comfort": "Leave them to whoever handles them better and keep the creative part, where I do most.",
+          "stretch": "Take them on: at first it will take me twice as long and I will get some estimates wrong, but then I know what my work is worth."
+        },
+        {
+          "question": "There is a serious course on the theory of your trade: history, rules, cases. Studying has never appealed to you. You:",
+          "comfort": "Skip it: I learnt by watching and doing, and I put those hours into projects.",
+          "stretch": "Do it: heavy theory and hours taken from the work, but then I know why certain things work."
+        },
+        {
+          "question": "You are offered the lead on a project where your role is to coordinate, not to create. You:",
+          "comfort": "Leave coordination to whoever does it well and stay where I am strongest: the work gains from it.",
+          "stretch": "Take it: for a while I will create less and do something I cannot do, but I learn to carry a project."
+        }
+      ],
+      "driveFinal": {
+        "communication": {
+          "question": "You are asked to be the one who keeps the relationship with the difficult clients, the ones who change their mind daily. You:",
+          "comfort": "Ask that they go to whoever has more patience: I give more by working than by explaining.",
+          "stretch": "Take them on, one at a time: at first I will come out drained, but I learn to hold the relationship."
+        },
+        "computational_power": {
+          "question": "From Monday quotes and time estimates are made by whoever runs the project: sums and tables every week. You:",
+          "comfort": "Leave them to whoever is more precise: a wrong quote is paid for by the whole studio.",
+          "stretch": "Do them myself: a few wrong estimates at the start are part of the deal."
+        },
+        "knowledge": {
+          "question": "Working on bigger projects requires a certification: months of study and an exam. You:",
+          "comfort": "Carry on with the work I can do: there I am good, and months of study are a lot.",
+          "stretch": "Get the certification, exam included."
+        },
+        "creativity": {
+          "question": "The client leaves the creative direction to you, with no reference at all: a blank page. You:",
+          "comfort": "Ask at least for a starting point: with a reference I work better and get it wrong less.",
+          "stretch": "Start from the blank page and take the risk that they will not like it."
+        }
+      },
+      "open1": "Tell about a job you solved in your own way, different from what you were asked for. What did you do and how did it go?",
+      "open2": "Tell about something in your trade that you could not do at first and now you can. How did you get there?"
+    },
+    "business_leadership": {
+      "title": "Business and leadership",
+      "subtitle": "Strategy, management, consulting, sales, HR.",
+      "questions": {
+        "q1": {
+          "question": "An important client threatens to leave. You:",
+          "options": [
+            "Call them myself, in person, and listen before proposing anything.",
+            "Reconstruct what really happened and what they are worth to us.",
+            "Apply what worked with other clients in crisis.",
+            "Offer them something they do not expect, to reopen the conversation."
+          ]
+        },
+        "q2": {
+          "question": "You have to decide fast with incomplete information. You:",
+          "options": [
+            "Decide with what there is, lining up the risks.",
+            "Hear two people I trust, then decide.",
+            "Do what is done in these cases: that is what the practice is for.",
+            "Choose a route that leaves the option to change."
+          ]
+        },
+        "q3": {
+          "question": "The team is demotivated after a hard quarter. You:",
+          "options": [
+            "Talk to each person, one at a time, to understand what weighs.",
+            "Look at the numbers to see where it really jammed.",
+            "Go back to the things that have always held the team together.",
+            "Change something visible right away, to clear the air."
+          ]
+        },
+        "q4": {
+          "question": "A good team member makes a big mistake. You:",
+          "options": [
+            "Talk to them alone, plainly, without humiliating them.",
+            "Work out what it cost and what it takes to put right.",
+            "Apply the rule that applies to everyone, to them too.",
+            "Have them propose how to stop it happening again."
+          ]
+        },
+        "q5": {
+          "question": "You have to present a plan to those who decide the budget. You:",
+          "options": [
+            "Bring three numbers that matter and defend them.",
+            "Tell the plan as a story: where we start, where we get to.",
+            "Present it in the format that table expects.",
+            "Open with something that makes them see the problem anew."
+          ]
+        },
+        "q6": {
+          "question": "A competitor cuts prices. You:",
+          "options": [
+            "Work out how far we can follow and what it costs us.",
+            "Call the key clients to find out how much it matters to them.",
+            "Answer the way it has always been answered: on service, not price.",
+            "Change the offer, so the comparison is no longer on price."
+          ]
+        },
+        "q7": {
+          "question": "Two people in the team cannot stand each other. You:",
+          "options": [
+            "Put them in the same room and let them speak first.",
+            "Work out where the conflict really costs the work.",
+            "Separate the roles, as is done: less friction, less damage.",
+            "Give them a shared goal that forces them to cooperate."
+          ]
+        },
+        "q8": {
+          "question": "You are asked to cut costs by ten per cent. You:",
+          "options": [
+            "Go line by line and cut where it yields least.",
+            "Involve the team: whoever does the work knows where the waste is.",
+            "Start from where cuts are usually made without breaking anything.",
+            "Look for a different way of working that costs less by itself."
+          ]
+        },
+        "q9": {
+          "question": "A project is going badly and everyone pretends it is not. You:",
+          "options": [
+            "Say it openly in the meeting, calmly.",
+            "Bring the data that proves it, so there is no arguing.",
+            "Follow the procedure to stop it and review it.",
+            "Propose turning it into something else instead of closing it."
+          ]
+        },
+        "q10": {
+          "question": "You have to hire one person and have two opposite candidates. You:",
+          "options": [
+            "Compare point by point what the role needs.",
+            "See them again and judge who the team would work better with.",
+            "Choose the profile that has worked in that role before.",
+            "Choose the one who brings something we do not have."
+          ]
+        },
+        "q11": {
+          "question": "An idea of yours is turned down by your superiors. You:",
+          "options": [
+            "Ask what does not convince and work on it.",
+            "Redo the numbers to see whether they were right.",
+            "Let it go: some battles are not won, and I know it.",
+            "Present it again in another form, through another door."
+          ]
+        },
+        "q12": {
+          "question": "The market changes faster than your plan. You:",
+          "options": [
+            "Redo the plan with the new numbers.",
+            "Gather the right people and decide again together.",
+            "Hold the course: plans exist so as not to change with every wind.",
+            "Use it to try something we would not have dared before."
+          ]
+        },
+        "q13": {
+          "question": "A key person is missing and the work piles up. You:",
+          "options": [
+            "Redistribute the load by who can carry what.",
+            "Ask the team who feels up to covering, and how.",
+            "Cover it myself, as is done when someone is missing.",
+            "Use it to redo the roles differently."
+          ]
+        },
+        "q14": {
+          "question": "You are asked for an idea to grow revenue. You:",
+          "options": [
+            "Look at where the numbers say there is room.",
+            "Ask clients what they would buy that we do not offer.",
+            "Bring back what worked in the best years.",
+            "Propose entering a field we have never been in."
+          ]
+        },
+        "q15": {
+          "question": "Before signing an important agreement. You:",
+          "options": [
+            "Re-read every clause and run the scenarios.",
+            "Talk it over with those who will have to make it work every day.",
+            "Compare it with the agreements that have held over time.",
+            "Look for a point that could make it better for both sides."
+          ]
+        },
+        "q16": {
+          "question": "First day leading a new team. You:",
+          "options": [
+            "Meet everyone, one by one, and listen.",
+            "Study how it has worked so far before touching anything.",
+            "Work out who does what and where the bottlenecks are.",
+            "Give a signal of change from the first week."
+          ]
+        },
+        "q17": {
+          "question": "The same problem resurfaces every month in the meeting. You:",
+          "options": [
+            "Work out exactly where it starts.",
+            "Change how we work on that point and watch.",
+            "Ask those who were there before how they handled it.",
+            "Deal with it in the meeting right to the end, instead of postponing."
+          ]
+        },
+        "q18": {
+          "question": "You are given two people to develop. You:",
+          "options": [
+            "Follow them closely: I like seeing people grow.",
+            "Pass on what I have learnt over these years.",
+            "Prepare a path in stages, with checks.",
+            "Give them real responsibility right away, and back them."
+          ]
+        },
+        "q19": {
+          "question": "You are asked how long an important change will take. You:",
+          "options": [
+            "Break it into phases and give a date.",
+            "Answer from experience: changes like this take about so long.",
+            "Ask what they really need to know, so I give a useful answer.",
+            "Propose a different way of doing it that shortens the time."
+          ]
+        },
+        "q20": {
+          "question": "A new tool arrives that promises to change how the team works. You:",
+          "options": [
+            "Try it myself first on something real.",
+            "Read what companies like ours say about it.",
+            "Measure what it really does, numbers in hand.",
+            "Talk it over with the team and decide together."
+          ]
+        },
+        "q21": {
+          "question": "At the end of the year you take stock. You:",
+          "options": [
+            "Report what I heard from people and clients.",
+            "Bring the points where we lost the most time or money.",
+            "Flag where we drifted from how good work is done.",
+            "Propose something new to try next year."
+          ]
+        }
+      },
+      "drive": [
+        {
+          "question": "Someone is needed to speak in front of the whole company at the year-end meeting. Speaking to an audience does not come easily to you. You:",
+          "comfort": "Leave it to whoever does it better and prepare the content myself: the message lands as it should.",
+          "stretch": "Do it myself: I will prepare for days and be tense, but I learn to speak to my people."
+        },
+        {
+          "question": "Someone is needed to keep the department figures: margins, costs, forecasts. It is the part you gladly delegate. You:",
+          "comfort": "Leave it to whoever is good at it and keep people and clients, where I do most.",
+          "stretch": "Take it on: at first I will get some forecasts wrong, but then I can read the numbers."
+        },
+        {
+          "question": "There is a two-weekend course on a technical subject your team masters and you do not. Studying does not appeal. You:",
+          "comfort": "Skip it: I get what I need explained by those who know, and I keep the weekends for myself.",
+          "stretch": "Do it: two weekends lost and theory from scratch, but then I understand what my team is talking about."
+        },
+        {
+          "question": "They are asking for proposals to redo how the office works from scratch. Inventing does not come naturally: you prefer making what exists work well. You:",
+          "comfort": "Do not propose: what is there holds, and a failed change is paid for by the people.",
+          "stretch": "Bring an idea of my own, knowing it may not please and that I will have to defend it."
+        }
+      ],
+      "driveFinal": {
+        "communication": {
+          "question": "You are asked to handle the hard conversations yourself: dismissals, warnings, lost clients. You:",
+          "comfort": "Ask that they go to whoever has more stomach for it: I give more on the work than on people in difficulty.",
+          "stretch": "Do them myself, one at a time: at first I will come out badly, but I learn to carry them."
+        },
+        "computational_power": {
+          "question": "From Monday the budget and the forecasts are prepared by whoever leads the team: sheets and tables every week. You:",
+          "comfort": "Leave them to whoever is more precise: a wrong forecast is paid for by the whole company.",
+          "stretch": "Prepare them myself: a few rough numbers at the start are part of the deal."
+        },
+        "knowledge": {
+          "question": "Leading the next phase requires a technical skill you do not have: months of study. You:",
+          "comfort": "Keep leading with what I know: there I am reliable, and months of study are a lot.",
+          "stretch": "Start studying, months included."
+        },
+        "creativity": {
+          "question": "You are left to rethink an area of the company from scratch, with no constraints and no models. You:",
+          "comfort": "Ask at least for a reference: with a guide I decide better and risk less.",
+          "stretch": "Start from the blank sheet and take the responsibility if it does not work."
+        }
+      },
+      "open1": "Tell about a decision you took in your own way, different from what was expected. What did you do and how did it go?",
+      "open2": "Tell about something in your work that you could not do at first and now you can. How did you get there?"
+    },
+    "science_tech": {
+      "title": "Science and technology",
+      "subtitle": "Engineering, data, research, product, development.",
+      "questions": {
+        "q1": {
+          "question": "A system that has worked for months stops for no obvious reason. You:",
+          "options": [
+            "Isolate the variables one at a time until I find the cause.",
+            "Ask whoever worked on it recently what changed.",
+            "Check the usual causes first: it is nearly always one of those.",
+            "Try an unexpected change and watch how it reacts."
+          ]
+        },
+        "q2": {
+          "question": "You get data that contradicts what everyone took for granted. You:",
+          "options": [
+            "Before telling anyone, I redo it and check it again.",
+            "Take it to the team straight away: better to know together.",
+            "Look for whether anyone else has already seen the same thing.",
+            "Ask what would change if it were true, and try to picture it."
+          ]
+        },
+        "q3": {
+          "question": "The manager asks for a time estimate on work never done before. You:",
+          "options": [
+            "Break it into parts and estimate piece by piece.",
+            "Answer from experience: similar work took about so long.",
+            "Ask what they really need to know and give a useful answer.",
+            "Propose doing a reduced version first, to find out."
+          ]
+        },
+        "q4": {
+          "question": "You have to explain a technical result to someone outside the field. You:",
+          "options": [
+            "Tell it with an example from everyday life.",
+            "Show the essential numbers and what they mean.",
+            "Use the standard format these results are presented in.",
+            "Build a figure or a demonstration that is understood at a glance."
+          ]
+        },
+        "q5": {
+          "question": "Two ways to solve a problem: one safe and slow, one fast and uncertain. You:",
+          "options": [
+            "Compare costs and risks of both and choose with the numbers.",
+            "Talk it over with the team and decide together.",
+            "Take the safe one: I know it gets there.",
+            "Try the uncertain one on a small scale, then decide."
+          ]
+        },
+        "q6": {
+          "question": "A colleague uses a method that looks wrong to you. You:",
+          "options": [
+            "Tell them calmly and hear their reasons.",
+            "Show them the case where their method fails.",
+            "Point them to how it is normally done and why.",
+            "Maybe their method has something: I try to combine it with mine."
+          ]
+        },
+        "q7": {
+          "question": "The project changes its goal halfway through. You:",
+          "options": [
+            "Work out what of the work done survives and what must be redone.",
+            "Ask to understand the why properly before restarting.",
+            "Restart from the method I know for this kind of goal.",
+            "Take the chance to question the rest as well."
+          ]
+        },
+        "q8": {
+          "question": "You have to learn a new tool in a few days. You:",
+          "options": [
+            "Use it straight away on a real problem and learn by doing.",
+            "Read the documentation from the start.",
+            "Understand how it is built inside before using it.",
+            "Ask someone who already uses it to show me."
+          ]
+        },
+        "q9": {
+          "question": "You are asked to check someone else's work before release. You:",
+          "options": [
+            "Verify it point by point, with the edge cases.",
+            "Go through it with them: explaining it shows the mistakes.",
+            "Compare it with the rules we set ourselves.",
+            "Try to break it in ways they had not foreseen."
+          ]
+        },
+        "q10": {
+          "question": "You are given a task without a clear idea of what they want. You:",
+          "options": [
+            "Ask until it is clear: better one question too many.",
+            "Define what is needed myself and write it down before starting.",
+            "Do it the way that kind of request is usually handled.",
+            "Interpret it my own way and propose the result."
+          ]
+        },
+        "q11": {
+          "question": "You find a way to do in an hour a job that took a day. You:",
+          "options": [
+            "Tell the others, so everyone benefits.",
+            "Try it on more cases first, to be sure it holds.",
+            "Check it skips no mandatory step.",
+            "Use it and meanwhile think about pushing it further."
+          ]
+        },
+        "q12": {
+          "question": "The result you were expecting does not come and time is short. You:",
+          "options": [
+            "Re-check the whole chain to see where it is lost.",
+            "Tell whoever is waiting for the result right away.",
+            "Go back to the method I know works, even if slower.",
+            "Change approach: if it does not come this way, it comes another."
+          ]
+        },
+        "q13": {
+          "question": "A piece is missing — a dataset, a component, a library. You:",
+          "options": [
+            "Work out how much I can do without it and how long I can wait.",
+            "Ask whoever has it or can get it.",
+            "I know where it is usually found: I go and get it.",
+            "Build a temporary version to keep going."
+          ]
+        },
+        "q14": {
+          "question": "You are asked for an idea to reduce the system's errors. You:",
+          "options": [
+            "Look at where and when they happen most often.",
+            "Ask those who use it every day where it bites.",
+            "Start from what worked in similar systems.",
+            "Propose changing how it is built, not just patching it."
+          ]
+        },
+        "q15": {
+          "question": "Last check before delivery. You:",
+          "options": [
+            "Run everything again from scratch and compare the results.",
+            "Ask a colleague to try it without explaining anything.",
+            "Verify it meets the specifications one by one.",
+            "Try the uses nobody had foreseen."
+          ]
+        },
+        "q16": {
+          "question": "First day in a new team. You:",
+          "options": [
+            "Introduce myself and ask how they work.",
+            "Read the code, the documents, the past decisions.",
+            "Work out who does what and where I can be useful right away.",
+            "Bring a proposal of my own in the first week."
+          ]
+        },
+        "q17": {
+          "question": "The same error comes back every week. You:",
+          "options": [
+            "Work out exactly where it starts.",
+            "Change how it is built and see if it disappears.",
+            "Ask those who have been here longer how they handle it.",
+            "Take it to the meeting: it cannot stay my problem alone."
+          ]
+        },
+        "q18": {
+          "question": "You are given two trainees. You:",
+          "options": [
+            "Accept: I like explaining and seeing people learn.",
+            "Accept: I pass on what I have learnt over these years.",
+            "Prepare a path in stages, with checks.",
+            "Put them on a real problem from day one, next to me."
+          ]
+        },
+        "q19": {
+          "question": "A client asks for a feature you think is not needed. You:",
+          "options": [
+            "Ask what they really want to achieve, then we talk it through.",
+            "Show them what it costs and what it yields.",
+            "Explain how that need is usually solved.",
+            "Propose an alternative they had not considered."
+          ]
+        },
+        "q20": {
+          "question": "A tool comes out that promises to do half your job. You:",
+          "options": [
+            "Try it straight away on a real case.",
+            "Read what those who already used it say.",
+            "Measure what it really does and what it does not.",
+            "Talk it over with the team: we decide together whether to adopt it."
+          ]
+        },
+        "q21": {
+          "question": "At the end of the project you take stock. You:",
+          "options": [
+            "Report what I heard from the team and from those who use the result.",
+            "Bring the points where we lost the most time.",
+            "Flag where we drifted from how it is done properly.",
+            "Propose something new to try next time round."
+          ]
+        }
+      },
+      "drive": [
+        {
+          "question": "They are looking for someone to present the team's work to clients every month. Speaking in public does not come easily to you. You:",
+          "comfort": "Leave it to whoever does it better and prepare the figures and answers myself: the work gets told as it deserves.",
+          "stretch": "Present it myself: the first times I will be stiff and prepare for hours, but I learn to make what I do understood."
+        },
+        {
+          "question": "Someone is needed to keep the project figures: hours, costs, deadlines. It is the part you gladly avoid. You:",
+          "comfort": "Leave them to whoever handles them well and keep the technical part, where I do most.",
+          "stretch": "Take them on: at first I will get some estimates wrong, but then I know what what I build costs."
+        },
+        {
+          "question": "There is a two-evening course on a field close to yours but unknown to you. Studying from scratch does not appeal. You:",
+          "comfort": "Skip it: what I need I get explained by whoever goes, and I keep the evenings for myself.",
+          "stretch": "Sign up: long evenings and theory from the start, but then I know that field myself."
+        },
+        {
+          "question": "They are asking for proposals to rethink a part of the system. Inventing new things does not come naturally: you prefer making what exists work well. You:",
+          "comfort": "Do not propose: what is there holds, and a failed change costs everyone.",
+          "stretch": "Bring an idea of my own, knowing it may not work and that I will have to defend it."
+        }
+      ],
+      "driveFinal": {
+        "communication": {
+          "question": "You are asked to be the point of contact for the most demanding client, the one who calls every day. You:",
+          "comfort": "Ask that it goes to whoever has more patience: I give more by building than by explaining.",
+          "stretch": "Take it on, one call at a time: at first I will come out drained, but I learn to hold the relationship."
+        },
+        "computational_power": {
+          "question": "From Monday estimates and planning are done by whoever runs the project: sums and tables every week. You:",
+          "comfort": "Leave them to whoever is more precise: a wrong estimate is paid for by the whole team.",
+          "stretch": "Do them myself: a few rough estimates at the start are part of the deal."
+        },
+        "knowledge": {
+          "question": "Working on the bigger projects requires a specialisation: months of study and an exam. You:",
+          "comfort": "Carry on with what I can do: there I am reliable, and months of study are a lot.",
+          "stretch": "Do the specialisation, exam included."
+        },
+        "creativity": {
+          "question": "You are left to design a part of the system from scratch, with no constraints and no references. You:",
+          "comfort": "Ask at least for a starting point: with a reference I work better and get it wrong less.",
+          "stretch": "Start from the blank sheet and take the risk that it will not hold."
+        }
+      },
+      "open1": "Tell about a technical problem you solved in your own way, different from what was expected. What did you do and how did it go?",
+      "open2": "Tell about something in your work that you could not do at first and now you can. How did you get there?"
+    },
+    "service_ops": {
+      "title": "Service and operations",
+      "subtitle": "Healthcare, education, hospitality, public sector, support.",
+      "questions": {
+        "q1": {
+          "question": "Someone arrives after hours with an urgent request. You:",
+          "options": [
+            "Look at what I can still do today and what moves to tomorrow.",
+            "Explain how it works and we look for a way together.",
+            "Apply what is done in these cases: there is a rule.",
+            "Find a way to help them anyway, even if it is not the usual route."
+          ]
+        },
+        "q2": {
+          "question": "The previous shift left the work half done. You:",
+          "options": [
+            "Call whoever was on and have them tell me where they stopped.",
+            "Work out the point myself by checking what has been done.",
+            "I know how you pick up work like this: I start there.",
+            "Start again my own way: the result is what counts."
+          ]
+        },
+        "q3": {
+          "question": "Someone on the phone is angry and raising their voice. You:",
+          "options": [
+            "Let them speak, then answer calmly.",
+            "Look up straight away what actually happened in their case.",
+            "Explain what the procedure says and how long it takes.",
+            "Offer something they do not expect, to unlock it."
+          ]
+        },
+        "q4": {
+          "question": "You have to look after three people at the same time. You:",
+          "options": [
+            "Work out who is most urgent and move in that order.",
+            "Tell all three how long I will be, so nobody is left in the dark.",
+            "Do as I was taught: paperwork first, then the rest.",
+            "Find a way to carry two of them forward together."
+          ]
+        },
+        "q5": {
+          "question": "The new procedure slows the service down. You:",
+          "options": [
+            "Measure how much time is really lost, and where.",
+            "Talk to whoever decided it, with concrete examples.",
+            "Follow it anyway: it was written for a reason.",
+            "Try a variation that keeps the substance but is quicker."
+          ]
+        },
+        "q6": {
+          "question": "Someone does not understand what they have to do and is getting upset. You:",
+          "options": [
+            "Explain it again in different words, until it is clear.",
+            "Write the steps down in order, so they have them in front of them.",
+            "Give them the form or the guide that explains it all.",
+            "Show them by doing it together with them."
+          ]
+        },
+        "q7": {
+          "question": "The computer system is down and people are waiting. You:",
+          "options": [
+            "Tell people and say what we are doing about it.",
+            "Count how many cases I can still close by hand.",
+            "I know what you do when it goes down: there is a fallback.",
+            "Come up with a way to keep going in the meantime."
+          ]
+        },
+        "q8": {
+          "question": "A new colleague treats someone badly without realising. You:",
+          "options": [
+            "Talk to them later, alone, without making them feel wrong.",
+            "Explain how the public is treated here.",
+            "Point out what happens if it carries on like that.",
+            "Show them how it is done, next time round."
+          ]
+        },
+        "q9": {
+          "question": "A request arrives that fits no rule at all. You:",
+          "options": [
+            "Look for the closest case among those already seen.",
+            "Pass it to whoever can decide, explaining the situation well.",
+            "Weigh what saying yes costs and what saying no costs.",
+            "Find a new route that holds both sides together."
+          ]
+        },
+        "q10": {
+          "question": "You have to organise a day full of appointments. You:",
+          "options": [
+            "Line them up by length and priority.",
+            "Ask people to find out who can move.",
+            "Use the pattern that usually works.",
+            "Change the order so less time is lost between one and the next."
+          ]
+        },
+        "q11": {
+          "question": "Someone complains about a colleague. You:",
+          "options": [
+            "Listen right to the end before saying anything.",
+            "Check what actually happened.",
+            "Explain how a formal complaint is made.",
+            "Try to put it right there and then, if I can."
+          ]
+        },
+        "q12": {
+          "question": "The queue grows and people are huffing. You:",
+          "options": [
+            "Say out loud how long is left, so they know what they are in for.",
+            "See where the queue jams and move people there.",
+            "Keep the pace I know: going faster makes mistakes.",
+            "Open a second point for the quick jobs."
+          ]
+        },
+        "q13": {
+          "question": "The supplies needed every day are about to run out. You:",
+          "options": [
+            "Work out how much is enough and until when.",
+            "Tell whoever orders before it is too late.",
+            "I know where to get some right away so we do not stop.",
+            "Change the way of working so we use less."
+          ]
+        },
+        "q14": {
+          "question": "You are asked for an idea to make people wait less. You:",
+          "options": [
+            "Bring the numbers: where and when the wait is longest.",
+            "Report what the people waiting are saying.",
+            "Tell how it was solved where I worked before.",
+            "Propose changing the order of things, even if it is unusual."
+          ]
+        },
+        "q15": {
+          "question": "You have to hand over at the end of the shift. You:",
+          "options": [
+            "Leave an orderly note with the open points.",
+            "Wait for the colleague and tell them in person.",
+            "Fill in the log the way it should be filled in.",
+            "Flag only the two things that risk falling through."
+          ]
+        },
+        "q16": {
+          "question": "First day in a department you do not know. You:",
+          "options": [
+            "Introduce myself and ask how they work.",
+            "Watch and adapt to how they do things here.",
+            "Work out who does what and where I can be useful right away.",
+            "Bring my own way and see what works with them."
+          ]
+        },
+        "q17": {
+          "question": "The same problem comes back every week. You:",
+          "options": [
+            "Work out exactly where it starts.",
+            "Change something in how we work and watch.",
+            "Ask those who have been here longer how they handle it.",
+            "Take it to the meeting: it cannot stay my problem alone."
+          ]
+        },
+        "q18": {
+          "question": "You are given two trainees. You:",
+          "options": [
+            "Accept: explaining comes naturally to me.",
+            "Accept: I pass on what I have learnt over these years.",
+            "Prepare a path in stages, with checks.",
+            "Put them on the real work from day one, next to me."
+          ]
+        },
+        "q19": {
+          "question": "The manager asks how long it takes to clear the backlog. You:",
+          "options": [
+            "Count the cases and give a date.",
+            "Answer from experience: a backlog like this clears in about so long.",
+            "Ask what they need to know, so I give a useful answer.",
+            "Propose a way to do it sooner, by changing something."
+          ]
+        },
+        "q20": {
+          "question": "New software arrives that nobody knows how to use. You:",
+          "options": [
+            "Try it right away and learn by using it.",
+            "Read the guide or watch a video before touching it.",
+            "Understand how it is built before getting my hands on it.",
+            "Ask whoever brought it to give us a demonstration."
+          ]
+        },
+        "q21": {
+          "question": "At the end of the month you are asked what could be improved. You:",
+          "options": [
+            "Report what I heard from colleagues and users.",
+            "Bring the points where the most time was lost.",
+            "Flag where the procedure is no longer being followed.",
+            "Propose something new to try next month."
+          ]
+        }
+      },
+      "drive": [
+        {
+          "question": "They are looking for someone to run the monthly meeting with users and answer questions. Speaking in front of a room does not come easily to you. You:",
+          "comfort": "Leave it to whoever does it better and prepare the figures and answers myself: the meeting goes better.",
+          "stretch": "Run it myself: the first times I will be stiff and prepare the night before, but I learn to stand there."
+        },
+        {
+          "question": "Someone is needed to keep the service figures: waiting times, cases closed, queues. Numbers are not your favourite part. You:",
+          "comfort": "Leave them to whoever loves them and keep the desk, where I do most: people wait less.",
+          "stretch": "Take them on: at first it will take me twice as long and I will check everything twice, but then I can read them."
+        },
+        {
+          "question": "There is compulsory training over two afternoons on the new service rules. Studying has never been your strong point. You:",
+          "comfort": "Do the minimum and get the rest explained by whoever goes: those two afternoons are needed for the backlog.",
+          "stretch": "Go properly and study: two afternoons lost and theory that weighs on me, but then I know the rules myself."
+        },
+        {
+          "question": "They are asking for proposals to reorganise the front desk. Inventing new things does not come naturally to you. You:",
+          "comfort": "Do not propose: what is there holds, and a change that fails is paid for by the people in the queue.",
+          "stretch": "Bring an idea of my own, knowing it may not work and that I will have to defend it."
+        }
+      ],
+      "driveFinal": {
+        "communication": {
+          "question": "You are asked to be the point of contact for the families, or for the most difficult users. Those are the conversations that weigh on you most. You:",
+          "comfort": "Ask that it goes to whoever has more patience in those situations: I take the work nobody else follows.",
+          "stretch": "Do it myself, one conversation at a time: at first I will come out shaken, but I learn to carry them."
+        },
+        "computational_power": {
+          "question": "From Monday someone in the team has to plan shifts and workloads, with sums and tables every week. You:",
+          "comfort": "Leave it to whoever is more precise: a wrong shift is paid for by everyone.",
+          "stretch": "Do it myself: a few rough weeks at the start are part of the deal."
+        },
+        "knowledge": {
+          "question": "Handling the complex cases requires a training path several months long. You:",
+          "comfort": "Carry on with the cases I can handle: there I am reliable, and months of training are a lot.",
+          "stretch": "Do the path, months included."
+        },
+        "creativity": {
+          "question": "The manager leaves it to you to rethink part of the service from scratch, with no guidance. You:",
+          "comfort": "Ask for a model to work from: with a guide I do better and risk less.",
+          "stretch": "Rethink it my own way and take the responsibility if it does not work."
+        }
+      },
+      "open1": "Tell about a time you solved the problem of someone you were looking after in your own way. What did you do and how did it go?",
+      "open2": "Tell about a part of your work that you could not do at first and now you can. How did you get there?"
     }
   }
 }

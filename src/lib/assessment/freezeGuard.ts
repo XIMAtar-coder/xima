@@ -96,9 +96,9 @@ export function computeAllHashes(
 // categories are byte-identical to the v1.2.1 seal (en 11ffb15d, it e7b14a09,
 // es d7d4491d); only the examples left the hashed subtree.
 export const ASSESSMENT_FREEZE_HASHES: Record<string, string> = {
-  en: "177da890",
-  it: "3af7fe59",
-  es: "0591b005",
+  en: "1d3c2763",
+  it: "ce7361df",
+  es: "31f9c784",
 };
 
 const validatedLocales = new Set<string>();

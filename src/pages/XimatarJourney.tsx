@@ -8,7 +8,7 @@ import { RotateCcw } from 'lucide-react';
 import BaselineAssessment from '../components/ximatar-journey/BaselineAssessment';
 import XimatarAssessment from '../components/ximatar-journey/XimatarAssessment';
 import AssessmentV2 from '../components/ximatar-journey/AssessmentV2';
-import { isV2Field } from '@/lib/assessment/v2/model';
+import { isV2Field, type V2Field } from '@/lib/assessment/v2/model';
 import ResultsComparison from '../components/ximatar-journey/ResultsComparison';
 import { JourneyBar, JourneyInline } from '../components/ximatar-journey/JourneySteps';
 import { Panel } from '@/components/layout/PageHeader';
@@ -152,7 +152,7 @@ const XimatarJourney = () => {
             <JourneyInline current={2} className="mb-6 sm:mb-8" />
             {isV2Field(localStorage.getItem('preferred_field')) ? (
               <AssessmentV2
-                fieldKey={localStorage.getItem('preferred_field') as 'trades_operations' | 'restaurant'}
+                fieldKey={localStorage.getItem('preferred_field') as V2Field}
                 onComplete={handleStepComplete}
                 onGoBack={goBack}
                 cvAnalysed={cvUploaded}

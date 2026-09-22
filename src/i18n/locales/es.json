@@ -4085,16 +4085,16 @@
       "desc": "Ingeniería, datos, investigación, producto, desarrollo."
     },
     "business_leadership": {
-      "title": "Negocios y liderazgo",
-      "desc": "Estrategia, gestión, consultoría, ventas, RR. HH."
+      "title": "Negocio y liderazgo",
+      "desc": "Estrategia, gestión, consultoría, ventas, RR."
     },
     "arts_creative": {
       "title": "Arte y creatividad",
-      "desc": "Diseño, contenido, creatividad para marketing, medios, UX/UI."
+      "desc": "Diseño, contenidos, creatividad para marketing, medios, UX/UI."
     },
     "service_ops": {
       "title": "Servicios y operaciones",
-      "desc": "Salud, educación, hostelería, sector público, soporte."
+      "desc": "Sanidad, educación, hostelería, sector público, soporte."
     },
     "trades_operations": {
       "title": "Oficios y trabajo operativo",
@@ -8427,6 +8427,970 @@
       },
       "open1": "Cuenta una vez en que resolviste un problema en cocina o en sala a tu manera. ¿Qué hiciste y cómo fue?",
       "open2": "Cuenta algo de tu trabajo que al principio no te salía y ahora sí. ¿Cómo lo conseguiste?"
+    },
+    "arts_creative": {
+      "title": "Arte y creatividad",
+      "subtitle": "Diseño, contenidos, creatividad para marketing, medios, UX/UI.",
+      "questions": {
+        "q1": {
+          "question": "El cliente rechaza la primera propuesta sin explicar bien por qué. Tú:",
+          "options": [
+            "Miro qué puede haber chirriado en la propuesta y vuelvo a empezar por ahí.",
+            "Le pregunto qué no funciona, con calma, hasta entenderlo.",
+            "La rehago siguiendo lo que suele gustar a ese tipo de gusto.",
+            "Pruebo una dirección completamente distinta."
+          ]
+        },
+        "q2": {
+          "question": "El encargo es vago: «haz algo bonito». Tú:",
+          "options": [
+            "Pido ejemplos de lo que le gusta y de lo que no.",
+            "Me escribo yo los límites: a quién habla, dónde va, cuándo sale.",
+            "Parto de cómo se hace normalmente ese tipo de trabajo.",
+            "Esbozo tres caminos distintos y se los enseño."
+          ]
+        },
+        "q3": {
+          "question": "Se entrega mañana y el trabajo no te convence. Tú:",
+          "options": [
+            "Veo qué pieza no aguanta y arreglo solo esa.",
+            "Se lo enseño a alguien de quien me fío y escucho.",
+            "Lo llevo al nivel que sé que es aceptable y entrego.",
+            "Lo doy la vuelta: mejor algo vivo que algo correcto."
+          ]
+        },
+        "q4": {
+          "question": "Tienes dos buenas ideas y tiempo para una. Tú:",
+          "options": [
+            "Valoro cuál cuesta menos tiempo y rinde más.",
+            "Enseño las dos y decidimos juntos.",
+            "Elijo la más cercana a lo que suele funcionar.",
+            "Elijo la que nunca he probado."
+          ]
+        },
+        "q5": {
+          "question": "El cliente pide un cambio que, para ti, empeora el trabajo. Tú:",
+          "options": [
+            "Le explico qué se pierde y luego decide él.",
+            "Le enseño los dos resultados comparados.",
+            "Lo hago: es su proyecto y las reglas son estas.",
+            "Busco una tercera vía que sostenga las dos cosas."
+          ]
+        },
+        "q6": {
+          "question": "Te piden trabajar en un estilo que no es el tuyo. Tú:",
+          "options": [
+            "Estudio cómo se hace ese estilo antes de empezar.",
+            "Pido ejemplos y que me expliquen qué buscan.",
+            "Descompongo el estilo en reglas y las aplico.",
+            "Lo interpreto a mi manera, sin salirme de ese mundo."
+          ]
+        },
+        "q7": {
+          "question": "Estás bloqueado: no se te ocurre nada. Tú:",
+          "options": [
+            "Cambio del todo: hago otra cosa y vuelvo con la cabeza despejada.",
+            "Vuelvo al método: lista, descarte, recomposición.",
+            "Voy a ver cómo lo han resuelto otros.",
+            "Lo hablo con alguien: decir las cosas en voz alta las desbloquea."
+          ]
+        },
+        "q8": {
+          "question": "Un compañero presenta como suya una idea que salió de ti. Tú:",
+          "options": [
+            "Se lo digo directamente, sin montar un caso.",
+            "Reconstruyo cuándo y cómo nació antes de decir nada.",
+            "Lo dejo estar: en este oficio las ideas circulan.",
+            "Sigo adelante: tengo otras y las llevo yo."
+          ]
+        },
+        "q9": {
+          "question": "Tienes que presentar el trabajo a quien decide y no es del oficio. Tú:",
+          "options": [
+            "Cuento el porqué de cada decisión con palabras sencillas.",
+            "Enseño los números: qué espera la gente a la que hablamos.",
+            "Lo presento como se presentan estos trabajos.",
+            "Le enseño el trabajo antes de explicarlo."
+          ]
+        },
+        "q10": {
+          "question": "El proyecto es más grande que el tiempo que tienes. Tú:",
+          "options": [
+            "Recorto: decido qué hacer bien y qué dejar.",
+            "Lo digo enseguida y renegocio plazos o contenidos.",
+            "Uso lo que ya he hecho en trabajos parecidos.",
+            "Cambio la forma de hacerlo para hacer más en menos tiempo."
+          ]
+        },
+        "q11": {
+          "question": "En la reunión critican tu trabajo delante de todos. Tú:",
+          "options": [
+            "Escucho hasta el final y pido que las críticas sean concretas.",
+            "Apunto los puntos y compruebo cuáles se sostienen.",
+            "Respondo explicando las decisiones con lo que sabe el oficio.",
+            "Tomo la crítica como impulso y propongo ahí mismo otro camino."
+          ]
+        },
+        "q12": {
+          "question": "Tienes que trabajar sobre un tema que no conoces nada. Tú:",
+          "options": [
+            "Me documento hasta entenderlo bien.",
+            "Hablo con quien lo vive cada día.",
+            "Lo descompongo para ver cómo funciona.",
+            "Uso el no saber como ventaja: veo lo que los expertos ya no ven."
+          ]
+        },
+        "q13": {
+          "question": "Te das cuenta de que el trabajo se parece demasiado a algo ya visto. Tú:",
+          "options": [
+            "Compruebo cuánto se parece de verdad, punto por punto.",
+            "Lo digo al equipo antes de que lo note otro.",
+            "Cambio lo necesario para no salirme de las reglas.",
+            "Lo llevo a otro sitio hasta que sea nuestro."
+          ]
+        },
+        "q14": {
+          "question": "Te piden una idea para destacar con poco presupuesto. Tú:",
+          "options": [
+            "Miro qué ha funcionado y cuánto ha costado.",
+            "Pregunto a la gente a la que hablamos qué le llamaría la atención.",
+            "Retomo un mecanismo que sé que funciona.",
+            "Propongo algo que no ha hecho nadie."
+          ]
+        },
+        "q15": {
+          "question": "Última revisión antes de entregar. Tú:",
+          "options": [
+            "Reviso todo punto por punto: medidas, textos, formatos.",
+            "Se lo enseño a otro par de ojos.",
+            "Compruebo que cumple las especificaciones pedidas.",
+            "Añado un último toque que lo hace respirar."
+          ]
+        },
+        "q16": {
+          "question": "Primer día en un estudio nuevo. Tú:",
+          "options": [
+            "Me presento y pregunto cómo trabajan aquí.",
+            "Miro los trabajos hechos y aprendo su lenguaje.",
+            "Entiendo quién hace qué y dónde puedo servir.",
+            "Llevo una propuesta mía ya la primera semana."
+          ]
+        },
+        "q17": {
+          "question": "El mismo paso te sale siempre mal. Tú:",
+          "options": [
+            "Entiendo qué pasa exactamente en ese paso.",
+            "Lo hago de otra manera y veo si mejora.",
+            "Busco cómo lo resuelven los buenos.",
+            "Pido a un compañero que me mire mientras lo hago."
+          ]
+        },
+        "q18": {
+          "question": "Te asignan dos personas en prácticas. Tú:",
+          "options": [
+            "Acepto: me gusta explicar y verlos crecer.",
+            "Acepto: les paso el oficio, no solo los programas.",
+            "Preparo un recorrido por etapas, con revisiones fijadas.",
+            "Los pongo en un trabajo real y los corrijo sobre la marcha."
+          ]
+        },
+        "q19": {
+          "question": "Te preguntan cuánto tiempo hace falta para el proyecto. Tú:",
+          "options": [
+            "Cuento las fases y doy una fecha.",
+            "Respondo por experiencia: un trabajo así lleva tanto.",
+            "Pregunto qué necesita de verdad, así doy una respuesta útil.",
+            "Propongo otra forma de hacerlo que acorta los plazos."
+          ]
+        },
+        "q20": {
+          "question": "Sale un programa nuevo que promete hacer la mitad de tu trabajo. Tú:",
+          "options": [
+            "Lo pruebo enseguida en un trabajo real.",
+            "Leo y miro cómo lo usan otros antes de tocarlo.",
+            "Entiendo qué hace de verdad y qué no.",
+            "Lo hablo con los compañeros: decidimos juntos si lo adoptamos."
+          ]
+        },
+        "q21": {
+          "question": "Al acabar el proyecto se hace balance. Tú:",
+          "options": [
+            "Cuento lo que han dicho el cliente y el equipo.",
+            "Llevo los puntos donde hemos perdido más tiempo.",
+            "Señalo dónde nos hemos alejado de cómo se hace bien.",
+            "Propongo algo para probar la próxima vez."
+          ]
+        }
+      },
+      "drive": [
+        {
+          "question": "El cliente más importante quiere que lo presente quien ha hecho el trabajo. Hablar delante de una sala no se te da fácil. Tú:",
+          "comfort": "Lo presenta quien lo hace mejor y yo preparo todo el material: el trabajo se cuenta como merece.",
+          "stretch": "Lo presento yo: las primeras veces estaré torpe y me prepararé horas, pero aprendo a defender mi trabajo."
+        },
+        {
+          "question": "Hace falta alguien que lleve las cuentas del proyecto: horas, costes, plazos. Los números no son la parte que amas. Tú:",
+          "comfort": "Se las dejo a quien las gestiona mejor y me quedo con la parte creativa, donde más rindo.",
+          "stretch": "Las cojo yo: al principio tardaré el doble y erraré alguna estimación, pero después sé cuánto vale mi trabajo."
+        },
+        {
+          "question": "Hay un curso serio sobre la teoría de tu oficio: historia, reglas, casos. Estudiar nunca te ha gustado. Tú:",
+          "comfort": "Paso: he aprendido mirando y haciendo, y esas horas las pongo en los proyectos.",
+          "stretch": "Lo hago: teoría pesada y horas quitadas al trabajo, pero después sé por qué ciertas cosas funcionan."
+        },
+        {
+          "question": "Te proponen dirigir un proyecto donde tu papel es coordinar, no crear. Tú:",
+          "comfort": "Dejo la coordinación a quien la hace bien y me quedo donde soy más fuerte: el trabajo gana.",
+          "stretch": "Lo cojo: durante un tiempo crearé menos y haré algo que no sé hacer, pero aprendo a llevar un proyecto."
+        }
+      ],
+      "driveFinal": {
+        "communication": {
+          "question": "Te piden ser tú quien lleve la relación con los clientes difíciles, los que cambian de idea cada día. Tú:",
+          "comfort": "Pido que los lleve quien tiene más paciencia: yo rindo más trabajando que explicando.",
+          "stretch": "Los llevo yo, uno cada vez: al principio saldré agotado, pero aprendo a sostener la relación."
+        },
+        "computational_power": {
+          "question": "Desde el lunes los presupuestos y las estimaciones los hace quien lleva el proyecto: cuentas y tablas cada semana. Tú:",
+          "comfort": "Se los dejo a quien es más preciso: un presupuesto mal hecho lo paga todo el estudio.",
+          "stretch": "Los hago yo: alguna estimación errada al principio entra en el precio."
+        },
+        "knowledge": {
+          "question": "Para trabajar en proyectos más grandes hace falta una certificación: meses de estudio y un examen. Tú:",
+          "comfort": "Sigo con los trabajos que sé hacer: ahí soy bueno, y meses de estudio son muchos.",
+          "stretch": "Saco la certificación, examen incluido."
+        },
+        "creativity": {
+          "question": "El cliente te deja la dirección creativa sin ninguna referencia: página en blanco. Tú:",
+          "comfort": "Pido al menos una pista: con una referencia trabajo mejor y me equivoco menos.",
+          "stretch": "Parto del blanco y asumo el riesgo de que no guste."
+        }
+      },
+      "open1": "Cuenta un trabajo que resolviste a tu manera, distinta de lo que te habían pedido. ¿Qué hiciste y cómo fue?",
+      "open2": "Cuenta algo de tu oficio que al principio no te salía y ahora sí. ¿Cómo lo conseguiste?"
+    },
+    "business_leadership": {
+      "title": "Negocio y liderazgo",
+      "subtitle": "Estrategia, gestión, consultoría, ventas, RR. HH.",
+      "questions": {
+        "q1": {
+          "question": "Un cliente importante amenaza con irse. Tú:",
+          "options": [
+            "Lo llamo yo, en persona, y escucho antes de proponer.",
+            "Reconstruyo qué ha pasado de verdad y cuánto vale para nosotros.",
+            "Aplico lo que funcionó con otros clientes en crisis.",
+            "Le propongo algo que no espera, para reabrir la conversación."
+          ]
+        },
+        "q2": {
+          "question": "Tienes que decidir rápido con información incompleta. Tú:",
+          "options": [
+            "Decido con lo que hay, poniendo en fila los riesgos.",
+            "Escucho a dos personas de confianza y luego decido.",
+            "Hago lo que se hace en estos casos: para eso existe la práctica.",
+            "Elijo un camino que deje abierta la posibilidad de cambiar."
+          ]
+        },
+        "q3": {
+          "question": "El equipo está desmotivado tras un trimestre difícil. Tú:",
+          "options": [
+            "Hablo con cada uno, de uno en uno, para entender qué pesa.",
+            "Miro los números para ver dónde se ha atascado de verdad.",
+            "Vuelvo a las cosas que siempre han mantenido unido al equipo.",
+            "Cambio algo visible enseguida, para despejar el ambiente."
+          ]
+        },
+        "q4": {
+          "question": "Un buen colaborador comete un error grande. Tú:",
+          "options": [
+            "Se lo digo a solas, claro, sin humillarlo.",
+            "Veo cuánto ha costado y qué hace falta para remediarlo.",
+            "Aplico la regla que vale para todos, también para él.",
+            "Le pido a él que proponga cómo evitar que se repita."
+          ]
+        },
+        "q5": {
+          "question": "Tienes que presentar un plan a quien decide el presupuesto. Tú:",
+          "options": [
+            "Llevo tres números que importan y los defiendo.",
+            "Cuento el plan como una historia: de dónde partimos, adónde llegamos.",
+            "Lo presento en el formato que esa mesa espera.",
+            "Abro con algo que les haga ver el problema de otra manera."
+          ]
+        },
+        "q6": {
+          "question": "Un competidor baja los precios. Tú:",
+          "options": [
+            "Calculo hasta dónde podemos seguirlo y qué nos cuesta.",
+            "Llamo a los clientes clave para saber cuánto les importa.",
+            "Respondo como siempre se ha respondido: con el servicio, no con el precio.",
+            "Cambio la oferta, para que la comparación ya no sea por precio."
+          ]
+        },
+        "q7": {
+          "question": "Dos personas del equipo no se soportan. Tú:",
+          "options": [
+            "Las pongo en la misma sala y dejo que hablen ellas primero.",
+            "Veo dónde el conflicto le cuesta de verdad al trabajo.",
+            "Separo los roles, como se hace: menos roce, menos daño.",
+            "Les doy un objetivo común que las obligue a colaborar."
+          ]
+        },
+        "q8": {
+          "question": "Te piden recortar los costes un diez por ciento. Tú:",
+          "options": [
+            "Voy partida por partida y recorto donde menos rinde.",
+            "Implico al equipo: quien hace el trabajo sabe dónde se desperdicia.",
+            "Empiezo por donde se suele recortar sin romper nada.",
+            "Busco otra forma de trabajar que cueste menos por sí sola."
+          ]
+        },
+        "q9": {
+          "question": "Un proyecto va mal y todos hacen como si nada. Tú:",
+          "options": [
+            "Lo digo abiertamente en la reunión, con calma.",
+            "Llevo los datos que lo demuestran, así no hay discusión.",
+            "Sigo el procedimiento para pararlo y revisarlo.",
+            "Propongo convertirlo en otra cosa en vez de cerrarlo."
+          ]
+        },
+        "q10": {
+          "question": "Tienes que contratar a una persona y hay dos candidatos opuestos. Tú:",
+          "options": [
+            "Comparo punto por punto qué necesita el puesto.",
+            "Los vuelvo a ver y valoro con quién trabajaría mejor el equipo.",
+            "Elijo el perfil que ha funcionado antes en ese puesto.",
+            "Elijo al que aporta algo que no tenemos."
+          ]
+        },
+        "q11": {
+          "question": "Una idea tuya es rechazada por tus superiores. Tú:",
+          "options": [
+            "Pregunto qué no convence y trabajo sobre ello.",
+            "Rehago las cuentas para ver si tenían razón.",
+            "La dejo: ciertas batallas no se ganan, y lo sé.",
+            "La vuelvo a presentar de otra forma, por otra puerta."
+          ]
+        },
+        "q12": {
+          "question": "El mercado cambia más rápido que vuestro plan. Tú:",
+          "options": [
+            "Rehago el plan con los números nuevos.",
+            "Reúno a las personas adecuadas y volvemos a decidir juntos.",
+            "Mantengo el rumbo: los planes existen para no cambiar con cada viento.",
+            "Aprovecho para probar algo que antes no nos habríamos atrevido."
+          ]
+        },
+        "q13": {
+          "question": "Falta una persona clave y el trabajo se acumula. Tú:",
+          "options": [
+            "Redistribuyo la carga según quién puede con qué.",
+            "Pregunto al equipo quién se ve capaz de cubrir, y cómo.",
+            "Cubro yo, como se hace cuando falta alguien.",
+            "Aprovecho para rehacer los roles de otra manera."
+          ]
+        },
+        "q14": {
+          "question": "Te piden una idea para aumentar la facturación. Tú:",
+          "options": [
+            "Miro dónde los números dicen que hay margen.",
+            "Pregunto a los clientes qué comprarían que no ofrecemos.",
+            "Retomo lo que funcionó en los mejores años.",
+            "Propongo entrar en un campo donde nunca hemos estado."
+          ]
+        },
+        "q15": {
+          "question": "Antes de firmar un acuerdo importante. Tú:",
+          "options": [
+            "Releo cada cláusula y hago las cuentas de los escenarios.",
+            "Lo hablo con quien tendrá que hacerlo funcionar cada día.",
+            "Lo comparo con los acuerdos que han aguantado con el tiempo.",
+            "Busco un punto que pueda hacerlo mejor para las dos partes."
+          ]
+        },
+        "q16": {
+          "question": "Primer día al frente de un equipo nuevo. Tú:",
+          "options": [
+            "Me reúno con todos, uno por uno, y escucho.",
+            "Estudio cómo ha trabajado hasta ahora antes de tocar nada.",
+            "Entiendo quién hace qué y dónde están los cuellos de botella.",
+            "Doy una señal de cambio desde la primera semana."
+          ]
+        },
+        "q17": {
+          "question": "El mismo problema resurge cada mes en la reunión. Tú:",
+          "options": [
+            "Entiendo exactamente de dónde nace.",
+            "Cambio cómo trabajamos en ese punto y observo.",
+            "Pregunto a quien estaba antes cómo lo gestionaban.",
+            "Lo afronto en la reunión hasta el final, en vez de posponerlo."
+          ]
+        },
+        "q18": {
+          "question": "Te asignan dos personas para hacerlas crecer. Tú:",
+          "options": [
+            "Las sigo de cerca: me gusta ver crecer a la gente.",
+            "Les paso lo que he aprendido estos años.",
+            "Preparo un recorrido por etapas, con comprobaciones.",
+            "Les doy responsabilidades reales enseguida, y las apoyo."
+          ]
+        },
+        "q19": {
+          "question": "Te preguntan cuánto tiempo hace falta para un cambio importante. Tú:",
+          "options": [
+            "Lo descompongo en fases y doy una fecha.",
+            "Respondo por experiencia: cambios así llevan tanto.",
+            "Pregunto qué necesita saber de verdad, así doy una respuesta útil.",
+            "Propongo otra forma de hacerlo que acorte los plazos."
+          ]
+        },
+        "q20": {
+          "question": "Llega una herramienta nueva que promete cambiar el trabajo del equipo. Tú:",
+          "options": [
+            "La pruebo yo primero en algo real.",
+            "Leo qué dicen empresas como la nuestra.",
+            "Mido qué hace de verdad, con números en la mano.",
+            "Lo hablo con el equipo y decidimos juntos."
+          ]
+        },
+        "q21": {
+          "question": "A final de año se hace balance. Tú:",
+          "options": [
+            "Cuento lo que he oído de las personas y de los clientes.",
+            "Llevo los puntos donde hemos perdido más tiempo o dinero.",
+            "Señalo dónde nos hemos alejado de cómo se trabaja bien.",
+            "Propongo algo nuevo para probar el año que viene."
+          ]
+        }
+      },
+      "drive": [
+        {
+          "question": "Hace falta alguien que hable ante toda la empresa en la reunión de fin de año. Hablar ante un público no se te da fácil. Tú:",
+          "comfort": "Se lo dejo a quien lo hace mejor y preparo yo los contenidos: el mensaje llega como debe.",
+          "stretch": "Lo hago yo: me prepararé durante días y estaré tenso, pero aprendo a hablar a mi gente."
+        },
+        {
+          "question": "Hace falta alguien que lleve las cuentas del departamento: márgenes, costes, previsiones. Es la parte que delegas con gusto. Tú:",
+          "comfort": "Se la dejo a quien se le da bien y me quedo con las personas y los clientes, donde más rindo.",
+          "stretch": "La cojo yo: al principio erraré alguna previsión, pero después sé leer los números."
+        },
+        {
+          "question": "Hay un curso de dos fines de semana sobre un tema técnico que tu equipo domina y tú no. Estudiar no te atrae. Tú:",
+          "comfort": "Paso: que me explique lo necesario quien lo sabe, y los fines de semana los guardo para mí.",
+          "stretch": "Lo hago: dos fines de semana perdidos y teoría desde cero, pero después entiendo de qué habla mi equipo."
+        },
+        {
+          "question": "Piden propuestas para rehacer desde cero cómo funciona la oficina. Inventar no te sale natural: prefieres que lo que hay funcione bien. Tú:",
+          "comfort": "No propongo: lo que hay aguanta, y un cambio fallido lo pagan las personas.",
+          "stretch": "Llevo una idea mía, sabiendo que puede no gustar y que tendré que defenderla."
+        }
+      ],
+      "driveFinal": {
+        "communication": {
+          "question": "Te piden que lleves tú las conversaciones difíciles: despidos, llamadas de atención, clientes perdidos. Tú:",
+          "comfort": "Pido que las haga quien tiene más estómago: yo rindo más en el trabajo que con personas en apuros.",
+          "stretch": "Las hago yo, una cada vez: al principio saldré mal, pero aprendo a sostenerlas."
+        },
+        "computational_power": {
+          "question": "Desde el lunes el presupuesto y las previsiones las prepara quien dirige el equipo: hojas y tablas cada semana. Tú:",
+          "comfort": "Se las dejo a quien es más preciso: una previsión errada la paga toda la empresa.",
+          "stretch": "Las preparo yo: algún número torcido al principio entra en el precio."
+        },
+        "knowledge": {
+          "question": "Para dirigir la siguiente fase hace falta una competencia técnica que no tienes: meses de estudio. Tú:",
+          "comfort": "Sigo dirigiendo con lo que sé: ahí soy una garantía, y meses de estudio son muchos.",
+          "stretch": "Me pongo a estudiar, meses incluidos."
+        },
+        "creativity": {
+          "question": "Te dejan repensar desde cero un área de la empresa, sin restricciones ni modelos. Tú:",
+          "comfort": "Pido al menos una referencia: con una guía decido mejor y arriesgo menos.",
+          "stretch": "Parto de la hoja en blanco y asumo la responsabilidad si no funciona."
+        }
+      },
+      "open1": "Cuenta una decisión que tomaste a tu manera, distinta de lo que se esperaba. ¿Qué hiciste y cómo fue?",
+      "open2": "Cuenta algo de tu trabajo que al principio no te salía y ahora sí. ¿Cómo lo conseguiste?"
+    },
+    "science_tech": {
+      "title": "Ciencia y tecnología",
+      "subtitle": "Ingeniería, datos, investigación, producto, desarrollo.",
+      "questions": {
+        "q1": {
+          "question": "Un sistema que llevaba meses funcionando se para sin motivo aparente. Tú:",
+          "options": [
+            "Aíslo las variables una a una hasta encontrar la causa.",
+            "Pregunto a quien lo ha tocado hace poco qué ha cambiado.",
+            "Reviso primero las causas típicas: casi siempre es una de esas.",
+            "Pruebo un cambio inesperado y observo cómo reacciona."
+          ]
+        },
+        "q2": {
+          "question": "Te llegan datos que contradicen lo que todos daban por seguro. Tú:",
+          "options": [
+            "Antes de decírselo a nadie los rehago y los vuelvo a comprobar.",
+            "Los llevo enseguida al equipo: mejor saberlo juntos.",
+            "Busco si alguien más ha visto ya lo mismo.",
+            "Me pregunto qué cambiaría si fueran ciertos e intento imaginarlo."
+          ]
+        },
+        "q3": {
+          "question": "El responsable pide una estimación de tiempo para un trabajo nunca hecho. Tú:",
+          "options": [
+            "Lo troceo en partes y estimo pieza a pieza.",
+            "Respondo por experiencia: trabajos parecidos llevaron tanto.",
+            "Le pregunto qué necesita saber de verdad y doy una respuesta útil.",
+            "Propongo hacer antes una versión reducida para entenderlo."
+          ]
+        },
+        "q4": {
+          "question": "Tienes que explicar un resultado técnico a alguien que no es del oficio. Tú:",
+          "options": [
+            "Lo cuento con un ejemplo de la vida diaria.",
+            "Enseño los números esenciales y qué significan.",
+            "Uso el esquema estándar con el que se presentan estos resultados.",
+            "Construyo una figura o una demostración que se entiende de un vistazo."
+          ]
+        },
+        "q5": {
+          "question": "Dos caminos para resolver un problema: uno seguro y lento, otro rápido e incierto. Tú:",
+          "options": [
+            "Comparo costes y riesgos de los dos y elijo con los números.",
+            "Lo hablo con el equipo y decidimos juntos.",
+            "Cojo el seguro: sé que llega.",
+            "Pruebo el incierto a pequeña escala y luego decido."
+          ]
+        },
+        "q6": {
+          "question": "Un compañero usa un método que te parece equivocado. Tú:",
+          "options": [
+            "Se lo digo con calma y escucho sus razones.",
+            "Le enseño el caso en que su método falla.",
+            "Le indico cómo se hace normalmente y por qué.",
+            "Quizá su método tenga algo: intento unirlo al mío."
+          ]
+        },
+        "q7": {
+          "question": "El proyecto cambia de objetivo a mitad de camino. Tú:",
+          "options": [
+            "Veo qué del trabajo hecho se salva y qué hay que rehacer.",
+            "Pido entender bien el porqué antes de volver a empezar.",
+            "Vuelvo a empezar con el método que conozco para ese tipo de objetivo.",
+            "Aprovecho para cuestionar también el resto."
+          ]
+        },
+        "q8": {
+          "question": "Tienes que aprender una herramienta nueva en pocos días. Tú:",
+          "options": [
+            "La uso enseguida en un problema real y aprendo haciendo.",
+            "Leo la documentación desde el principio.",
+            "Entiendo cómo está hecha por dentro antes de usarla.",
+            "Pido a quien ya la usa que me la enseñe."
+          ]
+        },
+        "q9": {
+          "question": "Te piden revisar el trabajo de otro antes de la entrega. Tú:",
+          "options": [
+            "Lo verifico punto por punto, con los casos límite.",
+            "Lo repaso con él: al explicarlo se ven los errores.",
+            "Lo comparo con las reglas que nos hemos dado.",
+            "Intento romperlo de formas que no había previsto."
+          ]
+        },
+        "q10": {
+          "question": "Te dan una tarea sin decirte bien qué quieren. Tú:",
+          "options": [
+            "Pregunto hasta que quede claro: mejor una pregunta de más.",
+            "Defino yo qué hace falta y lo escribo antes de empezar.",
+            "Lo hago como se suele hacer con ese tipo de petición.",
+            "Lo interpreto a mi manera y propongo el resultado."
+          ]
+        },
+        "q11": {
+          "question": "Descubres una forma de hacer en una hora un trabajo que llevaba un día. Tú:",
+          "options": [
+            "Se lo cuento a los demás, así lo aprovechan todos.",
+            "Primero lo pruebo en más casos para estar seguro de que aguanta.",
+            "Compruebo que no se salte ningún paso obligatorio.",
+            "Lo uso y mientras pienso cómo llevarlo más lejos."
+          ]
+        },
+        "q12": {
+          "question": "El resultado que esperabas no llega y el tiempo aprieta. Tú:",
+          "options": [
+            "Reviso toda la cadena para ver dónde se pierde.",
+            "Se lo digo enseguida a quien espera el resultado.",
+            "Vuelvo al método que sé que funciona, aunque sea más lento.",
+            "Cambio de enfoque: si no llega así, llega por otro lado."
+          ]
+        },
+        "q13": {
+          "question": "Falta una pieza: un dato, un componente, una librería. Tú:",
+          "options": [
+            "Calculo cuánto puedo hacer sin ella y cuánto puedo esperar.",
+            "Pregunto a quien la tiene o puede conseguirla.",
+            "Sé dónde se suele encontrar: voy a por ella.",
+            "Construyo una versión provisional para seguir."
+          ]
+        },
+        "q14": {
+          "question": "Te piden una idea para reducir los errores del sistema. Tú:",
+          "options": [
+            "Miro dónde y cuándo ocurren más a menudo.",
+            "Pregunto a quien lo usa cada día dónde se atasca.",
+            "Parto de lo que funcionó en sistemas parecidos.",
+            "Propongo cambiar cómo está hecho, no solo parchearlo."
+          ]
+        },
+        "q15": {
+          "question": "Última revisión antes de entregar. Tú:",
+          "options": [
+            "Lo ejecuto todo de nuevo desde cero y comparo resultados.",
+            "Pido a un compañero que lo pruebe sin explicarle nada.",
+            "Compruebo que cumple las especificaciones una a una.",
+            "Pruebo los usos que nadie había previsto."
+          ]
+        },
+        "q16": {
+          "question": "Primer día en un equipo nuevo. Tú:",
+          "options": [
+            "Me presento y pregunto cómo trabajan.",
+            "Leo el código, los documentos, las decisiones pasadas.",
+            "Entiendo quién hace qué y dónde puedo ser útil enseguida.",
+            "Llevo una propuesta mía ya la primera semana."
+          ]
+        },
+        "q17": {
+          "question": "El mismo error reaparece cada semana. Tú:",
+          "options": [
+            "Entiendo exactamente de dónde nace.",
+            "Cambio cómo está hecho y veo si desaparece.",
+            "Pregunto a quien lleva más tiempo cómo lo gestionan.",
+            "Lo llevo a la reunión: no puede seguir siendo un problema mío."
+          ]
+        },
+        "q18": {
+          "question": "Te asignan dos personas en prácticas. Tú:",
+          "options": [
+            "Acepto: me gusta explicar y ver que aprenden.",
+            "Acepto: les paso lo que he aprendido estos años.",
+            "Preparo un recorrido por etapas, con comprobaciones.",
+            "Los pongo en un problema real desde el primer día, a mi lado."
+          ]
+        },
+        "q19": {
+          "question": "Un cliente pide una función que, para ti, no hace falta. Tú:",
+          "options": [
+            "Le pregunto qué quiere conseguir de verdad y luego lo hablamos.",
+            "Le enseño qué cuesta y qué aporta.",
+            "Le explico cómo se resuelve normalmente esa necesidad.",
+            "Le propongo una alternativa que no había considerado."
+          ]
+        },
+        "q20": {
+          "question": "Sale una herramienta que promete hacer la mitad de tu trabajo. Tú:",
+          "options": [
+            "La pruebo enseguida en un caso real.",
+            "Leo qué dicen quienes ya la han usado.",
+            "Mido qué hace de verdad y qué no.",
+            "Lo hablo con el equipo: decidimos juntos si la adoptamos."
+          ]
+        },
+        "q21": {
+          "question": "Al acabar el proyecto se hace balance. Tú:",
+          "options": [
+            "Cuento lo que he oído del equipo y de quien usa el resultado.",
+            "Llevo los puntos donde hemos perdido más tiempo.",
+            "Señalo dónde nos hemos alejado de cómo se hace bien.",
+            "Propongo algo nuevo para probar la próxima vez."
+          ]
+        }
+      },
+      "drive": [
+        {
+          "question": "Buscan a alguien que presente el trabajo del equipo a los clientes cada mes. Hablar en público no se te da fácil. Tú:",
+          "comfort": "Se lo dejo a quien lo hace mejor y preparo yo datos y respuestas: el trabajo se cuenta como merece.",
+          "stretch": "Lo presento yo: las primeras veces estaré rígido y me prepararé horas, pero aprendo a hacer entender lo que hago."
+        },
+        {
+          "question": "Hace falta alguien que lleve las cuentas del proyecto: horas, costes, plazos. Es la parte que evitas con gusto. Tú:",
+          "comfort": "Se las dejo a quien las gestiona bien y me quedo con la parte técnica, donde más rindo.",
+          "stretch": "Las cojo yo: al principio erraré alguna estimación, pero después sé cuánto cuesta lo que construyo."
+        },
+        {
+          "question": "Hay un curso de dos tardes sobre un campo cercano al tuyo pero que no conoces. Estudiar desde cero no te atrae. Tú:",
+          "comfort": "Paso: lo que haga falta me lo explica quien vaya, y las tardes las guardo para mí.",
+          "stretch": "Me apunto: tardes largas y teoría desde el principio, pero después ese campo lo conozco yo."
+        },
+        {
+          "question": "Piden propuestas para repensar una parte del sistema. Inventar cosas nuevas no te sale natural: prefieres que lo que hay funcione bien. Tú:",
+          "comfort": "No propongo: lo que hay aguanta, y un cambio fallido nos cuesta a todos.",
+          "stretch": "Llevo una idea mía, sabiendo que puede no funcionar y que tendré que defenderla."
+        }
+      ],
+      "driveFinal": {
+        "communication": {
+          "question": "Te piden ser tú la referencia para el cliente más exigente, el que llama cada día. Tú:",
+          "comfort": "Pido que lo lleve quien tiene más paciencia: yo rindo más construyendo que explicando.",
+          "stretch": "Lo llevo yo, una llamada cada vez: al principio saldré agotado, pero aprendo a sostener la relación."
+        },
+        "computational_power": {
+          "question": "Desde el lunes las estimaciones y la planificación las hace quien lleva el proyecto: cuentas y tablas cada semana. Tú:",
+          "comfort": "Se las dejo a quien es más preciso: una estimación errada la paga todo el equipo.",
+          "stretch": "Las hago yo: alguna estimación torcida al principio entra en el precio."
+        },
+        "knowledge": {
+          "question": "Para trabajar en los proyectos más grandes hace falta una especialización: meses de estudio y un examen. Tú:",
+          "comfort": "Sigo con lo que sé hacer: ahí soy una garantía, y meses de estudio son muchos.",
+          "stretch": "Hago la especialización, examen incluido."
+        },
+        "creativity": {
+          "question": "Te dejan diseñar una parte del sistema desde cero, sin restricciones ni referencias. Tú:",
+          "comfort": "Pido al menos una pista: con una referencia trabajo mejor y me equivoco menos.",
+          "stretch": "Parto de la hoja en blanco y asumo el riesgo de que no aguante."
+        }
+      },
+      "open1": "Cuenta un problema técnico que resolviste a tu manera, distinta de lo que se esperaba. ¿Qué hiciste y cómo fue?",
+      "open2": "Cuenta algo de tu trabajo que al principio no te salía y ahora sí. ¿Cómo lo conseguiste?"
+    },
+    "service_ops": {
+      "title": "Servicios y operaciones",
+      "subtitle": "Sanidad, educación, hostelería, sector público, soporte.",
+      "questions": {
+        "q1": {
+          "question": "Alguien llega fuera de horario con una petición urgente. Tú:",
+          "options": [
+            "Miro qué puedo hacer todavía hoy y qué pasa a mañana.",
+            "Le explico cómo funciona y buscamos juntos una salida.",
+            "Aplico lo que se hace en estos casos: la norma está.",
+            "Encuentro la manera de ayudarle igualmente, aunque no sea lo habitual."
+          ]
+        },
+        "q2": {
+          "question": "El turno anterior ha dejado el trabajo a medias. Tú:",
+          "options": [
+            "Llamo a quien estaba y que me cuente dónde se quedó.",
+            "Reconstruyo yo el punto revisando lo que se ha hecho.",
+            "Sé cómo se retoma un trabajo así: empiezo por ahí.",
+            "Vuelvo a empezar a mi manera: lo que cuenta es el resultado."
+          ]
+        },
+        "q3": {
+          "question": "Una persona al teléfono está enfadada y levanta la voz. Tú:",
+          "options": [
+            "La dejo hablar y luego le respondo con calma.",
+            "Busco enseguida qué ha pasado de verdad en su caso.",
+            "Le explico qué dice el procedimiento y sus plazos.",
+            "Le propongo algo que no espera para desbloquearlo."
+          ]
+        },
+        "q4": {
+          "question": "Tienes que atender a tres personas a la vez. Tú:",
+          "options": [
+            "Veo quién tiene más urgencia y voy en ese orden.",
+            "Les digo a los tres en cuánto estaré con ellos, así nadie queda a oscuras.",
+            "Hago como me enseñaron: primero los trámites, luego lo demás.",
+            "Busco la manera de llevar dos a la vez."
+          ]
+        },
+        "q5": {
+          "question": "El procedimiento nuevo ralentiza el servicio. Tú:",
+          "options": [
+            "Mido cuánto tiempo se pierde de verdad y dónde.",
+            "Lo hablo con quien lo ha decidido, con ejemplos concretos.",
+            "Lo sigo igualmente: se escribió por algo.",
+            "Pruebo una variante que respeta el fondo pero va más rápido."
+          ]
+        },
+        "q6": {
+          "question": "Una persona no entiende qué tiene que hacer y se pone nerviosa. Tú:",
+          "options": [
+            "Se lo explico otra vez con otras palabras, hasta que quede claro.",
+            "Le escribo los pasos en orden, así los tiene delante.",
+            "Le doy el formulario o la guía que lo explica todo.",
+            "Se lo enseño haciéndolo junto a ella."
+          ]
+        },
+        "q7": {
+          "question": "El sistema informático está caído y la gente espera. Tú:",
+          "options": [
+            "Aviso a las personas y digo qué estamos haciendo.",
+            "Cuento cuántos trámites puedo cerrar igualmente a mano.",
+            "Sé qué se hace cuando se cae: hay un procedimiento de reserva.",
+            "Me invento una manera de seguir mientras tanto."
+          ]
+        },
+        "q8": {
+          "question": "Un compañero nuevo trata mal a una persona sin darse cuenta. Tú:",
+          "options": [
+            "Se lo digo después, a solas, sin hacerle sentir mal.",
+            "Le explico cómo se trata al público aquí.",
+            "Le hago ver qué pasa si sigue así.",
+            "Le enseño yo cómo se hace, la próxima vez."
+          ]
+        },
+        "q9": {
+          "question": "Llega una petición que no encaja en ninguna norma. Tú:",
+          "options": [
+            "Busco el caso más parecido entre los ya vistos.",
+            "Se la paso a quien puede decidir, explicando bien la situación.",
+            "Valoro qué supone decir que sí y qué decir que no.",
+            "Busco una vía nueva que sostenga las dos cosas."
+          ]
+        },
+        "q10": {
+          "question": "Tienes que organizar un día lleno de citas. Tú:",
+          "options": [
+            "Las ordeno por duración y prioridad.",
+            "Hablo con las personas para ver quién puede moverse.",
+            "Uso el esquema que suele funcionar.",
+            "Cambio el orden para perder menos tiempo entre una y otra."
+          ]
+        },
+        "q11": {
+          "question": "Una persona se queja de un compañero. Tú:",
+          "options": [
+            "La escucho hasta el final antes de decir nada.",
+            "Compruebo qué ha pasado de verdad.",
+            "Le explico cómo se pone una reclamación.",
+            "Intento arreglarlo allí mismo, si puedo."
+          ]
+        },
+        "q12": {
+          "question": "La cola se alarga y la gente resopla. Tú:",
+          "options": [
+            "Digo en voz alta cuánto queda, así saben a qué atenerse.",
+            "Miro dónde se atasca la cola y muevo gente allí.",
+            "Mantengo el ritmo que conozco: ir más rápido hace fallar.",
+            "Abro un segundo punto para lo rápido."
+          ]
+        },
+        "q13": {
+          "question": "Está a punto de acabarse el material de cada día. Tú:",
+          "options": [
+            "Calculo cuánto basta y hasta cuándo.",
+            "Aviso a quien hace los pedidos antes de que sea tarde.",
+            "Sé dónde conseguir algo enseguida para no parar.",
+            "Cambio la forma de trabajar para gastar menos."
+          ]
+        },
+        "q14": {
+          "question": "Te piden una idea para que la gente espere menos. Tú:",
+          "options": [
+            "Llevo los números: dónde y cuándo se espera más.",
+            "Cuento lo que dicen las personas que esperan.",
+            "Explico cómo se resolvió donde trabajaba antes.",
+            "Propongo cambiar el orden de las cosas, aunque sea raro."
+          ]
+        },
+        "q15": {
+          "question": "Tienes que hacer el relevo al final del turno. Tú:",
+          "options": [
+            "Dejo una nota ordenada con los puntos abiertos.",
+            "Espero al compañero y se lo cuento en persona.",
+            "Relleno el registro como debe rellenarse.",
+            "Le señalo solo las dos cosas que pueden caerse."
+          ]
+        },
+        "q16": {
+          "question": "Primer día en un servicio que no conoces. Tú:",
+          "options": [
+            "Me presento y pregunto cómo trabajan.",
+            "Observo y me adapto a cómo lo hacen aquí.",
+            "Entiendo quién hace qué y dónde puedo servir enseguida.",
+            "Traigo mi manera y veo qué funciona con ellos."
+          ]
+        },
+        "q17": {
+          "question": "El mismo problema vuelve cada semana. Tú:",
+          "options": [
+            "Entiendo exactamente de dónde nace.",
+            "Cambio algo en la forma de trabajar y observo.",
+            "Pregunto a quien lleva más tiempo cómo lo gestionan.",
+            "Lo llevo a la reunión: no puede seguir siendo un problema mío."
+          ]
+        },
+        "q18": {
+          "question": "Te asignan dos personas en prácticas. Tú:",
+          "options": [
+            "Acepto: explicar se me da bien.",
+            "Acepto: les paso lo que he aprendido estos años.",
+            "Preparo un recorrido por etapas, con controles.",
+            "Los pongo en el trabajo real desde el primer día, a mi lado."
+          ]
+        },
+        "q19": {
+          "question": "El responsable pregunta cuánto se tarda en quitar el atraso. Tú:",
+          "options": [
+            "Cuento los expedientes y doy una fecha.",
+            "Respondo por experiencia: un atraso así se quita en tanto.",
+            "Le pregunto qué necesita saber, así le doy una respuesta útil.",
+            "Le propongo una manera de hacerlo antes, cambiando algo."
+          ]
+        },
+        "q20": {
+          "question": "Llega un programa nuevo que nadie sabe usar. Tú:",
+          "options": [
+            "Lo pruebo enseguida y aprendo usándolo.",
+            "Leo la guía o veo un vídeo antes de tocarlo.",
+            "Entiendo cómo está hecho antes de meterle mano.",
+            "Pido a quien lo ha traído que nos haga una demostración."
+          ]
+        },
+        "q21": {
+          "question": "A final de mes se pregunta qué mejorar. Tú:",
+          "options": [
+            "Cuento lo que he oído de compañeros y usuarios.",
+            "Llevo los puntos donde se ha perdido más tiempo.",
+            "Señalo dónde ya no se sigue el procedimiento.",
+            "Propongo algo nuevo para probar el mes siguiente."
+          ]
+        }
+      },
+      "drive": [
+        {
+          "question": "Buscan a alguien que lleve la reunión mensual con los usuarios y responda a las preguntas. Hablar delante de una sala no se te da fácil. Tú:",
+          "comfort": "Se lo dejo a quien lo hace mejor y preparo yo los datos y las respuestas: la reunión sale mejor.",
+          "stretch": "La llevo yo: las primeras veces estaré rígido y me lo prepararé la víspera, pero aprendo a estar ahí."
+        },
+        {
+          "question": "Hace falta alguien que lleve las cuentas del servicio: tiempos de espera, expedientes cerrados, colas. Los números no son tu parte favorita. Tú:",
+          "comfort": "Se los dejo a quien disfruta con ellos y me quedo en el mostrador, donde más rindo: la gente espera menos.",
+          "stretch": "Los cojo yo: al principio tardaré el doble y comprobaré todo dos veces, pero después sé leerlos."
+        },
+        {
+          "question": "Hay una formación obligatoria de dos tardes sobre las nuevas normas del servicio. Estudiar nunca ha sido tu fuerte. Tú:",
+          "comfort": "Hago lo mínimo y que me lo explique quien vaya: esas dos tardes hacen falta para el atraso.",
+          "stretch": "Voy de verdad y estudio: dos tardes perdidas y teoría que me pesa, pero después las normas las sé yo."
+        },
+        {
+          "question": "Piden propuestas para reorganizar la acogida. Inventar cosas nuevas no te sale natural. Tú:",
+          "comfort": "No propongo: lo que hay aguanta, y un cambio fallido lo pagan las personas que esperan.",
+          "stretch": "Llevo una idea mía, sabiendo que puede no funcionar y que tendré que defenderla."
+        }
+      ],
+      "driveFinal": {
+        "communication": {
+          "question": "Te piden ser tú la referencia para las familias o para los usuarios más difíciles. Son las conversaciones que más te pesan. Tú:",
+          "comfort": "Pido que lo haga quien tiene más paciencia en esas situaciones: yo me quedo con el trabajo que nadie sigue.",
+          "stretch": "Lo hago yo, una conversación cada vez: al principio saldré tocado, pero aprendo a sostenerlas."
+        },
+        "computational_power": {
+          "question": "Desde el lunes los turnos y las cargas los tiene que planificar alguien del equipo, con cuentas y tablas cada semana. Tú:",
+          "comfort": "Se lo dejo a quien es más preciso: un turno mal hecho lo pagan todos.",
+          "stretch": "Lo hago yo: alguna semana torcida al principio entra en el precio."
+        },
+        "knowledge": {
+          "question": "Para llevar los casos complejos hace falta una formación de varios meses. Tú:",
+          "comfort": "Sigo con los casos que sé llevar: ahí soy una garantía, y meses de curso son muchos.",
+          "stretch": "Hago la formación, meses incluidos."
+        },
+        "creativity": {
+          "question": "El responsable te deja repensar desde cero cómo funciona una parte del servicio, sin indicaciones. Tú:",
+          "comfort": "Pido un modelo en el que inspirarme: con una guía lo hago mejor y arriesgo menos.",
+          "stretch": "Lo repienso a mi manera y asumo la responsabilidad si no funciona."
+        }
+      },
+      "open1": "Cuenta una vez en que resolviste a tu manera el problema de una persona a la que atendías. ¿Qué hiciste y cómo fue?",
+      "open2": "Cuenta una parte de tu trabajo que al principio no te salía y ahora sí. ¿Cómo lo conseguiste?"
     }
   }
 }
