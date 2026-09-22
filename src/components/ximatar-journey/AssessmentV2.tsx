@@ -15,10 +15,6 @@ import { log } from '@/lib/log';
 import { cn } from '@/lib/utils';
 import { OPEN_ANSWER_MIN_CHARS } from './assessmentShape';
 import { V2_CONTENT } from '@/lib/assessment/v2/content.generated';
-import { loadMiniSignals, type MiniGameId } from '@/lib/minigames/signals';
-import { Ritmo } from '@/components/minigames/Ritmo';
-import { Intruso } from '@/components/minigames/Intruso';
-import { Bilancia } from '@/components/minigames/Bilancia';
 import {
   CONTENT_PILLARS, DRIVE_AFTER_QUESTION, INTENSITY_DEFAULT, V2_MC_COUNT, V2_DRIVE_COUNT,
   computeScoresV2, weakestContentPillar,
@@ -34,12 +30,8 @@ import {
 
 type FlowItem =
   | { kind: 'mc'; q: number }
-  | { kind: 'game'; id: MiniGameId }
   | { kind: 'drive'; d: number; pillar?: ContentPillar }   // pillar known for 1-4; 5 is adaptive
   | { kind: 'open'; key: 'open1' | 'open2' };
-
-/** Three short games along the way, to get used to the format before La Salita. */
-const GAME_AFTER_QUESTION: Record<number, MiniGameId> = { 3: 'ritmo', 11: 'intruso', 18: 'bilancia' };
 
 const buildFlow = (): FlowItem[] => {
   const flow: FlowItem[] = [];
@@ -47,7 +39,6 @@ const buildFlow = (): FlowItem[] => {
     flow.push({ kind: 'mc', q });
     const at = (DRIVE_AFTER_QUESTION as readonly number[]).indexOf(q);
     if (at >= 0) flow.push({ kind: 'drive', d: at + 1 });
-    if (GAME_AFTER_QUESTION[q]) flow.push({ kind: 'game', id: GAME_AFTER_QUESTION[q] });
   }
   flow.push({ kind: 'drive', d: V2_DRIVE_COUNT });
   flow.push({ kind: 'open', key: 'open1' });
@@ -103,12 +94,7 @@ const AssessmentV2: React.FC<Props> = ({
   const drivePillar = (d: number): ContentPillar =>
     d <= 4 ? content.drivePillars[d - 1] : weakestContentPillar(answers);
 
-  const [gamesDone, setGamesDone] = useState<Record<string, boolean>>(() => {
-    const m = loadMiniSignals();
-    return Object.fromEntries(Object.keys(m).map((k) => [k, true]));
-  });
   const isAnswered = (it: FlowItem): boolean => {
-    if (it.kind === 'game') return Boolean(gamesDone[it.id]);
     if (it.kind === 'mc') return Boolean(v2.mc[it.q]);
     if (it.kind === 'drive') return Boolean(v2.drive[it.d]);
     return (openAnswers[it.key] || '').trim().length >= OPEN_ANSWER_MIN_CHARS;
@@ -125,7 +111,6 @@ const AssessmentV2: React.FC<Props> = ({
       return [q, ...order.map((ci, i) =>
         `${t('assessment.option_spoken', { letter: String.fromCharCode(65 + i), defaultValue: 'Answer {{letter}}' })}: ${t(`${base}.questions.q${item.q}.options.${ci}`)}`)].join('. ');
     }
-    if (item.kind === 'game') return '';
     if (item.kind === 'drive') {
       const k = item.d <= 4 ? `${base}.drive.${item.d - 1}` : `${base}.driveFinal.${drivePillar(5)}`;
       return [t(`${k}.question`), `A: ${t(`${k}.comfort`)}`, `B: ${t(`${k}.stretch`)}`].join('. ');
@@ -368,13 +353,6 @@ const AssessmentV2: React.FC<Props> = ({
               {footer}
             </div>
           );
-        })()}
-
-        {item.kind === 'game' && (() => {
-          const done = () => { setGamesDone((g) => ({ ...g, [item.id]: true })); go(index + 1); };
-          if (item.id === 'ritmo') return <Ritmo key={item.id} onDone={done} />;
-          if (item.id === 'intruso') return <Intruso key={item.id} onDone={done} />;
-          return <Bilancia key={item.id} onDone={done} />;
         })()}
 
         {item.kind === 'open' && (() => {

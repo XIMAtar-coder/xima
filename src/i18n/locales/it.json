@@ -9129,30 +9129,5 @@
     "facts_line": "Sui fatti: {{attempts}} tentativi sui livelli difficili, {{retries}} riprove dopo un fallimento.",
     "how_to": "Tocca una tessera per girarla. Il livello è fatto quando ogni tubo incontra il vicino e nessuno punta fuori.",
     "how_to_timed": "Questo livello è a tempo."
-  },
-  "minigames": {
-    "eyebrow": "Una pausa breve · non conta",
-    "round": "Giro {{n}} di {{total}}",
-    "miss_title": "Non era quella.",
-    "miss_body": "Niente di perso: questo non entra nel risultato. Cosa vuoi fare?",
-    "retry": "Riprovo",
-    "continue": "Giro dopo",
-    "skip": "Salto il gioco",
-    "done": "Fatto. Torniamo alle domande.",
-    "ritmo": {
-      "title": "Segui il ritmo",
-      "how": "Guarda i tasti accendersi, poi toccali nello stesso ordine. A ogni giro la sequenza si allunga di uno.",
-      "watch": "Guarda…",
-      "your_turn": "Tocca a te: {{n}} di {{total}}"
-    },
-    "intruso": {
-      "title": "Trova l’intruso",
-      "how": "Nove forme, una è diversa dalle altre. Toccala. A ogni giro la differenza è più piccola."
-    },
-    "bilancia": {
-      "title": "Metti in equilibrio",
-      "how": "Il piatto di sinistra ha un carico. Aggiungi pesi a destra finché la bilancia è in piano, poi verifica. Ogni peso si può usare più volte.",
-      "check": "Verifica"
-    }
   }
 }

@@ -9129,30 +9129,5 @@
     "facts_line": "On the facts: {{attempts}} attempts on the hard levels, {{retries}} retries after failing.",
     "how_to": "Tap a tile to turn it. The level is done when every pipe meets its neighbour and none points outside.",
     "how_to_timed": "This level is timed."
-  },
-  "minigames": {
-    "eyebrow": "A short break · does not count",
-    "round": "Round {{n}} of {{total}}",
-    "miss_title": "Not that one.",
-    "miss_body": "Nothing lost: this does not enter the result. What do you want to do?",
-    "retry": "Try again",
-    "continue": "Next round",
-    "skip": "Skip the game",
-    "done": "Done. Back to the questions.",
-    "ritmo": {
-      "title": "Follow the rhythm",
-      "how": "Watch the pads light up, then tap them in the same order. The sequence gets one step longer each round.",
-      "watch": "Watch…",
-      "your_turn": "Your turn: {{n}} of {{total}}"
-    },
-    "intruso": {
-      "title": "Find the odd one out",
-      "how": "Nine shapes, one is not like the others. Tap it. Each round the difference is smaller."
-    },
-    "bilancia": {
-      "title": "Balance the scale",
-      "how": "The left pan carries a load. Add weights to the right pan until the scale is level, then check. Each weight can be used more than once.",
-      "check": "Check"
-    }
   }
 }
