@@ -9094,5 +9094,38 @@
       "open1": "Tell about a time you solved the problem of someone you were looking after in your own way. What did you do and how did it go?",
       "open2": "Tell about a part of your work that you could not do at first and now you can. How did you get there?"
     }
+  },
+  "salita": {
+    "title": "The Climb",
+    "eyebrow": "Drive trial · optional",
+    "intro_title": "Four levels. The last one is steep.",
+    "intro_body": "Turn the tiles until every pipe meets its neighbour. There are no words and no right answers to know. How good you are does not enter the result: what counts is what you do when it gets hard — whether you keep going, change board, or stop. Three to four minutes.",
+    "intro_honest": "Nothing here is a grade. We record your choices, not your speed.",
+    "start": "Start the climb",
+    "level": "Level {{n}} of 4",
+    "fitting": "{{n}} of {{total}} tiles in place",
+    "stop": "I stop here",
+    "timer": "{{s}} s",
+    "solved_title": "Level {{n}} done.",
+    "next": "Next level",
+    "fail_title": "Not this time.",
+    "fail_body": "Time is up on this board. What now?",
+    "retry": "Try again, same board",
+    "change": "Try another board",
+    "quit": "Enough for today",
+    "debrief_eyebrow": "How it went",
+    "debrief_title": "The fourth level was built to be failed at the first try.",
+    "debrief_body": "Almost nobody solves it in a minute. What we looked at is what you did after: whether you stayed, whether you tried another way, whether you stopped. That is Drive read on facts, not on words.",
+    "fact_attempts": "{{n}} attempts on the hard levels",
+    "fact_retries": "{{n}} times you tried again after failing",
+    "fact_changes": "{{n}} times you tried another board",
+    "fact_returns": "you came back on another day",
+    "fact_finished": "you solved the fourth level",
+    "debrief_note": "This trial can be taken again tomorrow: coming back counts too.",
+    "back": "Back to your results",
+    "cta_title": "Put your Drive to the test",
+    "cta_body": "Four levels, three minutes, no words. The last one is built to be failed: what counts is what you do after.",
+    "cta_button": "Start The Climb",
+    "facts_line": "On the facts: {{attempts}} attempts on the hard levels, {{retries}} retries after failing."
   }
 }

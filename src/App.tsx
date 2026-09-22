@@ -39,6 +39,7 @@ const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 // ---- Candidate ----
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Profile = lazy(() => import("./pages/Profile"));
+const Salita = lazy(() => import("./pages/Salita"));
 const XimatarJourney = lazy(() => import("./pages/XimatarJourney"));
 const XimaChat = lazy(() => import("./pages/XimaChat"));
 const Messages = lazy(() => import("./pages/Messages"));
@@ -159,6 +160,7 @@ const RoutesTree = () => {
           <Route path="/imprint" element={<Imprint />} />
           <Route path="/profile" element={<RequireAuth role="candidate"><Profile /></RequireAuth>} />
           <Route path="/ximatar-journey" element={<XimatarJourney />} />
+          <Route path="/salita" element={<Salita />} />
           <Route path="/xima-chat" element={<RequireAuth role="candidate"><XimaChat /></RequireAuth>} />
           <Route path="/development-plan" element={<RequireAuth role="candidate"><DevelopmentPlan /></RequireAuth>} />
           <Route path="/opportunity/:id" element={<OpportunityDetails />} />

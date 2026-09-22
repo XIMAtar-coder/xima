@@ -9393,5 +9393,38 @@
       "open1": "Cuenta una vez en que resolviste a tu manera el problema de una persona a la que atendías. ¿Qué hiciste y cómo fue?",
       "open2": "Cuenta una parte de tu trabajo que al principio no te salía y ahora sí. ¿Cómo lo conseguiste?"
     }
+  },
+  "salita": {
+    "title": "La Subida",
+    "eyebrow": "Prueba de Drive · opcional",
+    "intro_title": "Cuatro niveles. El último es empinado.",
+    "intro_body": "Gira las fichas hasta que cada tubo encuentre a su vecino. No hay palabras ni respuestas correctas que saber. Lo bueno que seas no entra en el resultado: cuenta qué haces cuando se pone difícil: si sigues, si cambias de tablero, si paras. Tres o cuatro minutos.",
+    "intro_honest": "Nada aquí es una nota. Registramos tus elecciones, no tu velocidad.",
+    "start": "Empiezo la subida",
+    "level": "Nivel {{n}} de 4",
+    "fitting": "{{n}} fichas en su sitio de {{total}}",
+    "stop": "Paro aquí",
+    "timer": "{{s}} s",
+    "solved_title": "Nivel {{n}} hecho.",
+    "next": "Siguiente nivel",
+    "fail_title": "Esta vez no.",
+    "fail_body": "Se acabó el tiempo en este tablero. ¿Y ahora?",
+    "retry": "Lo intento otra vez, mismo tablero",
+    "change": "Pruebo otro tablero",
+    "quit": "Basta por hoy",
+    "debrief_eyebrow": "Cómo ha ido",
+    "debrief_title": "El cuarto nivel estaba hecho para no salir a la primera.",
+    "debrief_body": "Casi nadie lo resuelve en un minuto. Lo que miramos es qué hiciste después: si te quedaste, si probaste otro camino, si paraste. Es el Drive leído en los hechos, no en las palabras.",
+    "fact_attempts": "{{n}} intentos en los niveles difíciles",
+    "fact_retries": "{{n}} veces volviste a intentarlo tras fallar",
+    "fact_changes": "{{n}} veces probaste otro tablero",
+    "fact_returns": "volviste otro día",
+    "fact_finished": "resolviste el cuarto nivel",
+    "debrief_note": "Esta prueba se puede repetir mañana: volver también cuenta.",
+    "back": "Volver a tus resultados",
+    "cta_title": "Pon a prueba tu Drive",
+    "cta_body": "Cuatro niveles, tres minutos, sin palabras. El último está hecho para no salir: cuenta qué haces después.",
+    "cta_button": "Empezar La Subida",
+    "facts_line": "En los hechos: {{attempts}} intentos en los niveles difíciles, {{retries}} reintentos tras fallar."
   }
 }

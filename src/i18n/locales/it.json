@@ -9094,5 +9094,38 @@
       "open1": "Racconta una volta in cui hai risolto a modo tuo il problema di una persona che seguivi. Cosa hai fatto e come è andata?",
       "open2": "Racconta una parte del tuo lavoro che all'inizio non ti riusciva e adesso sì. Come ci sei arrivato?"
     }
+  },
+  "salita": {
+    "title": "La Salita",
+    "eyebrow": "Prova di Drive · facoltativa",
+    "intro_title": "Quattro livelli. L’ultimo è ripido.",
+    "intro_body": "Gira le tessere finché ogni tubo incontra il suo vicino. Non ci sono parole né risposte giuste da sapere. Quanto sei bravo non entra nel risultato: conta cosa fai quando diventa difficile — se continui, se cambi schema, se ti fermi. Tre o quattro minuti.",
+    "intro_honest": "Niente qui è un voto. Registriamo le tue scelte, non la tua velocità.",
+    "start": "Comincio la salita",
+    "level": "Livello {{n}} di 4",
+    "fitting": "{{n}} tessere a posto su {{total}}",
+    "stop": "Mi fermo qui",
+    "timer": "{{s}} s",
+    "solved_title": "Livello {{n}} fatto.",
+    "next": "Prossimo livello",
+    "fail_title": "Stavolta no.",
+    "fail_body": "Il tempo su questo schema è finito. E adesso?",
+    "retry": "Riprovo, stesso schema",
+    "change": "Provo un altro schema",
+    "quit": "Basta per oggi",
+    "debrief_eyebrow": "Com’è andata",
+    "debrief_title": "Il quarto livello era fatto per non riuscire al primo colpo.",
+    "debrief_body": "Quasi nessuno lo risolve in un minuto. Quello che abbiamo guardato è cosa hai fatto dopo: se sei rimasto, se hai provato un’altra strada, se ti sei fermato. È il Drive letto sui fatti, non sulle parole.",
+    "fact_attempts": "{{n}} tentativi sui livelli difficili",
+    "fact_retries": "{{n}} volte hai riprovato dopo un fallimento",
+    "fact_changes": "{{n}} volte hai provato un altro schema",
+    "fact_returns": "sei tornato un altro giorno",
+    "fact_finished": "hai risolto il quarto livello",
+    "debrief_note": "Questa prova si può rifare domani: anche tornare conta.",
+    "back": "Torna ai tuoi risultati",
+    "cta_title": "Metti alla prova il tuo Drive",
+    "cta_body": "Quattro livelli, tre minuti, senza parole. L’ultimo è fatto per non riuscire: conta cosa fai dopo.",
+    "cta_button": "Comincia La Salita",
+    "facts_line": "Sui fatti: {{attempts}} tentativi sui livelli difficili, {{retries}} riprove dopo un fallimento."
   }
 }

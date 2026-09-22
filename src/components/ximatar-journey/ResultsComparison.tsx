@@ -16,6 +16,7 @@ import type { Rubric } from '@/lib/scoring/openResponse';
 import { normalizeXimatarImageUrl } from '@/utils/normalizeXimatarImage';
 import { useToast } from '@/hooks/use-toast';
 import { log } from '@/lib/log';
+import { loadSignals, summarise } from '@/lib/salita/signals';
 
 interface ResultsComparisonProps {
   onComplete: (step: number) => void;
@@ -414,6 +415,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     return 'low';
   };
   const driveLevel = getDriveLevel(driveScore);
+  const salita = summarise(loadSignals());
 
   // Get strongest and weakest pillars (excluding Drive)
   const nonDrivePillars = pillarScores.filter(p => p.pillar !== 'drive');
@@ -624,6 +626,21 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           </div>
           <p className="max-w-[450px] text-[13px] text-muted-foreground">{t('ximatarJourney.drive_section_body')}</p>
           <p className="mt-3 text-[11px] text-muted-foreground">{t('guestJourney.results.drive_note')}</p>
+
+          {/* La Salita: Drive read on behaviour, offered after the result, never required. */}
+          <div className="mt-5 rounded-xl border border-[hsl(var(--xs-line))] bg-[hsl(var(--xs-page))] p-4">
+            <p className="text-[14px] font-semibold text-foreground">{t('salita.cta_title')}</p>
+            {salita ? (
+              <p className="mt-1 text-[13px] text-muted-foreground">
+                {t('salita.facts_line', { attempts: salita.hardAttempts, retries: salita.retries })}
+              </p>
+            ) : (
+              <p className="mt-1 text-[13px] text-muted-foreground">{t('salita.cta_body')}</p>
+            )}
+            <Button size="sm" variant={salita ? 'outline' : 'default'} className="mt-3" onClick={() => navigate('/salita')}>
+              {t('salita.cta_button')}
+            </Button>
+          </div>
         </Panel>
 
         {/* 4 · Mentor (optional) */}
