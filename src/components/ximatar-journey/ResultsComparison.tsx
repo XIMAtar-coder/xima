@@ -460,7 +460,22 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                   <h2 className="my-1 text-[28px] font-semibold capitalize leading-tight tracking-[-0.8px] text-foreground sm:text-[34px] sm:tracking-[-1px]">
                     {ximatarName}
                   </h2>
-                  {translations?.title && <p className="text-[15px] text-foreground sm:text-[17px]">{translations.title}</p>}
+                  {/* Taxonomy 2.0: the subtitle names the shape (locale first, catalogue as fallback)
+                      and the line under it says why this animal: the pair. */}
+                  <p className="text-[15px] text-foreground sm:text-[17px]">
+                    {ximatarData.label
+                      ? t(`ximatar.${ximatarData.label.toLowerCase()}.title`, { defaultValue: translations?.title || '' })
+                      : translations?.title}
+                  </p>
+                  {strongestPillar && weakestPillar && (
+                    <p className="mt-1 text-[13px] text-muted-foreground">
+                      {t('ximatarJourney.pair_line', {
+                        strong: pillarShortName(t, strongestPillar.pillar),
+                        weak: pillarShortName(t, weakestPillar.pillar),
+                        defaultValue: 'Strong in {{strong}}, {{weak}} to cultivate.',
+                      })}
+                    </p>
+                  )}
                   {traits && (
                     <ul className="mt-3 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-2">
                       {traits.map((trait) => (
