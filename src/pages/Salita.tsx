@@ -34,16 +34,17 @@ const PipeTile: React.FC<{ tile: Tile; turns: number; onTap: () => void; size: n
       onClick={onTap}
       aria-label="tile"
       className={cn(
-        'relative aspect-square w-full rounded-[10px] border transition-colors',
-        fits ? 'border-primary/40 bg-primary/[0.06]' : 'border-[hsl(var(--xs-line))] bg-card',
+        'relative aspect-square w-full rounded-[12px] border transition-all active:scale-95',
+        fits ? 'border-primary/50 bg-primary/[0.08] shadow-[0_0_0_2px_hsl(var(--primary)/0.12)]' : 'border-[hsl(var(--xs-line))] bg-[hsl(var(--xs-page))] hover:border-primary/40',
       )}
       style={{ maxWidth: size }}
     >
       <svg viewBox="0 0 100 100" className="h-full w-full" style={{ transform: `rotate(${turns * 90}deg)`, transition: 'transform 160ms ease-out' }} aria-hidden="true">
         {ends.map((d) => (
-          <path key={d} d={d} stroke={fits ? 'hsl(var(--primary))' : 'currentColor'} strokeWidth={14} strokeLinecap="round" fill="none" className="text-foreground/70" />
+          <path key={d} d={d} stroke={fits ? 'hsl(var(--primary))' : '#8a93a6'} strokeWidth={16} strokeLinecap="round" fill="none" />
         ))}
-        {ends.length > 0 && <circle cx={50} cy={50} r={11} fill={fits ? 'hsl(var(--primary))' : 'currentColor'} className="text-foreground/70" />}
+        {ends.length > 0 && <circle cx={50} cy={50} r={12} fill={fits ? 'hsl(var(--primary))' : '#8a93a6'} />}
+        {ends.length > 0 && <circle cx={50} cy={50} r={5} fill="white" opacity={0.9} />}
       </svg>
     </button>
   );
@@ -149,8 +150,16 @@ const Salita: React.FC = () => {
 
         {(phase === 'play' || phase === 'solved' || phase === 'failed') && (
           <Panel className="p-5 sm:p-7">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <Eyebrow>{t('salita.level', { n: level.n })}</Eyebrow>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <Eyebrow>{t('salita.level', { n: level.n })}</Eyebrow>
+                {/* The four steps of the climb, the current one lit */}
+                <span className="flex items-center gap-1" aria-hidden="true">
+                  {LEVELS.map((l) => (
+                    <span key={l.n} className={cn('h-1.5 rounded-full transition-all', l.n === level.n ? 'w-5 bg-primary' : l.n < level.n ? 'w-2 bg-primary/50' : 'w-2 bg-[hsl(var(--xs-line))]')} />
+                  ))}
+                </span>
+              </div>
               <div className="flex items-center gap-3 font-mono text-[12px] tabular-nums text-muted-foreground">
                 <span>{t('salita.fitting', { n: fitting, total })}</span>
                 {secondsLeft !== null && (
@@ -161,6 +170,10 @@ const Salita: React.FC = () => {
               </div>
             </div>
 
+            <p className="mb-4 text-[13.5px] leading-relaxed text-muted-foreground">
+              {t('salita.how_to', 'Tap a tile to turn it. The level is done when every pipe meets its neighbour and none points outside.')}
+              {level.limit && <> {t('salita.how_to_timed', 'This level is timed.')}</>}
+            </p>
             <div
               className="mx-auto grid gap-1.5"
               style={{ gridTemplateColumns: `repeat(${board.size}, minmax(0, 1fr))`, maxWidth: board.size * (gridMax + 6) }}

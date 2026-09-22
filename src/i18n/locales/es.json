@@ -9425,6 +9425,33 @@
     "cta_title": "Pon a prueba tu Drive",
     "cta_body": "Cuatro niveles, tres minutos, sin palabras. El último está hecho para no salir: cuenta qué haces después.",
     "cta_button": "Empezar La Subida",
-    "facts_line": "En los hechos: {{attempts}} intentos en los niveles difíciles, {{retries}} reintentos tras fallar."
+    "facts_line": "En los hechos: {{attempts}} intentos en los niveles difíciles, {{retries}} reintentos tras fallar.",
+    "how_to": "Toca una ficha para girarla. El nivel está hecho cuando cada tubo encuentra a su vecino y ninguno apunta fuera.",
+    "how_to_timed": "Este nivel tiene tiempo."
+  },
+  "minigames": {
+    "eyebrow": "Una pausa breve · no cuenta",
+    "round": "Ronda {{n}} de {{total}}",
+    "miss_title": "Esa no era.",
+    "miss_body": "Nada perdido: esto no entra en el resultado. ¿Qué quieres hacer?",
+    "retry": "Otra vez",
+    "continue": "Siguiente ronda",
+    "skip": "Saltar el juego",
+    "done": "Hecho. Volvemos a las preguntas.",
+    "ritmo": {
+      "title": "Sigue el ritmo",
+      "how": "Mira cómo se encienden las teclas y luego tócalas en el mismo orden. En cada ronda la secuencia se alarga uno.",
+      "watch": "Mira…",
+      "your_turn": "Te toca: {{n}} de {{total}}"
+    },
+    "intruso": {
+      "title": "Encuentra el intruso",
+      "how": "Nueve formas, una es distinta. Tócala. En cada ronda la diferencia es más pequeña."
+    },
+    "bilancia": {
+      "title": "Equilibra la balanza",
+      "how": "El plato izquierdo lleva una carga. Añade pesos a la derecha hasta que la balanza quede nivelada y luego comprueba. Cada peso se puede usar más de una vez.",
+      "check": "Comprobar"
+    }
   }
 }
