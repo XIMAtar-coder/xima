@@ -1363,7 +1363,12 @@
     "intro_whats_next": "Now the questionnaire: {{mc}} multiple-choice questions, then {{open}} written answers. About {{minutes}} minutes; your progress is saved as you go.",
     "open_min_required": "Minimum {{count}} characters",
     "open_min_reached": "Minimum reached. More detail helps your score.",
-    "open_earlier_too_short": "Your answer to written question {{number}} is under {{count}} characters. Go back and add a little more."
+    "open_earlier_too_short": "Your answer to written question {{number}} is under {{count}} characters. Go back and add a little more.",
+    "listen": "Listen",
+    "listen_stop": "Stop",
+    "dictate": "Answer by voice",
+    "dictate_stop": "Stop dictating",
+    "option_spoken": "Answer {{letter}}"
   },
   "dashboard": {
     "page_label": "DASHBOARD",

@@ -1108,7 +1108,12 @@
     "intro_whats_next": "Ahora el cuestionario: {{mc}} preguntas de opción múltiple y después {{open}} respuestas abiertas. Unos {{minutes}} minutos; tu progreso se guarda sobre la marcha.",
     "open_min_required": "Mínimo {{count}} caracteres",
     "open_min_reached": "Mínimo alcanzado. Más detalle ayuda a tu puntuación.",
-    "open_earlier_too_short": "Tu respuesta a la pregunta abierta {{number}} tiene menos de {{count}} caracteres. Vuelve atrás y añade un poco más."
+    "open_earlier_too_short": "Tu respuesta a la pregunta abierta {{number}} tiene menos de {{count}} caracteres. Vuelve atrás y añade un poco más.",
+    "listen": "Escuchar",
+    "listen_stop": "Parar",
+    "dictate": "Responder con la voz",
+    "dictate_stop": "Parar el dictado",
+    "option_spoken": "Respuesta {{letter}}"
   },
   "assessmentSets": {
     "science_tech": {

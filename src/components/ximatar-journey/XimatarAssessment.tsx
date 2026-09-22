@@ -11,6 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useAssessment } from '@/context/AssessmentContext';
 import { useUser } from '@/context/UserContext';
 import { useQuestionExampleContent, QuestionExampleToggle, QuestionExamplePanel } from '@/components/QuestionExample';
+import { ReadAloudButton } from '@/components/candidate/audio/ReadAloudButton';
+import { SpeakAnswerButton } from '@/components/candidate/audio/SpeakAnswerButton';
 import { Eyebrow, Panel } from '@/components/layout/PageHeader';
 import { cn } from '@/lib/utils';
 import { selectArchetypeFromAssessmentPillars } from '@/lib/ximatarTaxonomy';
@@ -490,6 +492,19 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
   });
   const examplePanelId = `question-example-${exampleKey}`;
 
+  // What the "Listen" button reads out: the question and, for a multiple
+  // choice, each option announced by its letter.
+  const spokenQuestion = (() => {
+    if (currentMultipleChoice) {
+      const q = t(`${baseKey}.questions.${currentMultipleChoice.key}.question`);
+      const opts = Array.from({ length: 4 }, (_, i) =>
+        `${t('assessment.option_spoken', { letter: String.fromCharCode(65 + i), defaultValue: 'Answer {{letter}}' })}: ${t(`${baseKey}.questions.${currentMultipleChoice.key}.options.${i}`)}`);
+      return [q, ...opts].join('. ');
+    }
+    if (currentOpenQuestion) return t(`${baseKey}.questions.${currentOpenQuestion.key}.question`);
+    return '';
+  })();
+
   const isLast = currentQuestion === totalQuestions - 1;
   const continueDisabled = isLast
     ? !canProceed() || shortEarlierOpenAnswerIndex !== -1 || isCompleting
@@ -641,7 +656,10 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
                 ? categoryLabel
                 : t('guestJourney.questionnaire.open_tag', { n: currentQuestion - questions.length + 1, total: ASSESSMENT_OPEN_COUNT })}
             </span>
-            <QuestionExampleToggle open={exampleOpen} onToggle={() => setExampleOpen((o) => !o)} panelId={examplePanelId} className="shrink-0" />
+            <span className="flex shrink-0 items-center gap-2">
+              <ReadAloudButton text={spokenQuestion} />
+              <QuestionExampleToggle open={exampleOpen} onToggle={() => setExampleOpen((o) => !o)} panelId={examplePanelId} />
+            </span>
           </div>
 
           {exampleOpen && (
@@ -711,9 +729,17 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
                   {t('guestJourney.questionnaire.open_hint', { count: OPEN_ANSWER_MIN_CHARS })}
                 </p>
 
-                <label htmlFor={`open-answer-${currentOpenQuestion.id}`} className="mb-2.5 mt-6 block text-[13px] font-semibold text-foreground">
-                  {t('guestJourney.questionnaire.open_field_label')}
-                </label>
+                <div className="mb-2.5 mt-6 flex flex-wrap items-center justify-between gap-2">
+                  <label htmlFor={`open-answer-${currentOpenQuestion.id}`} className="text-[13px] font-semibold text-foreground">
+                    {t('guestJourney.questionnaire.open_field_label')}
+                  </label>
+                  <SpeakAnswerButton
+                    onAppend={(spoken) => {
+                      const current = openAnswers[currentOpenQuestion.id] || '';
+                      handleOpenAnswerChange(currentOpenQuestion.id, current ? `${current} ${spoken}` : spoken);
+                    }}
+                  />
+                </div>
                 {/* The shared Textarea is styled for dark surfaces (10% white
                     border), which vanished on the light theme. Give this one a
                     border that reads on both. */}

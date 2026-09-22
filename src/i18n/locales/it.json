@@ -1202,7 +1202,12 @@
     "intro_whats_next": "Ora il questionario: {{mc}} domande a risposta multipla, poi {{open}} risposte aperte. Circa {{minutes}} minuti; i progressi vengono salvati mentre procedi.",
     "open_min_required": "Minimo {{count}} caratteri",
     "open_min_reached": "Minimo raggiunto. Più dettagli aiutano il punteggio.",
-    "open_earlier_too_short": "La tua risposta alla domanda aperta {{number}} ha meno di {{count}} caratteri. Torna indietro e aggiungi qualcosa."
+    "open_earlier_too_short": "La tua risposta alla domanda aperta {{number}} ha meno di {{count}} caratteri. Torna indietro e aggiungi qualcosa.",
+    "listen": "Ascolta",
+    "listen_stop": "Ferma",
+    "dictate": "Rispondi a voce",
+    "dictate_stop": "Ferma la dettatura",
+    "option_spoken": "Risposta {{letter}}"
   },
   "results": {
     "title": "I tuoi risultati",
