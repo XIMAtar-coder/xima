@@ -573,9 +573,16 @@ const Business: React.FC = () => {
                     >
                       {t(`business.plan${plan}_price`)}
                     </span>
-                    <span className="text-muted-foreground text-sm ml-1">
-                      {t(`business.plan${plan}_period`)}
-                    </span>
+                    {/* Starter and Enterprise have no period: their key holds an
+                        empty string, and with returnEmptyString off i18next
+                        hands back the key itself — "business.plan1_period" was
+                        being printed next to the price. */}
+                    {(() => {
+                      const key = `business.plan${plan}_period`;
+                      const period = t(key);
+                      if (!period || period === key) return null;
+                      return <span className="text-muted-foreground text-sm ml-1">{period}</span>;
+                    })()}
                   </div>
                   <p
                     className="mt-3 text-muted-foreground"
