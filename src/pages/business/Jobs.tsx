@@ -206,10 +206,10 @@ export default function Jobs() {
 
       {/* Control deck: filters + actions in one bar. */}
       <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <StatusTabs<StatusFilter>
+        <StatusTabs
           label={t('businessPortal.jobs_filter_label')}
           value={statusFilter}
-          onChange={setStatusFilter}
+          onChange={(v) => setStatusFilter(v as StatusFilter)}
           className="md:flex-1"
           items={[
             { value: 'all', label: t('businessPortal.jobs_filter_all'), count: statusCounts.all },
