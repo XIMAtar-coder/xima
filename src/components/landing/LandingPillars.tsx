@@ -9,6 +9,58 @@ type PillarKey = 'drive' | 'computational' | 'knowledge' | 'communication' | 'cr
 const ORDER: PillarKey[] = ['drive', 'computational', 'knowledge', 'communication', 'creativity'];
 
 /**
+ * The pillar in full. On a phone it opens right under the card that was
+ * tapped — it used to appear after all five, so the answer arrived far from
+ * the question; on a wide screen the five stay in a row and the detail opens
+ * underneath them.
+ */
+const PillarDetail: React.FC<{ pillar: PillarKey; className?: string }> = ({ pillar, className }) => {
+  const { t } = useTranslation();
+  return (
+    <div className={cn('xs-panel xs-panel-accent mt-3 animate-fade-in p-5 sm:p-8', className)}>
+      <p className="xs-eyebrow">
+        {String(ORDER.indexOf(pillar) + 1).padStart(2, '0')} · {t('landing.pillars.label')}
+      </p>
+      <h3 className="mt-2 text-[20px] font-semibold leading-tight tracking-[-0.4px] text-foreground sm:text-[22px]">
+        {t(`landing.pillars.items.${pillar}.title`)}
+      </h3>
+
+      <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-foreground sm:text-[16px]">
+        {t(`landing.pillars.items.${pillar}.what`)}
+      </p>
+
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <div className="rounded-xl border border-[hsl(var(--xs-line))] bg-background p-4 sm:p-5">
+          <p className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-wider text-primary">
+            <Check className="h-4 w-4 shrink-0" strokeWidth={2.5} aria-hidden="true" />
+            {t('landing.pillars.strong_label')}
+          </p>
+          <p className="mt-2 text-[14.5px] leading-relaxed text-foreground sm:text-[15px]">
+            {t(`landing.pillars.items.${pillar}.strong`)}
+          </p>
+        </div>
+        <div className="rounded-xl border border-[hsl(var(--xs-line))] bg-background p-4 sm:p-5">
+          <p className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-wider text-[#C2410C]">
+            <AlertTriangle className="h-4 w-4 shrink-0" strokeWidth={2.2} aria-hidden="true" />
+            {t('landing.pillars.weak_label')}
+          </p>
+          <p className="mt-2 text-[14.5px] leading-relaxed text-foreground sm:text-[15px]">
+            {t(`landing.pillars.items.${pillar}.weak`)}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-6 border-t border-[hsl(var(--xs-line))] pt-5">
+        <p className="xs-eyebrow">{t('landing.pillars.how_label')}</p>
+        <p className="mt-2 max-w-3xl text-[14.5px] leading-relaxed text-foreground sm:text-[15px]">
+          {t(`landing.pillars.items.${pillar}.how`)}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+/**
  * "Five dimensions to read your profile", in the same language as the signed-in
  * product: mono eyebrow, flat panels on the page background, numbers in
  * tabular figures, no lifted cards and no coloured glows.
@@ -29,13 +81,13 @@ export const LandingPillars: React.FC = () => {
           {t('landing.pillars.subtitle')}
         </p>
 
-        {/* The five, side by side: same width, same height, numbered */}
-        <div className="mt-12 grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))' }}>
+        {/* The five: a list on a phone, a row of cards from md up */}
+        <div className="mt-12 flex flex-col gap-3 md:grid md:[grid-template-columns:repeat(auto-fit,minmax(190px,1fr))]">
           {ORDER.map((key, i) => {
             const isOpen = expanded === key;
             return (
+              <React.Fragment key={key}>
               <button
-                key={key}
                 type="button"
                 onClick={() => setExpanded(isOpen ? null : key)}
                 aria-expanded={isOpen}
@@ -60,53 +112,15 @@ export const LandingPillars: React.FC = () => {
                   {t(`landing.pillars.items.${key}.subtitle`)}
                 </p>
               </button>
+              {/* On a phone the answer belongs under the question */}
+              {isOpen && <PillarDetail pillar={key} className="md:hidden" />}
+              </React.Fragment>
             );
           })}
         </div>
 
-        {/* The open one, in full */}
-        {expanded && (
-          <div className="xs-panel xs-panel-accent mt-4 animate-fade-in p-6 sm:p-8">
-            <p className="xs-eyebrow">
-              {String(ORDER.indexOf(expanded) + 1).padStart(2, '0')} · {t('landing.pillars.label')}
-            </p>
-            <h3 className="mt-2 text-[22px] font-semibold leading-tight tracking-[-0.4px] text-foreground">
-              {t(`landing.pillars.items.${expanded}.title`)}
-            </h3>
-
-            <p className="mt-4 max-w-3xl text-[16px] leading-relaxed text-foreground">
-              {t(`landing.pillars.items.${expanded}.what`)}
-            </p>
-
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <div className="rounded-xl border border-[hsl(var(--xs-line))] bg-background p-5">
-                <p className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-wider text-primary">
-                  <Check className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />
-                  {t('landing.pillars.strong_label')}
-                </p>
-                <p className="mt-2 text-[15px] leading-relaxed text-foreground">
-                  {t(`landing.pillars.items.${expanded}.strong`)}
-                </p>
-              </div>
-              <div className="rounded-xl border border-[hsl(var(--xs-line))] bg-background p-5">
-                <p className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-wider text-[#C2410C]">
-                  <AlertTriangle className="h-4 w-4" strokeWidth={2.2} aria-hidden="true" />
-                  {t('landing.pillars.weak_label')}
-                </p>
-                <p className="mt-2 text-[15px] leading-relaxed text-foreground">
-                  {t(`landing.pillars.items.${expanded}.weak`)}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 border-t border-[hsl(var(--xs-line))] pt-5">
-              <p className="xs-eyebrow">{t('landing.pillars.how_label')}</p>
-              <p className="mt-2 max-w-3xl text-[15px] leading-relaxed text-foreground">
-                {t(`landing.pillars.items.${expanded}.how`)}
-              </p>
-            </div>
-          </div>
-        )}
+        {/* From md up the five stay in a row and the detail opens below them */}
+        {expanded && <PillarDetail pillar={expanded} className="hidden md:block" />}
 
         {/* Free assessment */}
         <div className="mx-auto mt-20 max-w-[720px] text-center">

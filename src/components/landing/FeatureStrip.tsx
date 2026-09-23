@@ -14,9 +14,10 @@ export const FeatureStrip: React.FC = () => {
 
   return (
     <div
-      className="relative mx-auto animate-fade-in"
+      // The strip is pulled up over the hero only where there is room for it:
+      // on a phone that overlap covered the carousel controls underneath.
+      className="relative mx-auto mt-8 animate-fade-in px-5 py-6 sm:px-8 lg:-mt-[50px] lg:px-9 lg:py-7"
       style={{
-        marginTop: -50,
         maxWidth: '92%',
         background: 'var(--xima-surface-soft)',
         border: '1px solid var(--xima-border)',
@@ -24,7 +25,6 @@ export const FeatureStrip: React.FC = () => {
         boxShadow: '0 24px 70px rgba(7,30,58,0.10)',
         backdropFilter: 'blur(18px)',
         WebkitBackdropFilter: 'blur(18px)',
-        padding: '28px 36px',
         zIndex: 10,
         animationDelay: '0.8s',
       }}
