@@ -354,9 +354,12 @@ export default function MentorCalendar() {
                   {t('mentor.day_availability', 'Availability for the day')}
                   <span className="ml-2 font-mono text-[13px] tabular-nums text-muted-foreground">{daySlots.length}</span>
                 </h2>
-                {selectedDate && <p className="mt-0.5 text-[13px] text-muted-foreground">{longDate(selectedDate)}</p>}
+              {selectedDate && <p className="mt-0.5 text-[13px] text-muted-foreground">{longDate(selectedDate)}</p>}
               </div>
-              {newSlotDialog}
+              <Button variant="outline" onClick={() => setNewSlotOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
+                {t('mentor.add_availability', 'Add availability')}
+              </Button>
             </div>
 
             {daySlots.length === 0 ? (
