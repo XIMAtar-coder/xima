@@ -37,25 +37,54 @@ export interface AnswersV2 {
 export type PillarScores = Record<Pillar, number>;
 
 /**
- * Content pillar = Σ intensity when chosen ÷ (3 × 21) × 10.
- * Drive = Σ intensity when the stretch was chosen ÷ (3 × 5) × 10.
+ * The content pillars are a forced choice: every scenario offers one answer per
+ * pillar, so what a person gives to one they take from the others. Their four
+ * values are therefore **shares of one profile**, not four independent levels —
+ * dividing each by the whole questionnaire (3 × 21) made every real profile
+ * land between 1 and 3 out of 10, which is what Pietro and Roberta saw.
+ *
+ * So the share is what is measured, and the 0–10 is a reading of it:
+ *
+ *   share_p = Σ intensity on p ÷ Σ intensity on all four
+ *   score_p = 10 × √share_p
+ *
+ * The square root puts the three anchors where they belong: a pillar chosen as
+ * much as the other three (25%) reads 5, a pillar that takes the whole profile
+ * reads 10, and nothing reads 0. It is monotonic, so the order of the pillars —
+ * and the animal, which is the pair (strongest, weakest) — never changes.
+ *
+ * Drive is not part of that budget: it has its own five scenarios where both
+ * answers are serious, so it stays absolute, Σ intensity of the stretch choices
+ * ÷ (3 × 5) × 10.
+ *
  * Every value is 0–10 with two decimals; missing answers count as zero, so a
  * partial submission scores low rather than crashing.
  */
 export function computeScoresV2(answers: AnswersV2): PillarScores {
   const sum: Record<ContentPillar, number> = { computational_power: 0, communication: 0, knowledge: 0, creativity: 0 };
   for (const a of Object.values(answers.mc)) sum[a.pillar] += a.intensity;
-  const maxContent = 3 * V2_MC_COUNT;
+  const total = CONTENT_PILLARS.reduce((n, p) => n + sum[p], 0);
   const round = (n: number) => Math.round(n * 100) / 100;
+  const score = (p: ContentPillar) => (total > 0 ? round(10 * Math.sqrt(sum[p] / total)) : 0);
   let drive = 0;
   for (const d of Object.values(answers.drive)) if (d.stretch) drive += d.intensity;
   return {
-    computational_power: round((sum.computational_power / maxContent) * 10),
-    communication: round((sum.communication / maxContent) * 10),
-    knowledge: round((sum.knowledge / maxContent) * 10),
-    creativity: round((sum.creativity / maxContent) * 10),
+    computational_power: score('computational_power'),
+    communication: score('communication'),
+    knowledge: score('knowledge'),
+    creativity: score('creativity'),
     drive: round((drive / (3 * V2_DRIVE_COUNT)) * 10),
   };
+}
+
+/** The same shares as percentages, for saying «a third of your profile» honestly. */
+export function pillarShares(answers: AnswersV2): Record<ContentPillar, number> {
+  const sum: Record<ContentPillar, number> = { computational_power: 0, communication: 0, knowledge: 0, creativity: 0 };
+  for (const a of Object.values(answers.mc)) sum[a.pillar] += a.intensity;
+  const total = CONTENT_PILLARS.reduce((n, p) => n + sum[p], 0);
+  const out = {} as Record<ContentPillar, number>;
+  for (const p of CONTENT_PILLARS) out[p] = total > 0 ? Math.round((sum[p] / total) * 100) : 0;
+  return out;
 }
 
 /** Taxonomy 2.0: (strongest, weakest) → animal. Agreed with the founder on 2026-09-22. */
