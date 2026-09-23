@@ -9997,6 +9997,131 @@
         "q20": "Esce uno strumento che scrive da solo il tipo di codice che scrivi tu tutti i giorni.",
         "q21": "Il progetto è consegnato, la riunione di chiusura è domani e ognuno porterà la sua lettura."
       }
+    },
+    "arts_creative": {
+      "examples": {
+        "q1": "Hai mandato tre proposte per il marchio. Risposta: «nessuna delle tre mi dice niente», e basta.",
+        "q2": "«Ci serve qualcosa di impatto per il lancio.» Non sanno dirti né dove andrà né a chi parla.",
+        "q3": "Consegna domani alle dieci. Il layout funziona, ma guardandolo capisci che la gerarchia non tiene.",
+        "q4": "Hai un'idea pulita e sicura e una più rischiosa che ti piace di più. Il tempo basta per una sola.",
+        "q5": "«Il logo fallo il doppio.» Lo sai che così la foto sotto sparisce e il titolo va a capo male.",
+        "q6": "Il cliente vuole tutto in stile anni Ottanta, colori fluo compresi. Tu lavori da sempre sul minimale.",
+        "q7": "È da un'ora che apri e chiudi lo stesso file. Non ti viene niente che non sia già visto.",
+        "q8": "In riunione il collega presenta il concept e dice «ci ho pensato nel fine settimana». L'avevi buttato giù tu al bar, martedì.",
+        "q9": "Davanti hai il direttore commerciale e il responsabile di prodotto. Devi spiegare perché quel bianco intorno serve.",
+        "q10": "Tre settimane di lavoro preventivate, e solo adesso si scopre che servono anche i formati per sei social.",
+        "q11": "Proietti il lavoro e il capo dice «questo non funziona» davanti a tutto lo studio.",
+        "q12": "Ti affidano la campagna per un'azienda di macchine agricole. Di trattori non sai niente.",
+        "q13": "Il layout ti piace, poi ti accorgi che è praticamente la campagna che ha fatto un altro studio a febbraio.",
+        "q14": "«Dobbiamo farci notare alla fiera, ma di budget ci sono duemila euro.»",
+        "q15": "Il file è pronto per la stampa. L'hai controllato una volta e hai ancora un'ora prima di mandarlo.",
+        "q16": "Primo giorno in studio: usano un altro programma, un'altra nomenclatura dei file e un altro modo di presentare.",
+        "q17": "La fase di esecutivo ti viene sempre lunga e confusa, ogni progetto, anche quando il concept è chiaro.",
+        "q18": "Due stagisti che sanno usare i programmi ma non hanno mai visto un cliente, e tu hai due consegne.",
+        "q19": "«Per quando è pronto?» Te lo chiede in riunione, con il cliente in copia, adesso.",
+        "q20": "Esce un programma che genera in pochi secondi le varianti di layout che tu fai a mano in un pomeriggio.",
+        "q21": "Progetto consegnato. Domani la riunione di chiusura, e il cliente dirà la sua, il commerciale un'altra."
+      }
+    },
+    "business_leadership": {
+      "examples": {
+        "q1": "Il cliente che vale un quinto del fatturato scrive «stiamo valutando anche altri fornitori, ci sentiamo la settimana prossima».",
+        "q2": "Domani c'è il consiglio e devi dire se aprite la sede nuova. I dati sul mercato locale non li avete.",
+        "q3": "Il trimestre si è chiuso al 60% del budget, la riunione del lunedì dura dieci minuti e nessuno parla.",
+        "q4": "Il tuo venditore migliore ha promesso al cliente una consegna che la produzione non può rispettare.",
+        "q5": "Hai venti minuti davanti al direttore finanziario per chiedere un investimento che rientra in due anni.",
+        "q6": "Il concorrente ha abbassato del quindici per cento e due clienti ti hanno già chiesto «come mai voi costate di più?».",
+        "q7": "Due persone del gruppo non si parlano da settimane e le pratiche passano da te per non farle incontrare.",
+        "q8": "Ti chiedono di togliere centomila euro dal budget del tuo reparto entro fine trimestre.",
+        "q9": "Il progetto è indietro di due mesi, ma nel punto settimanale tutti dicono «siamo in linea».",
+        "q10": "Uno ha dieci anni di esperienza e chiede molto; l'altro è al secondo lavoro, sveglio, ma va formato.",
+        "q11": "Hai presentato il piano per il nuovo mercato e ti rispondono «per ora no», senza aggiungere altro.",
+        "q12": "Il piano l'avete approvato a marzo. A settembre i clienti chiedono una cosa che nel piano non c'è.",
+        "q13": "Si è dimessa la responsabile acquisti. Le richieste continuano ad arrivare e nessuno le firma.",
+        "q14": "«Servono due milioni in più l'anno prossimo, ma il budget costi resta questo.»",
+        "q15": "L'accordo è pronto da firmare lunedì. C'è una clausola sulle penali che nessuno ha ancora letto con calma.",
+        "q16": "Primo giorno: otto persone che non conosci, un progetto in corso e un predecessore che se n'è andato male.",
+        "q17": "Da sei mesi, ogni riunione mensile qualcuno dice che il passaggio fra vendite e produzione non funziona.",
+        "q18": "Due persone brave ma ferme da un paio d'anni, e tu hai i tuoi numeri da portare a casa.",
+        "q19": "«Quanto ci vuole a passare tutta la rete vendita al nuovo sistema?» Te lo chiede in riunione, adesso.",
+        "q20": "Il fornitore vi propone uno strumento che automatizza i preventivi. Oggi li fanno a mano in tre persone.",
+        "q21": "Fine anno: i numeri li avete, ma ognuno ha la sua versione del perché è andata così."
+      }
+    },
+    "trades_operations": {
+      "examples": {
+        "q1": "Stai finendo un controsoffitto e il trapano si blocca. In magazzino non ce n'è un altro e il noleggio è chiuso.",
+        "q2": "Il ragazzo è arrivato alle sette, ha messo la tuta e ora è fermo vicino al furgone che guarda gli altri lavorare.",
+        "q3": "La signora vuole la presa della cucina dietro il frigo. Lì dietro passa lo scarico e per arrivarci bisognerebbe rompere il muro portante.",
+        "q4": "Ti arriva una caldaia di una marca che non hai mai visto. Il libretto è in tedesco e il cliente aspetta l'acqua calda per stasera.",
+        "q5": "Hai posato venti metri di battiscopa e ti accorgi che il primo tratto è due centimetri fuori squadra.",
+        "q6": "«Da lunedì le bolle si firmano sul tablet, niente più carta.» Tu il tablet lo usi solo per le foto.",
+        "q7": "Consegna giovedì, siete in due invece che in quattro perché uno è malato e uno è su un altro cantiere.",
+        "q8": "Il collega vuole fissare il pensile solo con i tasselli in dotazione. Tu su quel muro ne hai già visto cadere uno.",
+        "q9": "La smerigliatrice ha cominciato a fischiare quando parte. Funziona, ma quel rumore prima non c'era.",
+        "q10": "«Sistemami il bagno del primo piano.» Non ti hanno detto se rifare anche le piastrelle o solo il sanitario.",
+        "q11": "Ti accorgi che preparando le staffe la sera prima, la mattina dopo si monta in metà tempo.",
+        "q12": "Il collega salda senza pulire prima il pezzo. A lui tiene, ma tu sai come finisce fra sei mesi.",
+        "q13": "Ti mancano quattro tasselli per finire. Il magazzino ha chiuso alle cinque e il cliente è lì che aspetta.",
+        "q14": "«In tre mesi due dita schiacciate e una caduta dalla scala.» E il capo chiede a voi cosa cambiereste.",
+        "q15": "L'impianto è finito e funziona, ma quel raccordo l'hai stretto di fretta e continui a pensarci.",
+        "q16": "Primo giorno nel turno di notte: gente nuova, attrezzi in posti diversi, ritmi che non conosci.",
+        "q17": "Ogni volta che montate quel tipo di serramento, il silicone dell'angolo in basso si stacca dopo un mese.",
+        "q18": "Due ragazzi appena assunti, volenterosi ma che non hanno mai tenuto in mano un flessibile, e tu hai la tua consegna.",
+        "q19": "«Quanto ci metti a rifare l'impianto elettrico di un trilocale?» Te lo chiede al telefono, adesso.",
+        "q20": "È arrivata la macchina per il taglio a controllo numerico. È lì imballata da tre giorni.",
+        "q21": "Venerdì, fine turno, e il capo chiede se c'è qualcosa che vi fa perdere tempo ogni giorno."
+      }
+    },
+    "restaurant": {
+      "examples": {
+        "q1": "Sono le nove, la sala è al completo e alla porta ci sono dodici persone che dicono «pensavamo si potesse».",
+        "q2": "Tornano indietro due tagliate: «sono tiepide». In cucina il servizio è al massimo e il passe è pieno.",
+        "q3": "Il piatto del giorno è l'orata e il pesce non è arrivato. Sulla lavagna c'è già scritto.",
+        "q4": "Il nuovo commis è in cucina da dieci minuti, ha il coltello in mano e non sa dove sono i taglieri.",
+        "q5": "Il tavolo sei ha ordinato alle otto e mezza. Sono le nove e cinque e ti guardano ogni volta che passi.",
+        "q6": "«Da lunedì niente più carbonara, mettiamo un piatto di stagione e cambia anche il modo di finire la pasta.»",
+        "q7": "Sabato sera da ottanta coperti e il secondo cuoco ha dato forfait un'ora fa.",
+        "q8": "Il collega vuole impiattare il risotto senza allargarlo: «tanto è uguale». Al cliente arriva freddo in tre minuti.",
+        "q9": "La macchina del caffè sbuffa e fa un rumore secco a ogni erogazione. I caffè escono ancora, per ora.",
+        "q10": "«Sistema la cantina.» Non sai se vogliono un inventario, un riordino per annata o solo pulire.",
+        "q11": "Ti accorgi che preparando i coperti su un carrello invece che tavolo per tavolo, finisci venti minuti prima.",
+        "q12": "Il collega fa le porzioni a occhio e vanno dal singolo al doppio. I clienti al tavolo se ne accorgono.",
+        "q13": "«Avete una cotoletta per il bambino?» Non è in menù, ma in cucina c'è il pollo e c'è il pane grattugiato.",
+        "q14": "A fine serata buttate due teglie di verdure e mezzo secchio di pasta. Succede quasi ogni sera.",
+        "q15": "Il piatto è pronto sul passe, ma la salsa ti sembra troppo liquida e il cameriere è già lì.",
+        "q16": "Primo giorno nel turno di cena: brigata nuova, chiamate diverse, e tu non sai ancora chi decide cosa.",
+        "q17": "Quel risotto esce bene fino alla mantecatura, e poi tre volte su cinque si slega.",
+        "q18": "Due ragazzi nuovi in sala, svegli ma che non hanno mai portato tre piatti insieme, e tu hai le tue sette tavole.",
+        "q19": "«Quanto ci vuole per un banchetto da sessanta, menù fisso?» Te lo chiede adesso, al telefono, con il cliente in attesa.",
+        "q20": "È arrivato l'abbattitore nuovo. È collegato, ma nessuno sa impostare i cicli.",
+        "q21": "Domenica sera, chiusura, e il titolare chiede se c'è qualcosa che vi fa perdere tempo ogni servizio."
+      }
+    },
+    "service_ops": {
+      "examples": {
+        "q1": "Sono le 17:45, lo sportello chiude alle 18 e arriva una signora con una pratica che scade domani.",
+        "q2": "Prendi servizio e trovi dodici pratiche aperte sul bancone, senza un biglietto che dica a che punto sono.",
+        "q3": "Al telefono un signore urla che è la terza volta che chiama e che nessuno gli risponde mai.",
+        "q4": "Uno allo sportello, uno al telefono e uno che ti ha appena messo davanti dei documenti. Tutti e tre aspettano te.",
+        "q5": "La procedura nuova chiede tre firme invece di una. Con la vecchia una pratica si chiudeva in cinque minuti.",
+        "q6": "La signora ha il modulo in mano da dieci minuti, non capisce quale casella barrare e comincia ad alzare la voce.",
+        "q7": "Il gestionale è fermo da venti minuti, in sala d'attesa ci sono quindici persone e nessuno sa dire quando torna.",
+        "q8": "Il ragazzo nuovo ha liquidato una signora con «deve tornare domani» e si è già girato verso il computer.",
+        "q9": "Arriva una richiesta che non è né un rinnovo né una prima domanda, e nel manuale non c'è.",
+        "q10": "Domani hai nove appuntamenti da quaranta minuti in sette ore, più le telefonate.",
+        "q11": "«Quell'altro tuo collega mi ha detto una cosa diversa la settimana scorsa», e lo dice a voce alta davanti alla fila.",
+        "q12": "La fila è arrivata alla porta, qualcuno sbuffa a voce alta, e tu stai già andando il più veloce possibile.",
+        "q13": "Restano quattro moduli del tipo che usate cinquanta volte al giorno, e l'ordine arriva fra una settimana.",
+        "q14": "«La gente si lamenta che aspetta troppo.» E il responsabile chiede a voi cosa cambiereste.",
+        "q15": "Fine turno: tre pratiche a metà, una persona da richiamare e una cosa che hai promesso per domani mattina.",
+        "q16": "Primo giorno in un reparto nuovo: sistemi diversi, moduli diversi, e ognuno ha il suo modo di fare le cose.",
+        "q17": "Ogni lunedì arrivano le stesse venti richieste e ogni lunedì vi trovate indietro fino a mercoledì.",
+        "q18": "Due tirocinanti da seguire per tre mesi, e tu hai già lo sportello tutti i giorni.",
+        "q19": "«Quanto ci vuole a smaltire l'arretrato?» Sono quattrocento pratiche e te lo chiede adesso.",
+        "q20": "Hanno installato il gestionale nuovo stanotte. Stamattina nessuno sa dove sono finite le pratiche aperte.",
+        "q21": "Fine mese, riunione di reparto, e si chiede se c'è qualcosa che vi fa perdere tempo ogni giorno."
+      }
     }
   }
 }

@@ -263,7 +263,7 @@ const AssessmentV2: React.FC<Props> = ({
   };
 
   const IntensityDots: React.FC<{ value: Intensity; onChange: (v: Intensity) => void }> = ({ value, onChange }) => (
-    <div className="mt-3 flex flex-wrap items-center gap-2 pl-[52px] text-[12.5px] text-muted-foreground">
+    <div className="mt-3 flex flex-wrap items-center gap-2 pl-3 text-[12.5px] text-muted-foreground sm:pl-[52px]">
       <span>{t('assessment.v2_intensity_prompt', 'How much is this like you?')}</span>
       <span className="flex gap-1.5" role="radiogroup" aria-label={t('assessment.v2_intensity_prompt', 'How much is this like you?')}>
         {([1, 2, 3] as Intensity[]).map((v) => (
@@ -274,7 +274,7 @@ const AssessmentV2: React.FC<Props> = ({
             aria-checked={value === v}
             onClick={(e) => { e.stopPropagation(); onChange(v); }}
             className={cn(
-              'rounded-full border px-2.5 py-1 text-[12px] font-medium transition-colors',
+              'whitespace-nowrap rounded-full border px-2.5 py-1 text-[12px] font-medium transition-colors',
               value === v ? 'border-primary bg-primary text-white' : 'border-[hsl(var(--xs-line))] bg-card text-muted-foreground hover:border-primary/50',
             )}
           >
@@ -304,7 +304,7 @@ const AssessmentV2: React.FC<Props> = ({
   );
 
   const footer = (
-    <div className="mt-8 flex items-center justify-between gap-3 border-t border-[hsl(var(--xs-line))] pt-5">
+    <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-[hsl(var(--xs-line))] pt-5">
       <Button variant="ghost" onClick={() => (index === 0 ? onGoBack() : go(index - 1))} disabled={submitting}>
         <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />
         {t('common.previous', 'Back')}
@@ -335,7 +335,7 @@ const AssessmentV2: React.FC<Props> = ({
         <div className="h-full bg-primary transition-[width]" style={{ width: `${(questionsAnswered / questions.length) * 100}%` }} />
       </div>
 
-      <Panel className="p-5 sm:p-8">
+      <Panel className="p-4 sm:p-8">
         {item.kind === 'intro' && <AssessmentV2Intro total={questions.length} onStart={() => go(index + 1)} />}
 
         {item.kind === 'game' && (() => {
@@ -409,7 +409,7 @@ const AssessmentV2: React.FC<Props> = ({
           return (
             <div>
               <div className="flex items-center justify-between gap-3">
-                <Eyebrow>{t('assessment.v2_scenario', { n: item.q, defaultValue: 'Scenario {{n}}' })}</Eyebrow>
+                <Eyebrow className="shrink-0 whitespace-nowrap">{t('assessment.v2_scenario', { n: item.q, defaultValue: 'Scenario {{n}}' })}</Eyebrow>
                 <div className="flex shrink-0 items-center gap-2">
                   <ReadAloudButton text={spoken} />
                   {example && (
@@ -471,7 +471,7 @@ const AssessmentV2: React.FC<Props> = ({
           return (
             <div>
               <div className="flex items-center justify-between gap-3">
-                <Eyebrow>{item.d === 5 ? t('assessment.v2_final_drive_tag') : t('assessment.v2_drive_tag')}</Eyebrow>
+                <Eyebrow className="min-w-0">{item.d === 5 ? t('assessment.v2_final_drive_tag') : t('assessment.v2_drive_tag')}</Eyebrow>
                 <ReadAloudButton text={spoken} />
               </div>
               <h2 className="mt-3 text-[22px] font-medium leading-[1.4] tracking-[-0.5px] text-foreground sm:text-[26px]">{t(`${k}.question`)}</h2>

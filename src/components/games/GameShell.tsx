@@ -182,7 +182,7 @@ export const GameShell: React.FC<Props> = ({ game, position, render, explanation
       </div>
 
       <div className="mt-3 flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-[24px] font-semibold leading-tight tracking-[-0.5px] text-foreground sm:text-[28px]">{t(`${base}.title`)}</h2>
+        <h2 className="min-w-0 text-[22px] font-semibold leading-tight tracking-[-0.5px] text-foreground sm:text-[28px]">{t(`${base}.title`)}</h2>
         <span className="font-mono text-[12px] tabular-nums text-muted-foreground">
           {t('games.common.round', { n: stage === 'demo' || stage === 'easy' || stage === 'bridge' ? 1 : 2 })}
         </span>
@@ -224,7 +224,7 @@ export const GameShell: React.FC<Props> = ({ game, position, render, explanation
       {/* the controls, always in the same corners */}
       {(stage === 'easy' || stage === 'hard') && (
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[hsl(var(--xs-line))] pt-4">
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
             {onUndo && (
               <Button variant="ghost" size="sm" onClick={() => { onUndo(); api.acted(); }} disabled={!canUndo}>
                 <Undo2 className="mr-1.5 h-4 w-4" aria-hidden="true" />{t('games.common.undo')}

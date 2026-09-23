@@ -9997,6 +9997,131 @@
         "q20": "A tool comes out that writes by itself the kind of code you write every day.",
         "q21": "The project is delivered, the closing meeting is tomorrow and everyone will bring their own reading of it."
       }
+    },
+    "arts_creative": {
+      "examples": {
+        "q1": "You sent three proposals for the brand. The answer: «none of the three says anything to me», and that is all.",
+        "q2": "«We need something with impact for the launch.» They cannot tell you where it will run or who it speaks to.",
+        "q3": "Delivery tomorrow at ten. The layout works, but looking at it you can see the hierarchy does not hold.",
+        "q4": "You have one clean, safe idea and a riskier one you like more. There is time for one only.",
+        "q5": "«Make the logo twice the size.» You know that then the photo underneath disappears and the headline breaks badly.",
+        "q6": "The client wants everything in an Eighties style, fluorescent colours included. You have always worked minimal.",
+        "q7": "You have been opening and closing the same file for an hour. Nothing comes that is not already out there.",
+        "q8": "In the meeting a colleague presents the concept and says «I thought about it over the weekend». You sketched it in a bar on Tuesday.",
+        "q9": "In front of you are the sales director and the product manager. You have to explain why that white space is doing work.",
+        "q10": "Three weeks were quoted, and only now does it turn out you also need the formats for six social channels.",
+        "q11": "You put the work on screen and the boss says «this doesn't work» in front of the whole studio.",
+        "q12": "You are given the campaign for an agricultural machinery firm. You know nothing about tractors.",
+        "q13": "You like the layout, then you realise it is basically the campaign another studio ran in February.",
+        "q14": "«We have to stand out at the trade fair, and the budget is two thousand.»",
+        "q15": "The file is ready for print. You have checked it once and you still have an hour before sending it.",
+        "q16": "First day in the studio: another program, another file naming scheme, another way of presenting.",
+        "q17": "Artworking always takes you long and messy, every project, even when the concept is clear.",
+        "q18": "Two interns who know the software but have never met a client, and you have two deliveries.",
+        "q19": "«When will it be ready?» Asked in the meeting, with the client copied in, right now.",
+        "q20": "A program comes out that generates in seconds the layout variants you do by hand in an afternoon.",
+        "q21": "Project delivered. The closing meeting is tomorrow, and the client will have their view, sales another."
+      }
+    },
+    "business_leadership": {
+      "examples": {
+        "q1": "The client worth a fifth of your revenue writes «we're also looking at other suppliers, let's talk next week».",
+        "q2": "The board is tomorrow and you have to say whether the new site opens. You have no data on that local market.",
+        "q3": "The quarter closed at 60% of budget, the Monday meeting lasts ten minutes and nobody speaks.",
+        "q4": "Your best salesperson has promised the client a delivery date production cannot meet.",
+        "q5": "You have twenty minutes in front of the finance director to ask for an investment that pays back in two years.",
+        "q6": "The competitor has cut fifteen per cent and two clients have already asked «why do you cost more?».",
+        "q7": "Two people in the team have not spoken for weeks, and files come through you so they do not have to meet.",
+        "q8": "You are asked to take a hundred thousand out of your department's budget by the end of the quarter.",
+        "q9": "The project is two months late, but in the weekly review everyone says «we're on track».",
+        "q10": "One has ten years of experience and asks a lot; the other is on their second job, sharp, but needs training.",
+        "q11": "You presented the plan for the new market and the answer is «not for now», with nothing added.",
+        "q12": "The plan was approved in March. By September clients are asking for something the plan does not have.",
+        "q13": "The head of purchasing has resigned. The requests keep coming and nobody is signing them.",
+        "q14": "«We need two million more next year, and the cost budget stays as it is.»",
+        "q15": "The agreement is ready to sign on Monday. There is a penalty clause nobody has yet read carefully.",
+        "q16": "First day: eight people you do not know, a project under way and a predecessor who left badly.",
+        "q17": "For six months, every monthly meeting someone says the handover between sales and production does not work.",
+        "q18": "Two good people who have been standing still for a couple of years, and you have your own numbers to hit.",
+        "q19": "«How long to move the whole sales network to the new system?» He is asking in the meeting, now.",
+        "q20": "A supplier offers a tool that automates quotes. Today three people write them by hand.",
+        "q21": "End of year: you have the numbers, but everyone has their own version of why it went that way."
+      }
+    },
+    "trades_operations": {
+      "examples": {
+        "q1": "You are finishing a false ceiling and the drill seizes up. There is no spare in the van and the hire shop is shut.",
+        "q2": "The lad got in at seven, put his overalls on, and now he is standing by the van watching the others work.",
+        "q3": "The lady wants the kitchen socket behind the fridge. The waste pipe runs there and reaching it means breaking into a load-bearing wall.",
+        "q4": "A boiler arrives of a make you have never seen. The manual is in German and the client wants hot water tonight.",
+        "q5": "You have laid twenty metres of skirting and notice the first run is two centimetres out of square.",
+        "q6": "«From Monday delivery notes are signed on the tablet, no more paper.» You use a tablet for photos and that is it.",
+        "q7": "Delivery Thursday, and you are two instead of four: one off sick, one on another site.",
+        "q8": "Your colleague wants to fix the wall unit with the plugs that came in the box. On that wall you have seen one come away.",
+        "q9": "The grinder has started whistling on start-up. It still works, but that noise was not there before.",
+        "q10": "«Sort out the first-floor bathroom.» Nobody said whether the tiles are being redone or just the fittings.",
+        "q11": "You notice that if you prepare the brackets the evening before, the next morning the fitting takes half the time.",
+        "q12": "Your colleague welds without cleaning the piece first. It holds for him, but you know how it looks in six months.",
+        "q13": "You are four plugs short of finishing. The stores shut at five and the client is standing there.",
+        "q14": "«Two crushed fingers and a fall from a ladder in three months.» And the boss asks you lot what you would change.",
+        "q15": "The system is finished and it works, but you tightened that joint in a hurry and you keep thinking about it.",
+        "q16": "First night shift: new faces, tools kept in different places, a rhythm you do not know.",
+        "q17": "Every time you fit that type of window frame, the silicone in the bottom corner lifts after a month.",
+        "q18": "Two lads just taken on, willing but who have never held a grinder, and you have your own deadline.",
+        "q19": "«How long to redo the wiring in a two-bed flat?» He is asking on the phone, right now.",
+        "q20": "The numerically controlled cutting machine has arrived. It has been sitting there in its crate for three days.",
+        "q21": "Friday, end of shift, and the boss asks whether anything makes you lose time every single day."
+      }
+    },
+    "restaurant": {
+      "examples": {
+        "q1": "It is nine o'clock, the room is full, and twelve people are at the door saying «we thought it would be fine».",
+        "q2": "Two steaks come back: «they're lukewarm». The kitchen is flat out and the pass is full.",
+        "q3": "The dish of the day is sea bream and the fish has not arrived. It is already written on the board.",
+        "q4": "The new commis has been in the kitchen ten minutes, knife in hand, and does not know where the boards are kept.",
+        "q5": "Table six ordered at half past eight. It is five past nine and they look at you every time you go past.",
+        "q6": "«From Monday no more carbonara, there's a seasonal dish and the pasta gets finished a different way.»",
+        "q7": "Saturday night, eighty covers, and the second chef called in an hour ago to say they cannot make it.",
+        "q8": "Your colleague wants to plate the risotto without spreading it: «it's the same thing». It reaches the table cold in three minutes.",
+        "q9": "The coffee machine puffs and makes a sharp noise at every shot. The coffees still come out, for now.",
+        "q10": "«Sort out the cellar.» You do not know if they want an inventory, a reorder by vintage or just a clean.",
+        "q11": "You notice that laying the covers from a trolley instead of table by table gets you done twenty minutes earlier.",
+        "q12": "Your colleague does portions by eye and they run from half to double. The customers at the table notice.",
+        "q13": "«Have you got a schnitzel for the little one?» It is not on the menu, but there is chicken and there are breadcrumbs.",
+        "q14": "At the end of the night you throw out two trays of vegetables and half a bucket of pasta. It happens most nights.",
+        "q15": "The dish is on the pass, but the sauce looks too thin to you and the waiter is already there.",
+        "q16": "First evening shift: a new brigade, different calls, and you do not yet know who decides what.",
+        "q17": "That risotto comes out fine until the final stir, and then three times out of five it splits.",
+        "q18": "Two new front-of-house staff, sharp but who have never carried three plates at once, and you have your seven tables.",
+        "q19": "«How long for a banquet of sixty, set menu?» He is asking now, on the phone, with the client holding.",
+        "q20": "The new blast chiller has arrived. It is plumbed in, but nobody knows how to set the cycles.",
+        "q21": "Sunday night, closing, and the owner asks whether anything makes you lose time every service."
+      }
+    },
+    "service_ops": {
+      "examples": {
+        "q1": "It is 5:45, the desk closes at six, and a lady arrives with a file that expires tomorrow.",
+        "q2": "You come on and find twelve open cases on the counter, with no note saying where any of them stands.",
+        "q3": "On the phone a man is shouting that this is the third time he has called and nobody ever gets back to him.",
+        "q4": "One at the desk, one on the phone, one who has just put documents in front of you. All three are waiting for you.",
+        "q5": "The new procedure asks for three signatures instead of one. With the old one a case closed in five minutes.",
+        "q6": "The lady has had the form in her hand for ten minutes, cannot work out which box to tick, and is starting to raise her voice.",
+        "q7": "The system has been down twenty minutes, there are fifteen people in the waiting room and nobody can say when it is back.",
+        "q8": "The new lad sent a lady away with «you'll have to come back tomorrow» and turned straight back to his screen.",
+        "q9": "A request comes in that is neither a renewal nor a first application, and the manual does not cover it.",
+        "q10": "Tomorrow you have nine forty-minute appointments in seven hours, plus the phone.",
+        "q11": "«Your colleague told me something different last week», and she says it out loud in front of the queue.",
+        "q12": "The queue has reached the door, someone is sighing loudly, and you are already going as fast as you can.",
+        "q13": "There are four forms left of the kind you use fifty times a day, and the order arrives in a week.",
+        "q14": "«People complain they wait too long.» And the manager asks you what you would change.",
+        "q15": "End of shift: three cases half done, one person to call back, and something you promised for tomorrow morning.",
+        "q16": "First day in a new department: different systems, different forms, and everyone with their own way of doing things.",
+        "q17": "Every Monday the same twenty requests arrive, and every Monday you are behind until Wednesday.",
+        "q18": "Two trainees to look after for three months, and you are already on the desk every day.",
+        "q19": "«How long to clear the backlog?» It is four hundred cases and he is asking right now.",
+        "q20": "The new system went in overnight. This morning nobody can find the open cases.",
+        "q21": "End of the month, department meeting, and you are asked whether anything makes you lose time every day."
+      }
     }
   }
 }

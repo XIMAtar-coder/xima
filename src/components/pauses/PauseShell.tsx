@@ -61,7 +61,7 @@ export const PauseShell: React.FC<Props> = ({ field, kind, spoken, primaryLabel,
       )}
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[hsl(var(--xs-line))] pt-4">
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 flex-wrap items-center gap-3">
           <span className="text-[12.5px] text-muted-foreground">{t('pauses.common.calm')}</span>
           <button type="button" onClick={onSkip} className="text-[13px] font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline">
             {t('pauses.common.skip')}

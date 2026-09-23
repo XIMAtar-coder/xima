@@ -43,13 +43,13 @@ const Container: React.FC<{
       aria-label={label}
       aria-pressed={selected}
       className={cn(
-        'rounded-xl border-2 bg-card p-1.5 transition-colors',
+        'min-w-0 flex-1 rounded-xl border-2 bg-card p-1.5 transition-colors',
         selected ? 'border-primary shadow-[0_0_0_3px_hsl(var(--primary)/0.2)]'
           : amber ? 'border-[#c98a1a]'
           : target ? 'border-dashed border-primary' : 'border-foreground/70',
       )}
     >
-      <svg viewBox={`0 0 ${w} ${h * capacity}`} className="h-[132px] w-[56px]" aria-hidden="true">
+      <svg viewBox={`0 0 ${w} ${h * capacity}`} className="mx-auto h-[132px] w-full max-w-[56px]" aria-hidden="true">
         <Defs />
         {Array.from({ length: capacity }, (_, i) => (
           <rect key={`g${i}`} x={2} y={i * h + 2} width={w - 4} height={h - 4} rx={3} fill="none" stroke="hsl(var(--xs-line))" strokeWidth={1} />
@@ -106,7 +106,7 @@ export const PourGame: React.FC<Props> = ({ position, onDone, onSkip }) => {
 
     return (
       <div>
-        <div className="flex flex-wrap items-end justify-center gap-2.5">
+        <div className="mx-auto flex max-w-[300px] items-end justify-center gap-2">
           {state.map((tube, i) => (
             <Container
               key={i}

@@ -17,11 +17,11 @@ import { Eyebrow } from '@/components/layout/PageHeader';
  */
 
 const Card: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
-  <figure className="m-0 flex-1">
-    <div className="grid h-[96px] place-items-center rounded-lg border border-[hsl(var(--xs-line))] bg-[hsl(var(--xs-page))] p-2">
+  <figure className="m-0 min-w-0 flex-1">
+    <div className="grid h-[84px] place-items-center rounded-lg border border-[hsl(var(--xs-line))] bg-[hsl(var(--xs-page))] p-2 sm:h-[96px]">
       {children}
     </div>
-    <figcaption className="mt-2 text-[12.5px] leading-[1.4] text-muted-foreground">{label}</figcaption>
+    <figcaption className="mt-2 text-[11.5px] leading-[1.35] text-muted-foreground sm:text-[12.5px]">{label}</figcaption>
   </figure>
 );
 
@@ -98,7 +98,7 @@ export const AssessmentV2Intro: React.FC<Props> = ({ total, onStart }) => {
         ))}
       </ul>
 
-      <div className="mt-5 flex flex-wrap gap-3 sm:flex-nowrap">
+      <div className="mt-5 flex gap-2 sm:gap-3">
         <Card label={t('assessmentV2Intro.cap_question')}><MiniQuestion /></Card>
         <Card label={t('assessmentV2Intro.cap_break')}><MiniPuzzle /></Card>
         <Card label={t('assessmentV2Intro.cap_climb')}><MiniSalita /></Card>
