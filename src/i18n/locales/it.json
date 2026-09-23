@@ -9925,6 +9925,34 @@
       "bridge": "Erano tre: i due piccoli e quello intero. Il terzo è fatto dai primi due messi insieme.",
       "principle": "Contare per categorie — larghi una parte, due, tre, su ogni riga — è l’unico modo per non perderne nessuno e non contarne due volte.",
       "solved": "Diciotto, e tornano."
+    },
+    "shadow": {
+      "title": "Trova l’impossibile",
+      "how": "C’è una sola luce. Tocca l’oggetto la cui ombra non può essere quella.",
+      "hard_lead": "Quattro oggetti, stessa luce. Stavolta l’ombra sbagliata cade comunque dalla parte giusta.",
+      "demo": "Puoi toccare l’oggetto oppure la sua ombra: è lo stesso.",
+      "coherent": "Questa ombra è coerente con la luce.",
+      "bridge": "L’ombra cadeva verso la luce invece che dalla parte opposta. Nel prossimo giro non sarà così evidente.",
+      "explain_1": "Ogni ombra deve stare sulla linea che parte dalla luce e passa per l’oggetto.",
+      "explain_2": "Quella del cilindro era girata: rimessa sulla sua linea, torna come le altre.",
+      "principle": "Un dettaglio si controlla rispetto a ciò che lo produce: non basta che l’ombra stia «dalla parte giusta», deve stare sulla linea della luce.",
+      "solved": "Era quella."
+    },
+    "pour": {
+      "title": "Separa i colori",
+      "how": "Tocca il contenitore da cui versare, poi quello dove versare. Si sposta uno strato alla volta.",
+      "hard_lead": "Quattro contenitori e uno solo libero. Riempirlo e lasciarlo pieno blocca tutto.",
+      "demo": "Si può versare solo in un contenitore vuoto o sopra uno strato uguale.",
+      "container": "Contenitore {{n}}",
+      "pick_from": "Tocca il contenitore da cui versare.",
+      "pick_to": "Ora tocca dove versare.",
+      "no_room": "Lì non si può versare: serve un contenitore vuoto o lo stesso strato.",
+      "stuck": "Da qui non si può più versare da nessuna parte.",
+      "bridge": "Il contenitore vuoto è servito a liberare quello sotto. Nel prossimo giro non basterà usarlo una volta.",
+      "explain_1": "Il contenitore libero serve come deposito: ci metti lo strato che è di troppo.",
+      "explain_2": "Poi va liberato di nuovo, altrimenti non hai più dove mettere il prossimo.",
+      "principle": "Lo spazio libero è una risorsa: non basta usarlo, bisogna ricrearlo — se lo riempi e lo lasci pieno, ti fermi.",
+      "solved": "Separati."
     }
   }
 }

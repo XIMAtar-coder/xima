@@ -5,6 +5,11 @@ import {
 } from '../model';
 import { EASY, HARD, shortestSolution, freeRange, move, canExit, cells, type Board } from '../exit';
 import { EASY_FIGURE, HARD_FIGURE, countTriangles, categories, options, perLevel } from '../triangles';
+import { EASY_SCENE, HARD_SCENE, hitTest, shadowAngle, shadowTip } from '../shadow';
+import {
+  CAPACITY, EASY as POUR_EASY, HARD as POUR_HARD, canPour, isSolved as pourSolved, isStuck,
+  pour, shortestSolution as pourSolution, LAYERS,
+} from '../pour';
 
 const noOverlap = (b: Board) => {
   const grid: (string | null)[][] = Array.from({ length: b.size }, () => Array(b.size).fill(null));
@@ -146,5 +151,68 @@ describe('games — quanti triangoli', () => {
     expect(o).toContain(18);
     expect(new Set(o).size).toBe(4);
     expect([...o].sort((a, b) => a - b)).toEqual(o);
+  });
+});
+
+
+describe('games — trova l\'impossibile', () => {
+  it('turns exactly one shadow, and the easy one is the obvious kind', () => {
+    expect(EASY_SCENE.turn).toBe(180);
+    expect(HARD_SCENE.turn).toBe(45);
+    expect(HARD_SCENE.solids.filter((s) => s.id === HARD_SCENE.wrong)).toHaveLength(1);
+  });
+
+  it('keeps the wrong shadow on the side away from the light, so «right side» is not enough', () => {
+    const cyl = HARD_SCENE.solids.find((s) => s.id === HARD_SCENE.wrong)!;
+    const away = Math.atan2(cyl.y - HARD_SCENE.light.y, cyl.x - HARD_SCENE.light.x);
+    const shown = shadowAngle(HARD_SCENE, cyl);
+    const diff = Math.abs(((shown - away + Math.PI) % (2 * Math.PI)) - Math.PI);
+    expect(diff).toBeGreaterThan(0.5);      // clearly turned
+    expect(diff).toBeLessThan(Math.PI / 2); // but still pointing away
+    const tip = shadowTip(HARD_SCENE, cyl);
+    expect(Math.hypot(tip.x - HARD_SCENE.light.x, tip.y - HARD_SCENE.light.y))
+      .toBeGreaterThan(Math.hypot(cyl.x - HARD_SCENE.light.x, cyl.y - HARD_SCENE.light.y));
+  });
+
+  it('answers the same whether the solid or its shadow is tapped', () => {
+    const cyl = HARD_SCENE.solids.find((s) => s.id === 'cylinder')!;
+    expect(hitTest(HARD_SCENE, { x: cyl.x, y: cyl.y })).toBe('cylinder');
+    const tip = shadowTip(HARD_SCENE, cyl);
+    expect(hitTest(HARD_SCENE, { x: (cyl.x + tip.x) / 2, y: (cyl.y + tip.y) / 2 })).toBe('cylinder');
+    expect(hitTest(HARD_SCENE, { x: 2, y: 98 })).toBeNull();
+  });
+});
+
+describe('games — separa i colori', () => {
+  it('pours one layer, onto an empty container or onto its own kind', () => {
+    expect(canPour(POUR_HARD, 0, 3)).toBe(true);    // onto the empty one
+    expect(canPour(POUR_HARD, 0, 1)).toBe(false);   // a on b
+    expect(canPour(POUR_HARD, 3, 0)).toBe(false);   // nothing to pour
+    const next = pour(POUR_HARD, 0, 3)!;
+    expect(next[3]).toEqual(['a']);
+    expect(next[0]).toHaveLength(3);
+  });
+
+  it('is solvable, and the hard board asks for the free container twice over', () => {
+    expect(pourSolution(POUR_EASY)).toBe(3);
+    expect(pourSolution(POUR_HARD, 20)).toBe(16);
+  });
+
+  it('is solved when every kind is together, whatever the capacity', () => {
+    expect(pourSolved([['a', 'a'], ['b', 'b'], []])).toBe(true);
+    expect(pourSolved([['a', 'a'], ['b'], ['b']])).toBe(false);
+    expect(pourSolved(POUR_HARD)).toBe(false);
+  });
+
+  it('knows a dead end from a mistake', () => {
+    expect(isStuck(POUR_HARD)).toBe(false);
+    const jammed = [['a', 'b', 'a', 'b'], ['b', 'a', 'b', 'a'], ['c', 'a', 'c', 'a'], ['c', 'b', 'c', 'b']];
+    expect(isStuck(jammed)).toBe(true);
+  });
+
+  it('has four layers of each kind and four places to put them', () => {
+    const all = POUR_HARD.flat();
+    for (const l of LAYERS) expect(all.filter((x) => x === l)).toHaveLength(CAPACITY);
+    expect(POUR_HARD).toHaveLength(4);
   });
 });

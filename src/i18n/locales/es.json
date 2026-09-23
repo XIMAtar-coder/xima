@@ -10224,6 +10224,34 @@
       "bridge": "Eran tres: los dos pequeños y el entero. El tercero son los dos primeros juntos.",
       "principle": "Contar por categorías — de una parte de ancho, de dos, de tres, en cada nivel — es la única manera de no perder ninguno ni contarlo dos veces.",
       "solved": "Dieciocho, y salen."
+    },
+    "shadow": {
+      "title": "Encuentra lo imposible",
+      "how": "Hay una sola luz. Toca el objeto cuya sombra no puede ser esa.",
+      "hard_lead": "Cuatro objetos, la misma luz. Esta vez la sombra equivocada cae igualmente del lado correcto.",
+      "demo": "Puedes tocar el objeto o su sombra: es lo mismo.",
+      "coherent": "Esta sombra concuerda con la luz.",
+      "bridge": "La sombra caía hacia la luz en vez de al lado contrario. En la próxima ronda no será tan evidente.",
+      "explain_1": "Cada sombra tiene que estar en la línea que sale de la luz y pasa por el objeto.",
+      "explain_2": "La del cilindro estaba girada: de vuelta en su línea, queda como las demás.",
+      "principle": "Un detalle se comprueba con lo que lo produce: no basta con que la sombra esté «del lado correcto», tiene que estar en la línea de la luz.",
+      "solved": "Era esa."
+    },
+    "pour": {
+      "title": "Separa los colores",
+      "how": "Toca el recipiente del que verter y luego en cuál verter. Se mueve una capa cada vez.",
+      "hard_lead": "Cuatro recipientes y solo uno libre. Llenarlo y dejarlo lleno lo bloquea todo.",
+      "demo": "Solo se puede verter en un recipiente vacío o sobre una capa igual.",
+      "container": "Recipiente {{n}}",
+      "pick_from": "Toca el recipiente del que verter.",
+      "pick_to": "Ahora toca dónde verter.",
+      "no_room": "Ahí no se puede verter: hace falta un recipiente vacío o la misma capa.",
+      "stuck": "Desde aquí ya no se puede verter en ningún sitio.",
+      "bridge": "El recipiente vacío sirvió para liberar el de debajo. En la próxima ronda no bastará con usarlo una vez.",
+      "explain_1": "El recipiente libre sirve de depósito: ahí dejas la capa que sobra.",
+      "explain_2": "Luego hay que liberarlo otra vez, o no queda sitio para la siguiente.",
+      "principle": "El espacio libre es un recurso: no basta con usarlo, hay que volver a crearlo — si lo llenas y lo dejas lleno, te paras.",
+      "solved": "Separados."
     }
   }
 }

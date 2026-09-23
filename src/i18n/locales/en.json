@@ -9925,6 +9925,34 @@
       "bridge": "Three: the two small ones and the whole. The third is the first two put together.",
       "principle": "Counting by category — one part wide, two, three, on every level — is the only way to miss none and count none twice.",
       "solved": "Eighteen, and they add up."
+    },
+    "shadow": {
+      "title": "Find the impossible",
+      "how": "There is only one light. Tap the object whose shadow cannot be that one.",
+      "hard_lead": "Four objects, same light. This time the wrong shadow still falls on the right side.",
+      "demo": "You can tap the object or its shadow: it is the same answer.",
+      "coherent": "This shadow agrees with the light.",
+      "bridge": "The shadow fell towards the light instead of away from it. Next round it will not be that obvious.",
+      "explain_1": "Every shadow has to lie on the line that starts at the light and runs through the object.",
+      "explain_2": "The cylinder’s was turned: back on its line, it looks like the others.",
+      "principle": "A detail is checked against what produces it: it is not enough for a shadow to be «on the right side», it has to be on the line of the light.",
+      "solved": "That was the one."
+    },
+    "pour": {
+      "title": "Sort the colours",
+      "how": "Tap the container to pour from, then the one to pour into. One layer at a time.",
+      "hard_lead": "Four containers and only one free. Filling it and leaving it full locks everything.",
+      "demo": "You can only pour into an empty container or onto the same layer.",
+      "container": "Container {{n}}",
+      "pick_from": "Tap the container to pour from.",
+      "pick_to": "Now tap where to pour it.",
+      "no_room": "That pour is not available: it needs an empty container or the same layer.",
+      "stuck": "From here nothing can be poured anywhere.",
+      "bridge": "The empty container freed the layer underneath. Next round, using it once will not be enough.",
+      "explain_1": "The free container is a place to put down the layer that is in the way.",
+      "explain_2": "Then it has to be freed again, or there is nowhere left for the next one.",
+      "principle": "Free space is a resource: using it is not enough, it has to be made again — fill it and leave it full, and you stop.",
+      "solved": "Sorted."
     }
   }
 }

@@ -24,6 +24,8 @@ import { pauseAfter, SALITA_LAST, type PauseResult, type PauseResults, type Paus
 import { GAME_AFTER_SCENARIO, type GameKey, type GamePair, type GameRun } from '@/lib/games/model';
 import { ExitGame } from '@/components/games/ExitGame';
 import { TrianglesGame } from '@/components/games/TrianglesGame';
+import { ShadowGame } from '@/components/games/ShadowGame';
+import { PourGame } from '@/components/games/PourGame';
 import { PauseDone } from '@/components/pauses/PauseShell';
 import { VanPause } from '@/components/pauses/VanPause';
 import { HandoverPause } from '@/components/pauses/HandoverPause';
@@ -338,7 +340,8 @@ const AssessmentV2: React.FC<Props> = ({
           const props = { position: item.position, onDone: finish, onSkip: finish };
           if (item.game === 'exit') return <ExitGame {...props} />;
           if (item.game === 'triangles') return <TrianglesGame {...props} />;
-          return null;
+          if (item.game === 'shadow') return <ShadowGame {...props} />;
+          return <PourGame {...props} />;
         })()}
 
         {item.kind === 'pause' && (() => {
