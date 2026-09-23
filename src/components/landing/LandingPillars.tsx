@@ -85,9 +85,11 @@ export const LandingPillars: React.FC = () => {
         <div className="mt-12 flex flex-col gap-3 md:grid md:[grid-template-columns:repeat(auto-fit,minmax(190px,1fr))]">
           {ORDER.map((key, i) => {
             const isOpen = expanded === key;
-            return (
-              <React.Fragment key={key}>
+            // An array, not a Fragment: the tagger injects props a Fragment
+            // rejects, and React flattens arrays into the grid just the same.
+            return [
               <button
+                key={`${key}-card`}
                 type="button"
                 onClick={() => setExpanded(isOpen ? null : key)}
                 aria-expanded={isOpen}
@@ -111,12 +113,12 @@ export const LandingPillars: React.FC = () => {
                 <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">
                   {t(`landing.pillars.items.${key}.subtitle`)}
                 </p>
-              </button>
-              {/* On a phone the answer belongs under the question */}
-              {isOpen && <PillarDetail pillar={key} className="md:hidden" />}
-              </React.Fragment>
-            );
+              </button>,
+              /* On a phone the answer belongs under the question */
+              isOpen ? <PillarDetail key={`${key}-detail`} pillar={key} className="md:hidden" /> : null,
+            ];
           })}
+
         </div>
 
         {/* From md up the five stay in a row and the detail opens below them */}
