@@ -8,7 +8,7 @@ import { EASY_FIGURE, HARD_FIGURE, countTriangles, categories, options, perLevel
 import { EASY_SCENE, HARD_SCENE, hitTest, shadowAngle, shadowTip } from '../shadow';
 import {
   CAPACITY, EASY as POUR_EASY, HARD as POUR_HARD, canPour, isSolved as pourSolved, isStuck,
-  pour, shortestSolution as pourSolution, LAYERS,
+  pour, shortestSolution as pourSolution, LAYERS, type State as PourState,
 } from '../pour';
 
 const noOverlap = (b: Board) => {
@@ -199,14 +199,14 @@ describe('games — separa i colori', () => {
   });
 
   it('is solved when every kind is together, whatever the capacity', () => {
-    expect(pourSolved([['a', 'a'], ['b', 'b'], []])).toBe(true);
-    expect(pourSolved([['a', 'a'], ['b'], ['b']])).toBe(false);
+    expect(pourSolved([['a', 'a'], ['b', 'b'], []] as PourState)).toBe(true);
+    expect(pourSolved([['a', 'a'], ['b'], ['b']] as PourState)).toBe(false);
     expect(pourSolved(POUR_HARD)).toBe(false);
   });
 
   it('knows a dead end from a mistake', () => {
     expect(isStuck(POUR_HARD)).toBe(false);
-    const jammed = [['a', 'b', 'a', 'b'], ['b', 'a', 'b', 'a'], ['c', 'a', 'c', 'a'], ['c', 'b', 'c', 'b']];
+    const jammed: PourState = [['a', 'b', 'a', 'b'], ['b', 'a', 'b', 'a'], ['c', 'a', 'c', 'a'], ['c', 'b', 'c', 'b']];
     expect(isStuck(jammed)).toBe(true);
   });
 
