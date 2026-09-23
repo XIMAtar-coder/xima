@@ -281,10 +281,10 @@ const BusinessChallenges = () => {
         <Stat value={totals.responses} label={<span className="capitalize">{t('businessPortal.challenge_responses_label')}</span>} />
       </Panel>
 
-      <StatusTabs<Filter>
+      <StatusTabs
         label={t('businessPortal.challenges_filter_label')}
         value={filter}
-        onChange={setFilter}
+        onChange={(v) => setFilter(v as Filter)}
         className="mb-4"
         items={[
           { value: 'all', label: t('businessPortal.challenges_filter_all'), count: counts.all },
