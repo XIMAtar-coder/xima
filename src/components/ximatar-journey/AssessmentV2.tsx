@@ -26,6 +26,7 @@ import { ExitGame } from '@/components/games/ExitGame';
 import { TrianglesGame } from '@/components/games/TrianglesGame';
 import { ShadowGame } from '@/components/games/ShadowGame';
 import { PourGame } from '@/components/games/PourGame';
+import { AssessmentV2Intro } from './AssessmentV2Intro';
 import { PauseDone } from '@/components/pauses/PauseShell';
 import { VanPause } from '@/components/pauses/VanPause';
 import { HandoverPause } from '@/components/pauses/HandoverPause';
@@ -40,6 +41,7 @@ import { SalitaGame } from '@/components/salita/SalitaGame';
  */
 
 type FlowItem =
+  | { kind: 'intro' }
   | { kind: 'mc'; q: number }
   | { kind: 'drive'; d: number; pillar?: ContentPillar }   // pillar known for 1-4; 5 is adaptive
   | { kind: 'open'; key: 'open1' | 'open2' }
@@ -47,7 +49,8 @@ type FlowItem =
   | { kind: 'game'; game: GameKey; position: 1 | 2 };   // one of the four puzzles, after scenario 7 and 14
 
 const buildFlow = (pair: GamePair): FlowItem[] => {
-  const flow: FlowItem[] = [];
+  // One screen before the first question: what this is and how long it takes.
+  const flow: FlowItem[] = [{ kind: 'intro' }];
   for (let q = 1; q <= V2_MC_COUNT; q += 1) {
     flow.push({ kind: 'mc', q });
     const at = (DRIVE_AFTER_QUESTION as readonly number[]).indexOf(q);
@@ -102,6 +105,9 @@ const AssessmentV2: React.FC<Props> = ({
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const [submitting, setSubmitting] = useState(false);
+  // The example is help, not part of the scene: closed on every new question
+  // so it never pushes the answers down unless it is asked for.
+  const [exampleOpen, setExampleOpen] = useState(false);
 
   const flow = useMemo(() => buildFlow(v2.pair), [v2.pair]);
   const base = `assessmentV2.${fieldKey}`;
@@ -123,13 +129,14 @@ const AssessmentV2: React.FC<Props> = ({
     if (it.kind === 'drive') return Boolean(v2.drive[it.d]);
     if (it.kind === 'pause') return Boolean(v2.pauses[it.pause]);
     if (it.kind === 'game') return v2.games.some((g) => g.game === it.game);
+    if (it.kind === 'intro') return true;
     return (openAnswers[it.key] || '').trim().length >= OPEN_ANSWER_MIN_CHARS;
   };
   const canContinue = isAnswered(item);
   const isLast = index === flow.length - 1;
   const answeredCount = flow.filter(isAnswered).length;
   // The pauses are breaks, not questions: the progress counts questions only.
-  const isBreak = (it: FlowItem) => it.kind === 'pause' || it.kind === 'game';
+  const isBreak = (it: FlowItem) => it.kind === 'pause' || it.kind === 'game' || it.kind === 'intro';
   const questions = flow.filter((it) => !isBreak(it));
   const questionNumber = flow.slice(0, index + 1).filter((it) => !isBreak(it)).length;
   const questionsAnswered = questions.filter(isAnswered).length;
@@ -147,11 +154,19 @@ const AssessmentV2: React.FC<Props> = ({
       const k = item.d <= 4 ? `${base}.drive.${item.d - 1}` : `${base}.driveFinal.${drivePillar(5)}`;
       return [t(`${k}.question`), `A: ${t(`${k}.comfort`)}`, `B: ${t(`${k}.stretch`)}`].join('. ');
     }
-    if (item.kind === 'pause' || item.kind === 'game') return '';
+    if (item.kind === 'pause' || item.kind === 'game' || item.kind === 'intro') return '';
     return t(`${base}.${item.key}`);
   })();
 
   const go = (next: number) => onQuestionChange(Math.min(Math.max(next, 0), flow.length - 1));
+
+  // The examples live outside the sealed content, like in v1: they are help,
+  // and they can be corrected without resealing. Not every field has them yet;
+  // no example, no button.
+  const exampleKey = item.kind === 'mc' ? `assessmentV2Help.${fieldKey}.examples.q${item.q}` : '';
+  const exampleRaw = exampleKey ? t(exampleKey, { defaultValue: '' }) : '';
+  const example = exampleRaw && exampleRaw !== exampleKey ? exampleRaw : '';
+  useEffect(() => { setExampleOpen(false); }, [index]);
 
   const finish = async () => {
     setSubmitting(true);
@@ -316,11 +331,13 @@ const AssessmentV2: React.FC<Props> = ({
           {t('assessment.v2_progress', { n: questionNumber, total: questions.length, defaultValue: '{{n}} of {{total}}' })}
         </p>
       </div>
-      <div className={cn('mb-6 h-1 w-full overflow-hidden rounded-full bg-[hsl(var(--xs-line))] transition-opacity', (item.kind === 'pause' || item.kind === 'game') && 'opacity-30')} role="progressbar" aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={questionsAnswered}>
+      <div className={cn('mb-6 h-1 w-full overflow-hidden rounded-full bg-[hsl(var(--xs-line))] transition-opacity', isBreak(item) && 'opacity-30')} role="progressbar" aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={questionsAnswered}>
         <div className="h-full bg-primary transition-[width]" style={{ width: `${(questionsAnswered / questions.length) * 100}%` }} />
       </div>
 
       <Panel className="p-5 sm:p-8">
+        {item.kind === 'intro' && <AssessmentV2Intro total={questions.length} onStart={() => go(index + 1)} />}
+
         {item.kind === 'game' && (() => {
           // The puzzles record Drive the same way for everyone, whichever two
           // a session drew; playing well is not part of it.
@@ -393,11 +410,35 @@ const AssessmentV2: React.FC<Props> = ({
             <div>
               <div className="flex items-center justify-between gap-3">
                 <Eyebrow>{t('assessment.v2_scenario', { n: item.q, defaultValue: 'Scenario {{n}}' })}</Eyebrow>
-                <ReadAloudButton text={spoken} />
+                <div className="flex shrink-0 items-center gap-2">
+                  <ReadAloudButton text={spoken} />
+                  {example && (
+                    <button
+                      type="button"
+                      onClick={() => setExampleOpen((o) => !o)}
+                      aria-expanded={exampleOpen}
+                      aria-controls={`v2-example-${item.q}`}
+                      className="rounded-lg border border-[hsl(var(--xs-line))] bg-card px-2.5 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                    >
+                      {t('assessment.v2_example.button')}
+                    </button>
+                  )}
+                </div>
               </div>
               <h2 className="mt-3 text-[22px] font-medium leading-[1.4] tracking-[-0.5px] text-foreground sm:text-[26px]">
                 {t(`${base}.questions.q${item.q}.question`)}
               </h2>
+              {example && exampleOpen && (
+                <aside id={`v2-example-${item.q}`} className="mt-3 rounded-lg border border-[hsl(var(--xs-line))] bg-primary/5 p-4">
+                  <div className="mb-1.5 flex items-start justify-between gap-3">
+                    <h3 className="text-[13px] font-semibold text-foreground">{t('assessment.v2_example.title')}</h3>
+                    <button type="button" onClick={() => setExampleOpen(false)} className="text-[12px] text-muted-foreground underline underline-offset-2 hover:text-foreground">
+                      {t('assessment.v2_example.close')}
+                    </button>
+                  </div>
+                  <p className="text-[13.5px] leading-[1.55] text-muted-foreground">{example}</p>
+                </aside>
+              )}
               <p className="mb-6 mt-2.5 text-[13px] text-muted-foreground">{t('assessment.v2_mc_hint')}</p>
               <div role="radiogroup" className="grid gap-2.5">
                 {order.map((ci, i) => {

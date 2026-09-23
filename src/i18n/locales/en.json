@@ -1379,7 +1379,12 @@
     "v2_final_drive_tag": "Last one · on the side you chose least",
     "v2_progress": "{{n}} of {{total}}",
     "finish": "Finish",
-    "v2_scenario": "Scenario {{n}}"
+    "v2_scenario": "Scenario {{n}}",
+    "v2_example": {
+      "button": "Example",
+      "title": "A concrete case",
+      "close": "Close"
+    }
   },
   "dashboard": {
     "page_label": "DASHBOARD",
@@ -9953,6 +9958,45 @@
       "explain_2": "Then it has to be freed again, or there is nowhere left for the next one.",
       "principle": "Free space is a resource: using it is not enough, it has to be made again — fill it and leave it full, and you stop.",
       "solved": "Sorted."
+    }
+  },
+  "assessmentV2Intro": {
+    "eyebrow": "Before you start",
+    "title": "What you are about to do",
+    "l1": "Work scenes: pick the answer you would really go for. There is no right answer.",
+    "l2": "{{count}} steps in all, about fifteen minutes. You can stop and pick up where you left off.",
+    "l3": "Two breaks with a puzzle and, at the end, a four-level climb.",
+    "honest": "This is not an exam and there are no scores on screen. If a scene is not clear, the «Example» button shows a concrete case.",
+    "cap_question": "The scenes: one situation, four answers.",
+    "cap_break": "The breaks: a puzzle, skippable.",
+    "cap_climb": "The climb: turn the pipes until a picture appears.",
+    "start": "Let’s start"
+  },
+  "assessmentV2Help": {
+    "science_tech": {
+      "examples": {
+        "q1": "Since this morning the warehouse system no longer loads orders. Nothing was released over the weekend and nobody touched the server.",
+        "q2": "For three years you have told clients the traffic peak is on Monday. Last quarter's logs say Thursday.",
+        "q3": "«How long to move the data from the old system to the new one?» You inherited the old system and nobody here wrote it.",
+        "q4": "The load test passed at 70% of target. In front of you is the sales director, who only needs to know whether you can launch.",
+        "q5": "You can rebuild the module from scratch — two weeks, but then it holds — or patch it in two days and hope it lasts until release.",
+        "q6": "A colleague is validating the model on the same data it was trained on. The results look wonderful.",
+        "q7": "The project was meant for internal engineers. Since yesterday it also has to serve clients, with their own credentials.",
+        "q8": "The client works with a tool you have never opened, and Thursday there is the meeting where you have to show something.",
+        "q9": "You are handed the work of a colleague more experienced than you to review, and it goes live tomorrow.",
+        "q10": "«Get me an analysis of this data by Friday.» Nobody said who it is for or what decision it has to support.",
+        "q11": "You find that a query the team runs by hand every morning can be scheduled: a day of work saved every week.",
+        "q12": "The experiment has been running for two days and the results are still noise. The presentation is on Thursday.",
+        "q13": "You are missing the historical table: it sits on a database you have no access to, and whoever manages it is on holiday.",
+        "q14": "«This system gives us too many false alarms, the engineers have stopped looking at them.» And they ask what you would do.",
+        "q15": "The work is ready, you have already read it through once, and you still have an hour before sending it.",
+        "q16": "You join a team that has been on a project for eight months, with code and habits you do not know.",
+        "q17": "Every Monday morning the same service fails, every Monday someone restarts it and the week goes on.",
+        "q18": "Two people on their first internship, bright but with no experience, and you already have your own deadlines.",
+        "q19": "The client wants a settings panel with thirty options. You know they will use three.",
+        "q20": "A tool comes out that writes by itself the kind of code you write every day.",
+        "q21": "The project is delivered, the closing meeting is tomorrow and everyone will bring their own reading of it."
+      }
     }
   }
 }

@@ -1218,7 +1218,12 @@
     "v2_final_drive_tag": "L’ultima · sul lato che hai scelto meno",
     "v2_progress": "{{n}} di {{total}}",
     "finish": "Concludi",
-    "v2_scenario": "Scenario {{n}}"
+    "v2_scenario": "Scenario {{n}}",
+    "v2_example": {
+      "button": "Esempio",
+      "title": "Un caso concreto",
+      "close": "Chiudi"
+    }
   },
   "results": {
     "title": "I tuoi risultati",
@@ -9953,6 +9958,45 @@
       "explain_2": "Poi va liberato di nuovo, altrimenti non hai più dove mettere il prossimo.",
       "principle": "Lo spazio libero è una risorsa: non basta usarlo, bisogna ricrearlo — se lo riempi e lo lasci pieno, ti fermi.",
       "solved": "Separati."
+    }
+  },
+  "assessmentV2Intro": {
+    "eyebrow": "Prima di cominciare",
+    "title": "Cosa stai per fare",
+    "l1": "Scene di lavoro: scegli la risposta che faresti davvero. Non c’è una risposta giusta.",
+    "l2": "{{count}} passaggi in tutto, circa quindici minuti. Puoi fermarti e riprendere da dove eri.",
+    "l3": "Due pause con un rompicapo e, alla fine, una salita a quattro livelli.",
+    "honest": "Non è un esame e non ci sono voti a schermo. Se una scena non ti è chiara, il pulsante «Esempio» ti mostra un caso concreto.",
+    "cap_question": "Le scene: una situazione, quattro risposte.",
+    "cap_break": "Le pause: un rompicapo, si può saltare.",
+    "cap_climb": "La salita: tubi da girare finché si forma una figura.",
+    "start": "Cominciamo"
+  },
+  "assessmentV2Help": {
+    "science_tech": {
+      "examples": {
+        "q1": "Il gestionale del magazzino da stamattina non carica più gli ordini. Nessuno ha rilasciato niente nel fine settimana e il server non l'ha toccato nessuno.",
+        "q2": "Per tre anni avete detto ai clienti che il picco di traffico è il lunedì. I log dell'ultimo trimestre dicono giovedì.",
+        "q3": "«Quanto ci vuole a portare i dati dal vecchio sistema al nuovo?» Il vecchio sistema lo avete ereditato e non l'ha scritto nessuno di voi.",
+        "q4": "Il test di carico è passato al 70% del previsto. Davanti hai il direttore commerciale, che deve solo sapere se si può lanciare.",
+        "q5": "Puoi rifare il modulo da zero — due settimane, ma poi regge — oppure mettere una pezza in due giorni e sperare che tenga fino al rilascio.",
+        "q6": "Un collega sta validando il modello sugli stessi dati con cui l'ha addestrato. I risultati sono bellissimi.",
+        "q7": "Il progetto doveva servire ai tecnici interni. Da ieri deve servire anche ai clienti, con le loro credenziali.",
+        "q8": "Il cliente lavora con uno strumento che tu non hai mai aperto, e giovedì c'è la riunione in cui devi mostrare qualcosa.",
+        "q9": "Ti arriva da rivedere il lavoro di un collega più esperto di te, e domani va in produzione.",
+        "q10": "«Fammi un'analisi di questi dati entro venerdì.» Non ti hanno detto per chi è né che decisione ci devono prendere.",
+        "q11": "Scopri che una query che il gruppo lancia a mano ogni mattina si può schedulare: un giorno di lavoro risparmiato ogni settimana.",
+        "q12": "L'esperimento gira da due giorni e i risultati sono ancora rumore. La presentazione è giovedì.",
+        "q13": "Ti manca la tabella degli storici: sta su un database a cui non hai accesso, e chi lo gestisce è in ferie.",
+        "q14": "«Questo sistema ci dà troppi falsi allarmi, i tecnici hanno smesso di guardarli.» E ti chiedono cosa fareste.",
+        "q15": "Il lavoro è pronto, l'hai già riletto una volta, e hai ancora un'ora prima di mandarlo.",
+        "q16": "Entri in un gruppo che sta lavorando a un progetto da otto mesi, con un codice e delle abitudini che non conosci.",
+        "q17": "Ogni lunedì mattina lo stesso servizio va in errore, ogni lunedì qualcuno lo riavvia e la settimana riparte.",
+        "q18": "Due ragazzi al primo stage, bravi ma senza esperienza, e tu hai già le tue consegne.",
+        "q19": "Il cliente vuole un pannello di configurazione con trenta opzioni. Tu sai che ne useranno tre.",
+        "q20": "Esce uno strumento che scrive da solo il tipo di codice che scrivi tu tutti i giorni.",
+        "q21": "Il progetto è consegnato, la riunione di chiusura è domani e ognuno porterà la sua lettura."
+      }
     }
   }
 }
