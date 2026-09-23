@@ -20,7 +20,7 @@ import {
   computeScoresV2, weakestContentPillar,
   type AnswersV2, type ContentPillar, type DriveAnswerV2, type Intensity, type McAnswerV2, type V2Field,
 } from '@/lib/assessment/v2/model';
-import { pauseAfter, SALITA_AFTER, type PauseResult, type PauseResults, type PauseSlot } from '@/lib/pauses/model';
+import { pauseAfter, SALITA_LAST, type PauseResult, type PauseResults, type PauseSlot } from '@/lib/pauses/model';
 import { PauseDone } from '@/components/pauses/PauseShell';
 import { VanPause } from '@/components/pauses/VanPause';
 import { HandoverPause } from '@/components/pauses/HandoverPause';
@@ -38,7 +38,7 @@ type FlowItem =
   | { kind: 'mc'; q: number }
   | { kind: 'drive'; d: number; pillar?: ContentPillar }   // pillar known for 1-4; 5 is adaptive
   | { kind: 'open'; key: 'open1' | 'open2' }
-  | { kind: 'pause'; pause: PauseSlot };   // a break: a work sample at 5/10/15, the climb at 20
+  | { kind: 'pause'; pause: PauseSlot };   // a break: a work sample where PAUSES says, the climb at the end
 
 const buildFlow = (): FlowItem[] => {
   const flow: FlowItem[] = [];
@@ -48,11 +48,13 @@ const buildFlow = (): FlowItem[] => {
     if (at >= 0) flow.push({ kind: 'drive', d: at + 1 });
     const pause = pauseAfter(q);
     if (pause) flow.push({ kind: 'pause', pause });
-    if (q === SALITA_AFTER) flow.push({ kind: 'pause', pause: 'salita' });
   }
   flow.push({ kind: 'drive', d: V2_DRIVE_COUNT });
   flow.push({ kind: 'open', key: 'open1' });
   flow.push({ kind: 'open', key: 'open2' });
+  // The climb is the last thing before the result: it does not interrupt
+  // the writing, and the questionnaire ends on something to do, not to say.
+  if (SALITA_LAST) flow.push({ kind: 'pause', pause: 'salita' });
   return flow;
 };
 
@@ -280,7 +282,7 @@ const AssessmentV2: React.FC<Props> = ({
         {t('common.previous', 'Back')}
       </Button>
       {isLast ? (
-        <Button onClick={finish} disabled={!canContinue || answeredCount < flow.length || submitting}>
+        <Button onClick={finish} disabled={!canContinue || questionsAnswered < questions.length || submitting}>
           {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : <CheckCircle2 className="mr-2 h-4 w-4" aria-hidden="true" />}
           {t('assessment.finish', 'Finish')}
         </Button>
@@ -308,7 +310,9 @@ const AssessmentV2: React.FC<Props> = ({
       <Panel className="p-5 sm:p-8">
         {item.kind === 'pause' && (() => {
           const kind = item.pause;
-          const done = (r: PauseResult) => { onPause(kind, r); go(index + 1); };
+          // On the last item the break ends the questionnaire itself.
+          const after = () => (isLast ? void finish() : go(index + 1));
+          const done = (r: PauseResult) => { onPause(kind, r); after(); };
           const skip = () => done({ kind, skipped: true });
           if (v2.pauses[kind]) {
             return (
@@ -317,7 +321,9 @@ const AssessmentV2: React.FC<Props> = ({
                 kind={kind}
                 title={kind === 'salita' ? t('salita.debrief_title') : undefined}
                 remaining={questionsLeft}
-                onContinue={() => go(index + 1)}
+                continueLabel={isLast ? t('assessment.finish', 'Finish') : undefined}
+                busy={submitting}
+                onContinue={after}
                 onBack={() => go(index - 1)}
               />
             );
@@ -329,6 +335,7 @@ const AssessmentV2: React.FC<Props> = ({
               <SalitaGame
                 as="h2"
                 backLabel={t('common.previous', 'Back')}
+                doneLabel={isLast ? t('assessment.finish', 'Finish') : undefined}
                 onBack={() => go(index - 1)}
                 onSkip={skip}
                 onDone={(summary) => done(summary

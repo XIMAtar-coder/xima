@@ -1,13 +1,13 @@
 /**
  * «Pause»: the work-sample breaks inside the 2.0 questionnaire.
  *
- * After the 5th, 10th and 15th scenario the questionnaire stops and the
- * person does something real from their own line of work with one finger:
- * load the van, leave a message for the next shift, pick the right product
- * from the label. After the 20th comes La Salita, the climb. They are framed
- * as a pause — no timer, no grade, always skippable — and what is recorded
- * are facts (needed items on board, necessary lines sent, right product on
- * the right job), never a judgement.
+ * A pause stops the questionnaire and has the person do something real from
+ * their own line of work with one finger: load the van, leave a message for
+ * the next shift, pick the right product from the label, lay out a space.
+ * They are framed as a pause — no timer, no grade, always skippable — and
+ * what is recorded are facts (needed items on board, necessary lines sent,
+ * right product on the right job), never a judgement. La Salita, the climb,
+ * closes the questionnaire.
  *
  * The structure below (quantities, sizes, grid, constraints) is the same for
  * every field so that the six fields stay comparable; only the words and the
@@ -27,20 +27,17 @@ export type PauseKind = 'van' | 'handover' | 'stock' | 'yard';
  * their objects with the person's line of work.
  */
 export const PAUSES: readonly { kind: PauseKind; after: number; pillar: ContentPillar }[] = [
-  { kind: 'van', after: 5, pillar: 'computational_power' },
-  { kind: 'handover', after: 10, pillar: 'communication' },
-  { kind: 'stock', after: 15, pillar: 'knowledge' },
+  // Roberta tried the three work samples (van, handover, stock) and did not
+  // understand them: too many, and a friction right in the middle of the
+  // questionnaire. They are parked, whole and tested — one line here each
+  // to put one back — while two new games are designed.
 ];
 
-/** La Salita, the Drive trial, is the fourth and last chapter. */
-export const SALITA_AFTER = 20;
+/** The four work samples, built and translated, waiting outside the flow. */
+export const PARKED_PAUSES: readonly PauseKind[] = ['van', 'handover', 'stock', 'yard'];
 
-/**
- * «Lo spazio possibile» (creativity) is built and translated but kept out of
- * the flow: the fourth slot is the climb. Putting it back is adding its line
- * to PAUSES above.
- */
-export const PARKED_PAUSE: PauseKind = 'yard';
+/** La Salita, the Drive trial, closes the questionnaire after the written answers. */
+export const SALITA_LAST = true;
 
 export const pauseAfter = (q: number): PauseKind | null => PAUSES.find((p) => p.after === q)?.kind ?? null;
 

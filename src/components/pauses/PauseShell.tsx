@@ -77,7 +77,7 @@ export const PauseShell: React.FC<Props> = ({ field, kind, spoken, primaryLabel,
 };
 
 /** What the person sees after the pause: no grade, a human line, back to the questions. */
-export const PauseDone: React.FC<{ field: V2Field; kind: string; title?: string; remaining: number; onContinue: () => void; onBack?: () => void }> = ({ field, kind, title, remaining, onContinue, onBack }) => {
+export const PauseDone: React.FC<{ field: V2Field; kind: string; title?: string; remaining: number; continueLabel?: string; busy?: boolean; onContinue: () => void; onBack?: () => void }> = ({ field, kind, title, remaining, continueLabel, busy, onContinue, onBack }) => {
   const { t } = useTranslation();
   return (
     <div className="py-6 text-center">
@@ -86,10 +86,10 @@ export const PauseDone: React.FC<{ field: V2Field; kind: string; title?: string;
       </div>
       <h2 className="text-[22px] font-semibold tracking-[-0.5px] text-foreground">{title ?? t(`pauses.fields.${field}.done_title`)}</h2>
       <p className="mx-auto mt-2 max-w-md text-[14px] leading-[1.55] text-muted-foreground">{t('pauses.common.done_text')}</p>
-      <p className="mt-4 text-[14px] text-foreground">{t('pauses.common.back_to_questions', { count: remaining })}</p>
+      {remaining > 0 && <p className="mt-4 text-[14px] text-foreground">{t('pauses.common.back_to_questions', { count: remaining })}</p>}
       <div className={cn('mt-5 flex items-center justify-center gap-3')}>
-        {onBack && <Button variant="ghost" onClick={onBack}>{t('common.previous', 'Back')}</Button>}
-        <Button onClick={onContinue}>{t('pauses.common.continue')}<ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" /></Button>
+        {onBack && <Button variant="ghost" onClick={onBack} disabled={busy}>{t('common.previous', 'Back')}</Button>}
+        <Button onClick={onContinue} disabled={busy}>{continueLabel ?? t('pauses.common.continue')}<ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" /></Button>
       </div>
       <p className="sr-only">{kind}</p>
     </div>

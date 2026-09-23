@@ -22,14 +22,24 @@ export interface Level {
   size: number;
   /** seconds, or null when untimed */
   limit: number | null;
+  /** what the solved board shows */
+  picture: Picture;
 }
+
+/**
+ * What each level draws when it is solved. Roberta's note: turning tubes
+ * for their own sake means nothing; turning them until a window, a ladder,
+ * a house, a spiral appears does. The picture is the meaning, and the
+ * solved board is the same for everyone, so the climb stays comparable.
+ */
+export type Picture = 'window' | 'ladder' | 'house' | 'spiral';
 
 /** The four steps of the climb. The last one is the near-impossible one. */
 export const LEVELS: Level[] = [
-  { n: 1, size: 3, limit: null },
-  { n: 2, size: 4, limit: null },
-  { n: 3, size: 5, limit: 90 },
-  { n: 4, size: 7, limit: 60 },
+  { n: 1, size: 3, limit: null, picture: 'window' },
+  { n: 2, size: 4, limit: null, picture: 'ladder' },
+  { n: 3, size: 5, limit: 90, picture: 'house' },
+  { n: 4, size: 7, limit: 60, picture: 'spiral' },
 ];
 
 const BITS: Record<Dir, number> = { 0: 1, 1: 2, 2: 4, 3: 8 };
@@ -55,6 +65,89 @@ export function rotate(tile: Tile, times = 1): Tile {
     t = ((t << 1) & 0b1111) | (t >> 3);
   }
   return t;
+}
+
+type Edge = [Cell, Cell];
+type Cell = [number, number];
+
+/** Tiles from a list of edges between neighbouring cells. */
+function tilesFromEdges(size: number, edges: Edge[]): Tile[] {
+  const tiles: Tile[] = new Array(size * size).fill(0);
+  for (const [[r1, c1], [r2, c2]] of edges) {
+    const d: Dir | null = r2 === r1 - 1 && c2 === c1 ? 0 : c2 === c1 + 1 && r2 === r1 ? 1 : r2 === r1 + 1 && c2 === c1 ? 2 : c2 === c1 - 1 && r2 === r1 ? 3 : null;
+    if (d === null) throw new Error(`not neighbours: ${r1},${c1} → ${r2},${c2}`);
+    tiles[r1 * size + c1] |= BITS[d];
+    tiles[r2 * size + c2] |= BITS[OPP[d]];
+  }
+  return tiles;
+}
+
+/** A path through consecutive cells, as edges. */
+const path = (cells: Cell[]): Edge[] => cells.slice(1).map((c, i) => [cells[i], c] as Edge);
+
+/** The spiral: every cell of the grid visited once, from the outside in. */
+function spiralCells(size: number): Cell[] {
+  const out: Cell[] = [];
+  let top = 0; let left = 0; let bottom = size - 1; let right = size - 1;
+  while (top <= bottom && left <= right) {
+    for (let c = left; c <= right; c += 1) out.push([top, c]);
+    for (let r = top + 1; r <= bottom; r += 1) out.push([r, right]);
+    if (top < bottom) for (let c = right - 1; c >= left; c -= 1) out.push([bottom, c]);
+    if (left < right) for (let r = bottom - 1; r > top; r -= 1) out.push([r, left]);
+    top += 1; left += 1; bottom -= 1; right -= 1;
+  }
+  return out;
+}
+
+/** The solved board of each picture. Sizes match LEVELS. */
+export function pictureBoard(picture: Picture): Board {
+  switch (picture) {
+    case 'window': {
+      // 3×3: a frame around an empty middle.
+      const ring: Cell[] = [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2], [2, 1], [2, 0], [1, 0], [0, 0]];
+      return { size: 3, tiles: tilesFromEdges(3, path(ring)) };
+    }
+    case 'ladder': {
+      // 4×4: two uprights and two rungs.
+      const edges: Edge[] = [
+        ...path([[0, 0], [1, 0], [2, 0], [3, 0]]),
+        ...path([[0, 3], [1, 3], [2, 3], [3, 3]]),
+        ...path([[1, 0], [1, 1], [1, 2], [1, 3]]),
+        ...path([[2, 0], [2, 1], [2, 2], [2, 3]]),
+      ];
+      return { size: 4, tiles: tilesFromEdges(4, edges) };
+    }
+    case 'house': {
+      // 5×5: walls, a floor, a chimney on the roof and a door post.
+      const walls: Cell[] = [[1, 0], [1, 1], [1, 2], [1, 3], [1, 4], [2, 4], [3, 4], [4, 4], [4, 3], [4, 2], [4, 1], [4, 0], [3, 0], [2, 0], [1, 0]];
+      const edges: Edge[] = [...path(walls), [[0, 2], [1, 2]], [[3, 2], [4, 2]]];
+      return { size: 5, tiles: tilesFromEdges(5, edges) };
+    }
+    case 'spiral':
+      // 7×7: one long turn from the outside to the centre — 49 tiles to set.
+      return { size: 7, tiles: tilesFromEdges(7, path(spiralCells(7))) };
+  }
+}
+
+/** Every tile given a real turn, so the picture never arrives already made. */
+function scramble(solved: Board, seed: number): Board {
+  const rnd = mulberry32(seed);
+  const tiles = solved.tiles.map((t) => {
+    if (t === 0 || t === 0b1111) return t;        // empty and crosses look the same from every side
+    const turns = 1 + Math.floor(rnd() * 3);
+    const turned = rotate(t, turns);
+    return turned === t ? rotate(t, 1) : turned;
+  });
+  const board = { size: solved.size, tiles };
+  if (!isSolved(board)) return board;
+  const i = tiles.findIndex((t) => t !== 0 && t !== 0b1111);
+  return { size: solved.size, tiles: tiles.map((t, k) => (k === i ? rotate(t, 1) : t)) };
+}
+
+/** The level's picture, scrambled by the seed. */
+export function generatePicture(picture: Picture, seed: number): { solved: Board; scrambled: Board } {
+  const solved = pictureBoard(picture);
+  return { solved, scrambled: scramble(solved, seed) };
 }
 
 /**

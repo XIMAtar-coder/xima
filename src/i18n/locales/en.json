@@ -9128,7 +9128,14 @@
     "cta_button": "Start The Climb",
     "facts_line": "On the facts: {{attempts}} attempts on the hard levels, {{retries}} retries after failing.",
     "how_to": "Tap a tile to turn it. The level is done when every pipe meets its neighbour and none points outside.",
-    "how_to_timed": "This level is timed."
+    "how_to_timed": "This level is timed.",
+    "building": "You are building: {{what}}.",
+    "picture": {
+      "window": "a window",
+      "ladder": "a ladder",
+      "house": "a house",
+      "spiral": "a spiral"
+    }
   },
   "pauses": {
     "common": {

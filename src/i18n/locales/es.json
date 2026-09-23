@@ -9427,7 +9427,14 @@
     "cta_button": "Empezar La Subida",
     "facts_line": "En los hechos: {{attempts}} intentos en los niveles difíciles, {{retries}} reintentos tras fallar.",
     "how_to": "Toca una ficha para girarla. El nivel está hecho cuando cada tubo encuentra a su vecino y ninguno apunta fuera.",
-    "how_to_timed": "Este nivel tiene tiempo."
+    "how_to_timed": "Este nivel tiene tiempo.",
+    "building": "Estás construyendo: {{what}}.",
+    "picture": {
+      "window": "una ventana",
+      "ladder": "una escalera",
+      "house": "una casa",
+      "spiral": "una espiral"
+    }
   },
   "pauses": {
     "common": {

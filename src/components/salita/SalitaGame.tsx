@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, Check, RotateCcw, Shuffle, Square } from 'lucide
 import { Eyebrow } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { LEVELS, generate, isSolved, rotate, fittingTiles, type Board, type Tile } from '@/lib/salita/puzzle';
+import { LEVELS, generatePicture, isSolved, rotate, fittingTiles, type Board, type Tile } from '@/lib/salita/puzzle';
 import { openSignals, recordAttempt, recordChoice, summarise, type SalitaSignals, type SalitaSummary } from '@/lib/salita/signals';
 
 /**
@@ -62,9 +62,11 @@ interface Props {
   as?: 'h1' | 'h2';
   /** «Back to your results» on the page, «Back» between questions. */
   backLabel?: string;
+  /** What the debrief button says: «Continue», or «Finish» when the climb ends the questionnaire. */
+  doneLabel?: string;
 }
 
-export const SalitaGame: React.FC<Props> = ({ onBack, onDone, onSkip, as = 'h1', backLabel }) => {
+export const SalitaGame: React.FC<Props> = ({ onBack, onDone, onSkip, as = 'h1', backLabel, doneLabel }) => {
   const { t } = useTranslation();
   const [phase, setPhase] = useState<Phase>('intro');
   const [levelIdx, setLevelIdx] = useState(0);
@@ -76,7 +78,7 @@ export const SalitaGame: React.FC<Props> = ({ onBack, onDone, onSkip, as = 'h1',
   const Heading = as;
 
   const level = LEVELS[levelIdx];
-  const base = useMemo(() => generate(level.size, seed).scrambled, [level.size, seed]);
+  const base = useMemo(() => generatePicture(level.picture, seed).scrambled, [level.picture, seed]);
   const board: Board = useMemo(() => ({ size: base.size, tiles: base.tiles.map((tl, i) => rotate(tl, turns[i] ?? 0)) }), [base, turns]);
   const fitting = useMemo(() => fittingTiles(board), [board]);
   const total = board.size * board.size;
@@ -182,7 +184,7 @@ export const SalitaGame: React.FC<Props> = ({ onBack, onDone, onSkip, as = 'h1',
         )}
         <p className="mt-4 text-[13px] text-muted-foreground">{t('salita.debrief_note')}</p>
         <Button className="mt-6" onClick={() => onDone(summary)}>
-          {t('pauses.common.continue')}
+          {doneLabel ?? t('pauses.common.continue')}
           <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
         </Button>
       </div>
@@ -211,6 +213,9 @@ export const SalitaGame: React.FC<Props> = ({ onBack, onDone, onSkip, as = 'h1',
         </div>
       </div>
 
+      <p className="mb-1 text-[15px] font-medium text-foreground">
+        {t('salita.building', { what: t(`salita.picture.${level.picture}`) })}
+      </p>
       <p className="mb-4 text-[13.5px] leading-relaxed text-muted-foreground">
         {t('salita.how_to', 'Tap a tile to turn it. The level is done when every pipe meets its neighbour and none points outside.')}
         {level.limit && <> {t('salita.how_to_timed', 'This level is timed.')}</>}

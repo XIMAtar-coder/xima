@@ -5,7 +5,7 @@ import { VanPause } from '../VanPause';
 import { HandoverPause } from '../HandoverPause';
 import { StockPause } from '../StockPause';
 import { YardPause } from '../YardPause';
-import { PAUSES, SALITA_AFTER, VAN } from '@/lib/pauses/model';
+import { PAUSES, PARKED_PAUSES, SALITA_LAST, VAN } from '@/lib/pauses/model';
 
 // The locale files carry the words; here the key is enough to tell the
 // pieces apart, and interpolation is spelled out so counters stay readable.
@@ -24,11 +24,10 @@ vi.mock('react-i18next', () => ({
 const noop = () => undefined;
 
 describe('the pauses', () => {
-  it('follow the scenarios 5, 10 and 15, one per pillar, and leave the 20th to the climb', () => {
-    expect(PAUSES.map((p) => p.after)).toEqual([5, 10, 15]);
-    expect(new Set(PAUSES.map((p) => p.pillar)).size).toBe(3);
-    expect(SALITA_AFTER).toBe(20);
-    expect(PAUSES.some((p) => p.after === SALITA_AFTER)).toBe(false);
+  it('are all parked after the first test, with the climb as the only break, at the end', () => {
+    expect(PAUSES).toHaveLength(0);
+    expect(PARKED_PAUSES).toHaveLength(4);
+    expect(SALITA_LAST).toBe(true);
   });
 
   it('van: loading from the warehouse ticks the note and the load can be closed', () => {

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   VAN, HANDOVER, STOCK, YARD_MODULES, YARD_FIXED,
   evaluateVan, vanCanLoad, vanUsed, evaluateHandover, evaluateStock, unitsNeeded,
-  placementOk, checkYard, yardValid, layoutFamily, evaluateYard, pauseAfter, PARKED_PAUSE, SALITA_AFTER, type Placement,
+  placementOk, checkYard, yardValid, layoutFamily, evaluateYard, pauseAfter, PARKED_PAUSES, PAUSES, SALITA_LAST, type Placement,
 } from '../model';
 
 describe('pauses — the van', () => {
@@ -119,12 +119,11 @@ describe('pauses — the yard', () => {
     expect(evaluateYard([a, a, layoutFamily(moved)], true, 3).validLayouts).toBe(2);
   });
 
-  it('has four modules, and is parked: the fourth slot is the climb', () => {
+  it('has four modules; all four work samples are parked and the climb closes the questionnaire', () => {
     expect(YARD_MODULES).toHaveLength(4);
-    expect(PARKED_PAUSE).toBe('yard');
-    expect([5, 10, 15].map(pauseAfter)).toEqual(['van', 'handover', 'stock']);
-    expect(pauseAfter(SALITA_AFTER)).toBeNull();
-    expect(SALITA_AFTER).toBe(20);
-    expect(pauseAfter(7)).toBeNull();
+    expect(PARKED_PAUSES).toEqual(['van', 'handover', 'stock', 'yard']);
+    expect(PAUSES).toHaveLength(0);
+    expect([5, 10, 15, 20].map(pauseAfter)).toEqual([null, null, null, null]);
+    expect(SALITA_LAST).toBe(true);
   });
 });

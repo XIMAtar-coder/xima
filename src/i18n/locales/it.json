@@ -9128,7 +9128,14 @@
     "cta_button": "Comincia La Salita",
     "facts_line": "Sui fatti: {{attempts}} tentativi sui livelli difficili, {{retries}} riprove dopo un fallimento.",
     "how_to": "Tocca una tessera per girarla. Il livello è fatto quando ogni tubo incontra il vicino e nessuno punta fuori.",
-    "how_to_timed": "Questo livello è a tempo."
+    "how_to_timed": "Questo livello è a tempo.",
+    "building": "Stai costruendo: {{what}}.",
+    "picture": {
+      "window": "una finestra",
+      "ladder": "una scala",
+      "house": "una casa",
+      "spiral": "una chiocciola"
+    }
   },
   "pauses": {
     "common": {
