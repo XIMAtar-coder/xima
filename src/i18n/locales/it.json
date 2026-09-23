@@ -9879,5 +9879,52 @@
         }
       }
     }
+  },
+  "games": {
+    "common": {
+      "chip": "Pausa · un rompicapo",
+      "skip": "Salta",
+      "round": "Giro {{n}} di 2",
+      "got_it": "Ho capito",
+      "next_round": "Secondo giro",
+      "undo": "Annulla",
+      "restart": "Ricomincia",
+      "how_to_go_on": "Come proseguire",
+      "choice_title": "Come vuoi proseguire?",
+      "choice_sub": "Scegli liberamente: nessuna di queste è la risposta giusta.",
+      "choice_retry": "Riprovo",
+      "choice_explain": "Me lo faccio spiegare",
+      "choice_skip": "Vado avanti",
+      "explanation": "Come funziona",
+      "go_on": "Vado avanti",
+      "try_again_now": "Riprovo adesso",
+      "continue": "Continua",
+      "calm": "Non c’è tempo e non c’è un voto. Puoi saltare quando vuoi."
+    },
+    "exit": {
+      "title": "Libera l’uscita",
+      "how": "Trascina le tessere lungo il loro binario. Quella blu deve uscire dal varco a destra.",
+      "hard_lead": "Stessa regola, più tessere. Trascinare solo quella blu non basta.",
+      "demo": "Ogni tessera scorre in una sola direzione: quelle sdraiate a destra e sinistra, quelle in piedi su e giù.",
+      "blue_tile": "Tessera blu",
+      "tile": "Tessera",
+      "blocked": "Questa tessera non ha spazio per muoversi.",
+      "bridge": "Per far passare la blu hai prima spostato quello che la bloccava. Nel prossimo giro non basterà una volta sola.",
+      "explain_1": "Per far passare la blu, la tessera in piedi deve scendere: serve spazio sotto.",
+      "explain_2": "Ma poi deve risalire, o le tessere in basso restano bloccate.",
+      "principle": "A volte bisogna <b>rimettere indietro</b> un pezzo che avevi appena spostato: spostarlo era servito, lasciarlo lì no.",
+      "solved": "Uscita libera.",
+      "move_here": "Sposta qui"
+    },
+    "triangles": {
+      "title": "Quanti triangoli",
+      "how": "Guarda la figura e tocca quanti triangoli vedi.",
+      "hard_lead": "Stessa domanda, figura più ricca. Contali senza dimenticarne e senza contarli due volte.",
+      "demo": "Contano anche i triangoli fatti di più parti, non solo quelli piccoli.",
+      "not_yet": "Il conto non torna.",
+      "bridge": "Erano tre: i due piccoli e quello intero. Il terzo è fatto dai primi due messi insieme.",
+      "principle": "Contare per categorie — larghi una parte, due, tre, su ogni riga — è l’unico modo per non perderne nessuno e non contarne due volte.",
+      "solved": "Diciotto, e tornano."
+    }
   }
 }

@@ -9879,5 +9879,52 @@
         }
       }
     }
+  },
+  "games": {
+    "common": {
+      "chip": "Break · a puzzle",
+      "skip": "Skip",
+      "round": "Round {{n}} of 2",
+      "got_it": "Got it",
+      "next_round": "Second round",
+      "undo": "Undo",
+      "restart": "Start over",
+      "how_to_go_on": "How to go on",
+      "choice_title": "How do you want to go on?",
+      "choice_sub": "Choose freely: none of these is the right answer.",
+      "choice_retry": "I’ll try again",
+      "choice_explain": "Show me how",
+      "choice_skip": "Move on",
+      "explanation": "How it works",
+      "go_on": "Move on",
+      "try_again_now": "Try again now",
+      "continue": "Continue",
+      "calm": "There is no timer and no grade. You can skip whenever you want."
+    },
+    "exit": {
+      "title": "Free the exit",
+      "how": "Drag the tiles along their rail. The blue one has to leave through the gap on the right.",
+      "hard_lead": "Same rule, more tiles. Dragging the blue one is not enough.",
+      "demo": "Each tile slides one way only: the lying ones left and right, the standing ones up and down.",
+      "blue_tile": "Blue tile",
+      "tile": "Tile",
+      "blocked": "This tile has no room to move.",
+      "bridge": "To let the blue one through you first moved what was blocking it. Next round, once will not be enough.",
+      "explain_1": "To let the blue one through, the standing tile has to come down: it needs room below.",
+      "explain_2": "But then it has to go back up, or the tiles at the bottom stay stuck.",
+      "principle": "Sometimes you have to <b>put back</b> a piece you have just moved: moving it helped, leaving it there did not.",
+      "solved": "The exit is clear.",
+      "move_here": "Move here"
+    },
+    "triangles": {
+      "title": "How many triangles",
+      "how": "Look at the figure and tap how many triangles you see.",
+      "hard_lead": "Same question, richer figure. Count them all without counting any twice.",
+      "demo": "Triangles made of several parts count too, not only the small ones.",
+      "not_yet": "The count does not add up.",
+      "bridge": "Three: the two small ones and the whole. The third is the first two put together.",
+      "principle": "Counting by category — one part wide, two, three, on every level — is the only way to miss none and count none twice.",
+      "solved": "Eighteen, and they add up."
+    }
   }
 }

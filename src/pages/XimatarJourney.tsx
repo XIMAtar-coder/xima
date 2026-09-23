@@ -48,6 +48,7 @@ const XimatarJourney = () => {
     setV2DriveAnswer,
     setV2Order,
     setV2Pause,
+    setV2Game,
     cvUploaded,
     showResumeModal,
     setStep,
@@ -165,6 +166,7 @@ const XimatarJourney = () => {
                 onDriveAnswer={setV2DriveAnswer}
                 onOrder={setV2Order}
                 onPause={setV2Pause}
+                onGame={setV2Game}
                 onOpenAnswerChange={setOpenAnswer}
               />
             ) : (

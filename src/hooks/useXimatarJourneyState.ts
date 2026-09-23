@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { log } from '@/lib/log';
 import type { McAnswerV2, DriveAnswerV2 } from '@/lib/assessment/v2/model';
 import type { PauseResult, PauseResults, PauseSlot } from '@/lib/pauses/model';
+import { pickPair, type GamePair, type GameRun } from '@/lib/games/model';
 
 const STORAGE_KEY = 'xima.ximatarJourney.v1';
 
@@ -20,6 +21,10 @@ interface JourneyState {
     order: Record<number, number[]>;
     /** The four work-sample pauses, done or skipped. */
     pauses: PauseResults;
+    /** The two games this session shows, drawn once and kept on resume. */
+    pair: GamePair;
+    /** What each game left behind: the Drive evidence. */
+    games: GameRun[];
   };
   baselineCompleted: boolean;
   cvUploaded: boolean;
@@ -32,7 +37,7 @@ const defaultState: JourneyState = {
   questionIndex: 0,
   mcAnswers: {},
   openAnswers: {},
-  v2: { mc: {}, drive: {}, order: {}, pauses: {} },
+  v2: { mc: {}, drive: {}, order: {}, pauses: {}, pair: pickPair(), games: [] },
   baselineCompleted: false,
   cvUploaded: false,
   completed: false,
@@ -51,7 +56,10 @@ export function useXimatarJourneyState() {
         const parsed = JSON.parse(saved) as JourneyState;
         if (!parsed.completed) {
           const v2 = (parsed.v2 ?? {}) as Partial<JourneyState['v2']>;
-          return { ...parsed, v2: { mc: v2.mc ?? {}, drive: v2.drive ?? {}, order: v2.order ?? {}, pauses: v2.pauses ?? {} } };
+          return { ...parsed, v2: {
+            mc: v2.mc ?? {}, drive: v2.drive ?? {}, order: v2.order ?? {}, pauses: v2.pauses ?? {},
+            pair: v2.pair ?? pickPair(), games: v2.games ?? [],
+          } };
         }
       } catch (e) {
         log.warn('Failed to parse journey state:', e);
@@ -164,6 +172,11 @@ export function useXimatarJourneyState() {
     setState(prev => ({ ...prev, v2: { ...prev.v2, pauses: { ...prev.v2.pauses, [kind]: result } } }));
   }, []);
 
+  /** A game is over, whether it was played or skipped: it is recorded once. */
+  const setV2Game = useCallback((run: GameRun) => {
+    setState(prev => ({ ...prev, v2: { ...prev.v2, games: [...prev.v2.games.filter((g) => g.game !== run.game), run] } }));
+  }, []);
+
   const setBaselineCompleted = useCallback((completed: boolean) => {
     setState(prev => ({ ...prev, baselineCompleted: completed }));
   }, []);
@@ -230,6 +243,7 @@ export function useXimatarJourneyState() {
     setV2DriveAnswer,
     setV2Order,
     setV2Pause,
+    setV2Game,
     setBaselineCompleted,
     setCvUploaded,
     goToNextQuestion,

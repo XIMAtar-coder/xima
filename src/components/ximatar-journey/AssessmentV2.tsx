@@ -21,6 +21,9 @@ import {
   type AnswersV2, type ContentPillar, type DriveAnswerV2, type Intensity, type McAnswerV2, type V2Field,
 } from '@/lib/assessment/v2/model';
 import { pauseAfter, SALITA_LAST, type PauseResult, type PauseResults, type PauseSlot } from '@/lib/pauses/model';
+import { GAME_AFTER_SCENARIO, type GameKey, type GamePair, type GameRun } from '@/lib/games/model';
+import { ExitGame } from '@/components/games/ExitGame';
+import { TrianglesGame } from '@/components/games/TrianglesGame';
 import { PauseDone } from '@/components/pauses/PauseShell';
 import { VanPause } from '@/components/pauses/VanPause';
 import { HandoverPause } from '@/components/pauses/HandoverPause';
@@ -38,9 +41,10 @@ type FlowItem =
   | { kind: 'mc'; q: number }
   | { kind: 'drive'; d: number; pillar?: ContentPillar }   // pillar known for 1-4; 5 is adaptive
   | { kind: 'open'; key: 'open1' | 'open2' }
-  | { kind: 'pause'; pause: PauseSlot };   // a break: a work sample where PAUSES says, the climb at the end
+  | { kind: 'pause'; pause: PauseSlot }    // a break: a work sample where PAUSES says, the climb at the end
+  | { kind: 'game'; game: GameKey; position: 1 | 2 };   // one of the four puzzles, after scenario 7 and 14
 
-const buildFlow = (): FlowItem[] => {
+const buildFlow = (pair: GamePair): FlowItem[] => {
   const flow: FlowItem[] = [];
   for (let q = 1; q <= V2_MC_COUNT; q += 1) {
     flow.push({ kind: 'mc', q });
@@ -48,6 +52,10 @@ const buildFlow = (): FlowItem[] => {
     if (at >= 0) flow.push({ kind: 'drive', d: at + 1 });
     const pause = pauseAfter(q);
     if (pause) flow.push({ kind: 'pause', pause });
+    // The games come after the Drive scenario, so a pair already designed to
+    // sit together is not split by a puzzle.
+    const g = (GAME_AFTER_SCENARIO as readonly number[]).indexOf(q);
+    if (g >= 0) flow.push({ kind: 'game', game: g === 0 ? pair.first : pair.second, position: (g + 1) as 1 | 2 });
   }
   flow.push({ kind: 'drive', d: V2_DRIVE_COUNT });
   flow.push({ kind: 'open', key: 'open1' });
@@ -74,25 +82,26 @@ interface Props {
   cvAnalysed: boolean;
   questionIndex: number;
   onQuestionChange: (index: number) => void;
-  v2: AnswersV2 & { order: Record<number, number[]>; pauses: PauseResults };
+  v2: AnswersV2 & { order: Record<number, number[]>; pauses: PauseResults; pair: GamePair; games: GameRun[] };
   openAnswers: Record<string, string>;
   onMcAnswer: (q: number, a: McAnswerV2) => void;
   onDriveAnswer: (d: number, a: DriveAnswerV2) => void;
   onOrder: (q: number, order: number[]) => void;
   onOpenAnswerChange: (key: string, value: string) => void;
   onPause: (kind: PauseSlot, result: PauseResult) => void;
+  onGame: (run: GameRun) => void;
 }
 
 const AssessmentV2: React.FC<Props> = ({
   fieldKey, onComplete, onGoBack, questionIndex, onQuestionChange,
-  v2, openAnswers, onMcAnswer, onDriveAnswer, onOrder, onOpenAnswerChange, onPause,
+  v2, openAnswers, onMcAnswer, onDriveAnswer, onOrder, onOpenAnswerChange, onPause, onGame,
 }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const [submitting, setSubmitting] = useState(false);
 
-  const flow = useMemo(buildFlow, []);
+  const flow = useMemo(() => buildFlow(v2.pair), [v2.pair]);
   const base = `assessmentV2.${fieldKey}`;
   const content = V2_CONTENT[fieldKey];
   const index = Math.min(Math.max(questionIndex, 0), flow.length - 1);
@@ -111,16 +120,18 @@ const AssessmentV2: React.FC<Props> = ({
     if (it.kind === 'mc') return Boolean(v2.mc[it.q]);
     if (it.kind === 'drive') return Boolean(v2.drive[it.d]);
     if (it.kind === 'pause') return Boolean(v2.pauses[it.pause]);
+    if (it.kind === 'game') return v2.games.some((g) => g.game === it.game);
     return (openAnswers[it.key] || '').trim().length >= OPEN_ANSWER_MIN_CHARS;
   };
   const canContinue = isAnswered(item);
   const isLast = index === flow.length - 1;
   const answeredCount = flow.filter(isAnswered).length;
   // The pauses are breaks, not questions: the progress counts questions only.
-  const questions = flow.filter((it) => it.kind !== 'pause');
-  const questionNumber = flow.slice(0, index + 1).filter((it) => it.kind !== 'pause').length;
+  const isBreak = (it: FlowItem) => it.kind === 'pause' || it.kind === 'game';
+  const questions = flow.filter((it) => !isBreak(it));
+  const questionNumber = flow.slice(0, index + 1).filter((it) => !isBreak(it)).length;
   const questionsAnswered = questions.filter(isAnswered).length;
-  const questionsLeft = flow.slice(index + 1).filter((it) => it.kind !== 'pause').length;
+  const questionsLeft = flow.slice(index + 1).filter((it) => !isBreak(it)).length;
 
   // What "Listen" reads out.
   const spoken = (() => {
@@ -134,7 +145,7 @@ const AssessmentV2: React.FC<Props> = ({
       const k = item.d <= 4 ? `${base}.drive.${item.d - 1}` : `${base}.driveFinal.${drivePillar(5)}`;
       return [t(`${k}.question`), `A: ${t(`${k}.comfort`)}`, `B: ${t(`${k}.stretch`)}`].join('. ');
     }
-    if (item.kind === 'pause') return '';
+    if (item.kind === 'pause' || item.kind === 'game') return '';
     return t(`${base}.${item.key}`);
   })();
 
@@ -150,7 +161,7 @@ const AssessmentV2: React.FC<Props> = ({
         // Guest: the same keys the v1 flow leaves for the results page and
         // for the sync after registration.
         sessionStorage.setItem('guest_assessment_data', JSON.stringify({
-          version: '2.0', field: fieldKey, answers: v2.mc, drive: v2.drive, openAnswers, pauses: v2.pauses,
+          version: '2.0', field: fieldKey, answers: v2.mc, drive: v2.drive, openAnswers, pauses: v2.pauses, games: v2.games,
           timestamp: new Date().toISOString(),
         }));
         sessionStorage.setItem('guest_pillar_scores', JSON.stringify(scores));
@@ -190,7 +201,7 @@ const AssessmentV2: React.FC<Props> = ({
 
       const { data: result, error: resultError } = await supabase
         .from('assessment_results')
-        .insert({ user_id: user.id, attempt_id: attemptId, field_key: fieldKey, language, completed: false, rationale: { version: '2.0', pauses: v2.pauses } } as never)
+        .insert({ user_id: user.id, attempt_id: attemptId, field_key: fieldKey, language, completed: false, rationale: { version: '2.0', pauses: v2.pauses, games: v2.games } } as never)
         .select()
         .single();
       if (resultError) throw resultError;
@@ -303,11 +314,33 @@ const AssessmentV2: React.FC<Props> = ({
           {t('assessment.v2_progress', { n: questionNumber, total: questions.length, defaultValue: '{{n}} of {{total}}' })}
         </p>
       </div>
-      <div className={cn('mb-6 h-1 w-full overflow-hidden rounded-full bg-[hsl(var(--xs-line))] transition-opacity', item.kind === 'pause' && 'opacity-30')} role="progressbar" aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={questionsAnswered}>
+      <div className={cn('mb-6 h-1 w-full overflow-hidden rounded-full bg-[hsl(var(--xs-line))] transition-opacity', (item.kind === 'pause' || item.kind === 'game') && 'opacity-30')} role="progressbar" aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={questionsAnswered}>
         <div className="h-full bg-primary transition-[width]" style={{ width: `${(questionsAnswered / questions.length) * 100}%` }} />
       </div>
 
       <Panel className="p-5 sm:p-8">
+        {item.kind === 'game' && (() => {
+          // The puzzles record Drive the same way for everyone, whichever two
+          // a session drew; playing well is not part of it.
+          const finish = (run: GameRun) => { onGame(run); go(index + 1); };
+          if (v2.games.some((g) => g.game === item.game)) {
+            return (
+              <PauseDone
+                field={fieldKey}
+                kind={item.game}
+                title={t(`games.${item.game}.title`)}
+                remaining={questionsLeft}
+                onContinue={() => go(index + 1)}
+                onBack={() => go(index - 1)}
+              />
+            );
+          }
+          const props = { position: item.position, onDone: finish, onSkip: finish };
+          if (item.game === 'exit') return <ExitGame {...props} />;
+          if (item.game === 'triangles') return <TrianglesGame {...props} />;
+          return null;
+        })()}
+
         {item.kind === 'pause' && (() => {
           const kind = item.pause;
           // On the last item the break ends the questionnaire itself.

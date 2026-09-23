@@ -10178,5 +10178,52 @@
         }
       }
     }
+  },
+  "games": {
+    "common": {
+      "chip": "Pausa · un rompecabezas",
+      "skip": "Saltar",
+      "round": "Ronda {{n}} de 2",
+      "got_it": "Entendido",
+      "next_round": "Segunda ronda",
+      "undo": "Deshacer",
+      "restart": "Empezar de nuevo",
+      "how_to_go_on": "Cómo seguir",
+      "choice_title": "¿Cómo quieres seguir?",
+      "choice_sub": "Elige libremente: ninguna es la respuesta correcta.",
+      "choice_retry": "Lo intento otra vez",
+      "choice_explain": "Que me lo expliquen",
+      "choice_skip": "Sigo adelante",
+      "explanation": "Cómo funciona",
+      "go_on": "Sigo adelante",
+      "try_again_now": "Lo intento ahora",
+      "continue": "Continuar",
+      "calm": "No hay tiempo ni nota. Puedes saltarla cuando quieras."
+    },
+    "exit": {
+      "title": "Libera la salida",
+      "how": "Arrastra las piezas por su carril. La azul tiene que salir por el hueco de la derecha.",
+      "hard_lead": "Misma regla, más piezas. Arrastrar solo la azul no basta.",
+      "demo": "Cada pieza se desliza en un solo sentido: las tumbadas a izquierda y derecha, las de pie arriba y abajo.",
+      "blue_tile": "Pieza azul",
+      "tile": "Pieza",
+      "blocked": "Esta pieza no tiene sitio para moverse.",
+      "bridge": "Para dejar pasar la azul moviste antes lo que la bloqueaba. En la próxima ronda no bastará una vez.",
+      "explain_1": "Para dejar pasar la azul, la pieza de pie tiene que bajar: necesita sitio debajo.",
+      "explain_2": "Pero luego tiene que volver a subir, o las piezas de abajo se quedan bloqueadas.",
+      "principle": "A veces hay que <b>devolver</b> una pieza que acabas de mover: moverla sirvió, dejarla ahí no.",
+      "solved": "Salida libre.",
+      "move_here": "Mover aquí"
+    },
+    "triangles": {
+      "title": "Cuántos triángulos",
+      "how": "Mira la figura y toca cuántos triángulos ves.",
+      "hard_lead": "Misma pregunta, figura más rica. Cuéntalos todos sin contar ninguno dos veces.",
+      "demo": "También cuentan los triángulos formados por varias partes, no solo los pequeños.",
+      "not_yet": "La cuenta no sale.",
+      "bridge": "Eran tres: los dos pequeños y el entero. El tercero son los dos primeros juntos.",
+      "principle": "Contar por categorías — de una parte de ancho, de dos, de tres, en cada nivel — es la única manera de no perder ninguno ni contarlo dos veces.",
+      "solved": "Dieciocho, y salen."
+    }
   }
 }
