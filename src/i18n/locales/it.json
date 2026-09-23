@@ -7653,7 +7653,7 @@
       "subtitle": "Cantiere, officina, magazzino, impianti, campagna. Da leggere prima di toccare codice e sigillo.",
       "questions": {
         "q1": {
-          "question": "Un attrezzo si rompe a metà lavoro e il ricambio arriva domani. Tu:",
+          "question": "Sei a metà di un lavoro e si rompe l'attrezzo che stavi usando — mettiamo il trapano — e il ricambio arriva solo domani. Cosa fai per prima cosa?",
           "options": [
             "Guardo cosa posso finire oggi senza quell'attrezzo e riorganizzo la giornata.",
             "Avviso subito il capo e i colleghi, così decidiamo insieme cosa fare.",
@@ -7662,7 +7662,7 @@
           ]
         },
         "q2": {
-          "question": "Arriva un collega nuovo e non sa da dove cominciare. Tu:",
+          "question": "Arriva un collega nuovo, è il suo primo giorno e sta lì fermo che aspetta di capire da dove si comincia. Come ti comporti?",
           "options": [
             "Gli spiego io il lavoro, passo per passo, e resto a disposizione.",
             "Gli do una lista ordinata di cose da fare, dalla più semplice.",
@@ -7671,7 +7671,7 @@
           ]
         },
         "q3": {
-          "question": "Il cliente chiede una cosa che secondo te non si può fare così. Tu:",
+          "question": "Un cliente ti chiede una cosa che secondo te così non si può fare — per esempio una presa proprio dove passa un tubo. Cosa fai?",
           "options": [
             "Gli spiego come si fa di solito e perché.",
             "Gli chiedo cosa vuole ottenere davvero, poi ne parliamo.",
@@ -7680,7 +7680,7 @@
           ]
         },
         "q4": {
-          "question": "Devi montare una cosa che non hai mai montato. Tu:",
+          "question": "Devi montare una cosa che non hai mai montato: la scatola è lì, i pezzi anche, ma tu quel modello non l'hai mai visto. Da dove parti?",
           "options": [
             "Provo, guardo come reagisce e correggo.",
             "Cerco le istruzioni o chi l'ha già fatto.",
@@ -7689,7 +7689,7 @@
           ]
         },
         "q5": {
-          "question": "A fine giornata ti accorgi di un errore nel lavoro fatto. Tu:",
+          "question": "È fine giornata, stai per andare via, e ti accorgi che una parte del lavoro fatto oggi è sbagliata. Cosa fai?",
           "options": [
             "Lo dico subito a chi di dovere, prima che il lavoro vada avanti.",
             "Controllo tutto per capire fin dove arriva l'errore.",
@@ -7698,7 +7698,7 @@
           ]
         },
         "q6": {
-          "question": "Il capo dice che da lunedì si lavora in un modo nuovo. Tu:",
+          "question": "Il capo annuncia che da lunedì un lavoro si farà in un modo nuovo, diverso da come l'avete sempre fatto. Qual è la tua prima reazione?",
           "options": [
             "Voglio capire cosa cambia rispetto a come facevamo.",
             "Bene: magari si può fare anche meglio di così.",
@@ -7707,7 +7707,7 @@
           ]
         },
         "q7": {
-          "question": "C'è un lavoro urgente e siete in pochi. Tu:",
+          "question": "C'è un lavoro urgente da consegnare e in squadra siete in tre invece che in sei. Come lo affronti?",
           "options": [
             "Divido il lavoro in parti e vedo cosa si può fare in contemporanea.",
             "Faccio il giro dei colleghi e ci mettiamo d'accordo su chi fa cosa.",
@@ -7716,7 +7716,7 @@
           ]
         },
         "q8": {
-          "question": "Devi spiegare a un collega perché un lavoro va fatto in un certo modo. Tu:",
+          "question": "Un collega ti chiede perché un lavoro va fatto proprio in quel modo e non come dice lui. Come glielo spieghi?",
           "options": [
             "Gli racconto cosa è successo quando è stato fatto diversamente.",
             "Glielo dico chiaro e mi assicuro che abbia capito.",
@@ -7725,7 +7725,7 @@
           ]
         },
         "q9": {
-          "question": "Una macchina fa un rumore strano. Tu:",
+          "question": "Una macchina che usi tutti i giorni comincia a fare un rumore che prima non faceva. Cosa fai?",
           "options": [
             "Quel rumore lo conosco: so dove guardare.",
             "La fermo e controllo una cosa alla volta finché trovo la causa.",
@@ -7734,7 +7734,7 @@
           ]
         },
         "q10": {
-          "question": "Ti danno un compito senza spiegarti bene cosa vogliono. Tu:",
+          "question": "Ti affidano un lavoro ma ti hanno detto poco: sai cosa consegnare, non come lo vogliono. Come ti muovi?",
           "options": [
             "Chiedo finché non è chiaro: meglio una domanda in più.",
             "Ricostruisco da solo cosa serve, un pezzo alla volta.",
@@ -7743,7 +7743,7 @@
           ]
         },
         "q11": {
-          "question": "Trovi un modo per fare un lavoro più in fretta. Tu:",
+          "question": "Lavorando, ti accorgi di un modo per fare una cosa che ti fa risparmiare mezz'ora ogni volta. Cosa fai?",
           "options": [
             "Lo racconto agli altri, così ne approfittano tutti.",
             "Prima lo provo più volte, per essere sicuro che regga.",
@@ -7752,7 +7752,7 @@
           ]
         },
         "q12": {
-          "question": "Un collega fa un lavoro in un modo che ti sembra sbagliato. Tu:",
+          "question": "Vedi un collega che sta facendo un lavoro in un modo che a te sembra sbagliato, anche se a lui viene. Come ti comporti?",
           "options": [
             "Glielo dico con calma e sento le sue ragioni.",
             "Gli faccio vedere come lo abbiamo sempre fatto.",
@@ -7761,7 +7761,7 @@
           ]
         },
         "q13": {
-          "question": "Il materiale che ti serve è finito. Tu:",
+          "question": "Ti serve del materiale per finire — viti, colla, un pezzo — e scopri che in magazzino è finito. Cosa fai?",
           "options": [
             "Guardo cosa c'è e vedo se posso usare qualcos'altro.",
             "Calcolo quanto ne serve davvero e quanto posso aspettare.",
@@ -7770,7 +7770,7 @@
           ]
         },
         "q14": {
-          "question": "Ti chiedono un'idea per ridurre gli incidenti nel reparto. Tu:",
+          "question": "Il capo ti chiede un'idea per far succedere meno infortuni nel reparto. Come rispondi?",
           "options": [
             "Parto da quello che ha funzionato in altri posti dove ho lavorato.",
             "Guardo dove e quando succedono più spesso.",
@@ -7779,7 +7779,7 @@
           ]
         },
         "q15": {
-          "question": "Devi consegnare un lavoro e non sei sicuro che sia venuto bene. Tu:",
+          "question": "Devi consegnare un lavoro ma non sei convinto che sia venuto come deve. Cosa fai prima di consegnarlo?",
           "options": [
             "Lo ricontrollo punto per punto prima di consegnarlo.",
             "Chiedo a un collega di darci un'occhiata.",
@@ -7788,7 +7788,7 @@
           ]
         },
         "q16": {
-          "question": "Nuovo turno, squadra che non conosci. Tu:",
+          "question": "Primo giorno in un turno nuovo, con una squadra che non hai mai visto prima. Come ti inserisci?",
           "options": [
             "Mi presento, chiedo come lavorano e mi metto in mezzo.",
             "Guardo come fanno e mi adeguo alle loro abitudini.",
@@ -7797,7 +7797,7 @@
           ]
         },
         "q17": {
-          "question": "Un lavoro viene sempre male allo stesso punto. Tu:",
+          "question": "C'è un lavoro che, ogni volta che lo fate, viene male sempre nello stesso punto. Cosa fai?",
           "options": [
             "Cerco di capire cosa succede esattamente in quel punto.",
             "Cambio il modo di farlo e vedo se migliora.",
@@ -7806,7 +7806,7 @@
           ]
         },
         "q18": {
-          "question": "Ti propongono di seguire due nuovi. Tu:",
+          "question": "Ti propongono di seguire tu due ragazzi nuovi per un mese, oltre al tuo lavoro. Come la prendi?",
           "options": [
             "Accetto: mi piace spiegare e vedere che imparano.",
             "Accetto: gli passo tutto quello che ho imparato negli anni.",
@@ -7815,7 +7815,7 @@
           ]
         },
         "q19": {
-          "question": "Il capo ti chiede quanto tempo ci vuole per un lavoro. Tu:",
+          "question": "Il capo ti chiede quanto tempo ci vuole per un lavoro e aspetta una risposta adesso. Cosa gli dici?",
           "options": [
             "Faccio i conti sui passaggi e do un numero preciso.",
             "Rispondo con l'esperienza: un lavoro così di solito ci mette tanto.",
@@ -7824,7 +7824,7 @@
           ]
         },
         "q20": {
-          "question": "Arriva un attrezzo nuovo che nessuno sa usare. Tu:",
+          "question": "In reparto arriva un attrezzo nuovo e per ora nessuno lo sa usare, manuale compreso. Cosa fai?",
           "options": [
             "Lo provo subito e imparo facendo.",
             "Leggo il libretto o cerco un video prima di toccarlo.",
@@ -7833,7 +7833,7 @@
           ]
         },
         "q21": {
-          "question": "A fine settimana il capo chiede cosa si può migliorare. Tu:",
+          "question": "A fine settimana il capo vi chiede se c'è qualcosa da migliorare nel modo di lavorare. Cosa porti?",
           "options": [
             "Riporto quello che ho sentito dai colleghi, non solo il mio.",
             "Porto i punti dove abbiamo perso più tempo.",
@@ -7894,7 +7894,7 @@
       "subtitle": "Cucina, sala, bar, banchetti, consegne. Da leggere prima di toccare codice e sigillo.",
       "questions": {
         "q1": {
-          "question": "Sabato sera, arriva un tavolo da dodici senza prenotazione. Tu:",
+          "question": "Sabato sera, sala piena, e si presentano in dodici senza prenotazione. Cosa fai?",
           "options": [
             "Conto i coperti e i tempi e vedo dove farli stare senza far saltare gli altri tavoli.",
             "Avviso subito cucina e colleghi, così ci organizziamo.",
@@ -7903,7 +7903,7 @@
           ]
         },
         "q2": {
-          "question": "Un piatto torna indietro: il cliente dice che è freddo. Tu:",
+          "question": "Un piatto torna indietro dalla sala: il cliente dice che è freddo. Cosa fai?",
           "options": [
             "Vado al tavolo, mi scuso e chiedo cosa preferisce.",
             "Capisco dove si è perso tempo tra cucina e sala, per non rifarlo.",
@@ -7912,7 +7912,7 @@
           ]
         },
         "q3": {
-          "question": "Manca un ingrediente per il piatto del giorno. Tu:",
+          "question": "Stai per preparare il piatto del giorno e scopri che manca un ingrediente — per esempio il pesce che serviva. Come ti muovi?",
           "options": [
             "Lo sostituisco con quello che c'è e cambio un po' la ricetta.",
             "Faccio le altre ricette come le conosco: quel piatto oggi salta.",
@@ -7921,7 +7921,7 @@
           ]
         },
         "q4": {
-          "question": "Nuovo arrivato in cucina, primo giorno. Tu:",
+          "question": "Arriva una persona nuova in cucina, è il suo primo giorno e non sa ancora dove sono le cose. Come ti comporti?",
           "options": [
             "Gli spiego io postazione e ritmi e lo tengo d'occhio.",
             "Gli mostro come si fa qui, nell'ordine in cui lo abbiamo sempre fatto.",
@@ -7930,7 +7930,7 @@
           ]
         },
         "q5": {
-          "question": "Il tavolo sei aspetta da troppo. Tu:",
+          "question": "Il tavolo sei sta aspettando da venti minuti e ti guarda ogni volta che passi. Cosa fai?",
           "options": [
             "Controllo cosa manca in cucina e quanto ci vuole davvero.",
             "Vado al tavolo, spiego e offro qualcosa nell'attesa.",
@@ -7939,7 +7939,7 @@
           ]
         },
         "q6": {
-          "question": "Il titolare cambia il menù da lunedì. Tu:",
+          "question": "Il titolare annuncia che da lunedì il menù cambia e alcuni piatti si fanno in un altro modo. Qual è la tua prima reazione?",
           "options": [
             "Voglio sapere cosa cambia rispetto a prima, piatto per piatto.",
             "Provo subito i piatti nuovi a modo mio.",
@@ -7948,7 +7948,7 @@
           ]
         },
         "q7": {
-          "question": "Serata piena e una persona in meno. Tu:",
+          "question": "Serata piena e in squadra manca una persona: siete in quattro invece che in cinque. Come affronti il servizio?",
           "options": [
             "Divido tavoli e compiti in modo che nessuno resti scoperto.",
             "Ci mettiamo d'accordo al volo su chi copre cosa.",
@@ -7957,7 +7957,7 @@
           ]
         },
         "q8": {
-          "question": "Devi spiegare a un collega perché un piatto si impiatta così. Tu:",
+          "question": "Un collega ti chiede perché un piatto si impiatta proprio in quel modo e non come gli viene più comodo. Come glielo spieghi?",
           "options": [
             "Gli racconto cos'è successo l'ultima volta che è stato fatto diversamente.",
             "Glielo dico chiaro e guardo che abbia capito.",
@@ -7966,7 +7966,7 @@
           ]
         },
         "q9": {
-          "question": "La macchina del caffè fa un rumore strano. Tu:",
+          "question": "La macchina del caffè comincia a fare un rumore che prima non faceva, in mezzo al servizio. Cosa fai?",
           "options": [
             "Lo conosco: so cosa controllare.",
             "La spengo e provo una cosa alla volta.",
@@ -7975,7 +7975,7 @@
           ]
         },
         "q10": {
-          "question": "Ti chiedono di «sistemare la cantina» senza dire come. Tu:",
+          "question": "Ti dicono «sistema la cantina» e basta: non ti spiegano né come né entro quando. Come ti muovi?",
           "options": [
             "Chiedo cosa intendono prima di iniziare.",
             "Ragiono da solo su cosa serve, un passo alla volta.",
@@ -7984,7 +7984,7 @@
           ]
         },
         "q11": {
-          "question": "Trovi un modo per preparare i tavoli più in fretta. Tu:",
+          "question": "Preparando la sala ti accorgi di un modo per apparecchiare che fa risparmiare venti minuti ogni sera. Cosa fai?",
           "options": [
             "Lo dico agli altri, così lo fanno tutti.",
             "Lo provo qualche sera prima di fidarmi.",
@@ -7993,7 +7993,7 @@
           ]
         },
         "q12": {
-          "question": "Un collega fa le porzioni in un modo che ti sembra sbagliato. Tu:",
+          "question": "Vedi un collega che fa le porzioni in un modo che a te sembra sbagliato, anche se i piatti escono. Come ti comporti?",
           "options": [
             "Glielo dico con calma e sento perché.",
             "Gli faccio vedere la porzione come si è sempre fatta.",
@@ -8002,7 +8002,7 @@
           ]
         },
         "q13": {
-          "question": "Un cliente chiede un piatto che non c'è. Tu:",
+          "question": "Un cliente chiede un piatto che non è sul menù, ma con quello che c'è in cucina si potrebbe fare. Cosa fai?",
           "options": [
             "Vedo cosa posso inventare con quello che c'è.",
             "Capisco se ho tempo e ingredienti per farlo davvero.",
@@ -8011,7 +8011,7 @@
           ]
         },
         "q14": {
-          "question": "Ti chiedono un'idea per sprecare meno cibo. Tu:",
+          "question": "Il titolare ti chiede un'idea per buttare via meno cibo a fine servizio. Come rispondi?",
           "options": [
             "Parto da quello che funzionava dove ho lavorato prima.",
             "Guardo cosa avanza di più e quando.",
@@ -8020,7 +8020,7 @@
           ]
         },
         "q15": {
-          "question": "Devi mandare fuori un piatto e non sei sicuro che sia venuto bene. Tu:",
+          "question": "Devi mandare fuori un piatto ma non sei convinto che sia venuto come deve. Cosa fai prima di farlo uscire?",
           "options": [
             "Lo ricontrollo pezzo per pezzo.",
             "Chiedo a un collega di assaggiare.",
@@ -8029,7 +8029,7 @@
           ]
         },
         "q16": {
-          "question": "Nuovo turno, squadra che non conosci. Tu:",
+          "question": "Primo giorno in un turno nuovo, con una squadra che non hai mai visto prima. Come ti inserisci?",
           "options": [
             "Mi presento e chiedo come lavorano.",
             "Guardo come fanno e mi adeguo.",
@@ -8038,7 +8038,7 @@
           ]
         },
         "q17": {
-          "question": "Un piatto esce sempre male allo stesso passaggio. Tu:",
+          "question": "C'è un piatto che ogni volta si rovina sempre allo stesso passaggio — la cottura, l'impiattamento, sempre quello. Cosa fai?",
           "options": [
             "Capisco cosa succede esattamente in quel passaggio.",
             "Cambio il modo di farlo e vedo se migliora.",
@@ -8047,7 +8047,7 @@
           ]
         },
         "q18": {
-          "question": "Ti propongono di seguire due nuovi in sala. Tu:",
+          "question": "Ti propongono di seguire tu due ragazzi nuovi in sala per un mese, oltre al tuo lavoro. Come la prendi?",
           "options": [
             "Accetto: mi piace spiegare e vedere che imparano.",
             "Accetto: gli passo tutto quello che ho imparato.",
@@ -8056,7 +8056,7 @@
           ]
         },
         "q19": {
-          "question": "Il titolare chiede quanto ci vuole per un banchetto da sessanta. Tu:",
+          "question": "Il titolare ti chiede quanto tempo ci vuole per preparare un banchetto da sessanta persone, e aspetta una risposta adesso. Cosa gli dici?",
           "options": [
             "Faccio i conti su porzioni e passaggi e do un numero preciso.",
             "Rispondo con l'esperienza: un banchetto così di solito ci mette tanto.",
@@ -8065,7 +8065,7 @@
           ]
         },
         "q20": {
-          "question": "Arriva un'attrezzatura nuova che nessuno sa usare. Tu:",
+          "question": "In cucina arriva un'attrezzatura nuova e per ora nessuno la sa usare. Cosa fai?",
           "options": [
             "La provo subito e imparo facendo.",
             "Leggo il libretto o cerco un video prima di toccarla.",
@@ -8074,7 +8074,7 @@
           ]
         },
         "q21": {
-          "question": "A fine settimana il titolare chiede cosa si può migliorare. Tu:",
+          "question": "A fine settimana il titolare vi chiede se c'è qualcosa da migliorare nel modo di lavorare. Cosa porti?",
           "options": [
             "Riporto quello che ho sentito da colleghi e clienti.",
             "Porto i punti dove abbiamo perso più tempo.",
@@ -8135,7 +8135,7 @@
       "subtitle": "Design, contenuti, creatività per il marketing, media, UX/UI.",
       "questions": {
         "q1": {
-          "question": "Il cliente boccia la prima proposta senza spiegare bene perché. Tu:",
+          "question": "Il cliente boccia la prima proposta e alla domanda «cosa non va» risponde «non so, non mi convince». Cosa fai?",
           "options": [
             "Guardo cosa nella proposta può avere stonato e riparto da lì.",
             "Gli chiedo cosa non funziona, con calma, finché non lo capisco.",
@@ -8144,7 +8144,7 @@
           ]
         },
         "q2": {
-          "question": "Il brief è vago: «fai una cosa bella». Tu:",
+          "question": "Il brief che ti danno è vago: in sostanza «fai una cosa bella». Da dove parti?",
           "options": [
             "Chiedo esempi di cose che gli piacciono e che non gli piacciono.",
             "Mi scrivo io i paletti: a chi parla, dove va, quando esce.",
@@ -8153,7 +8153,7 @@
           ]
         },
         "q3": {
-          "question": "Consegna domani e il lavoro non ti convince. Tu:",
+          "question": "Consegna domani mattina e il lavoro, guardandolo, non ti convince. Cosa fai?",
           "options": [
             "Capisco quale pezzo non regge e sistemo solo quello.",
             "Lo faccio vedere a qualcuno di cui mi fido e sento.",
@@ -8162,7 +8162,7 @@
           ]
         },
         "q4": {
-          "question": "Hai due idee buone e tempo per una sola. Tu:",
+          "question": "Hai due idee che ti piacciono entrambe e tempo per svilupparne una sola. Come scegli?",
           "options": [
             "Valuto quale costa meno tempo e rende di più.",
             "Le mostro tutte e due e decidiamo insieme.",
@@ -8171,7 +8171,7 @@
           ]
         },
         "q5": {
-          "question": "Il cliente chiede una modifica che secondo te peggiora il lavoro. Tu:",
+          "question": "Il cliente chiede una modifica che secondo te peggiora il lavoro — per esempio ingrandire il logo fino a sbilanciare tutto. Cosa fai?",
           "options": [
             "Gli spiego cosa si perde, poi decide lui.",
             "Gli faccio vedere i due risultati a confronto.",
@@ -8180,7 +8180,7 @@
           ]
         },
         "q6": {
-          "question": "Ti chiedono di lavorare in uno stile che non è il tuo. Tu:",
+          "question": "Ti chiedono di lavorare in uno stile che non è il tuo e che non ami particolarmente. Come la prendi?",
           "options": [
             "Studio come si fa quello stile prima di iniziare.",
             "Chiedo esempi e mi faccio spiegare cosa cercano.",
@@ -8189,7 +8189,7 @@
           ]
         },
         "q7": {
-          "question": "Sei bloccato: non ti viene niente. Tu:",
+          "question": "Sei bloccato: stai davanti al lavoro da un'ora e non ti viene niente. Cosa fai?",
           "options": [
             "Cambio del tutto: faccio altro e torno dopo con la testa libera.",
             "Riparto dal metodo: elenco, scarto, ricompongo.",
@@ -8198,7 +8198,7 @@
           ]
         },
         "q8": {
-          "question": "Un collega presenta come sua un'idea nata da te. Tu:",
+          "question": "In riunione un collega presenta come sua un'idea che era nata da te. Come ti comporti?",
           "options": [
             "Gliene parlo direttamente, senza farne un caso.",
             "Ricostruisco quando e come è nata, prima di dire qualsiasi cosa.",
@@ -8207,7 +8207,7 @@
           ]
         },
         "q9": {
-          "question": "Devi presentare il lavoro a chi decide e non è del mestiere. Tu:",
+          "question": "Devi presentare il lavoro a chi decide e non è del mestiere. Come glielo racconti?",
           "options": [
             "Racconto il perché di ogni scelta con parole semplici.",
             "Mostro i numeri: cosa si aspettano le persone a cui parliamo.",
@@ -8216,7 +8216,7 @@
           ]
         },
         "q10": {
-          "question": "Il progetto è più grande del tempo che hai. Tu:",
+          "question": "Il progetto è più grande del tempo che hai a disposizione, e si è capito solo adesso. Cosa fai?",
           "options": [
             "Taglio: decido cosa fare bene e cosa lasciare.",
             "Lo dico subito e rinegozio tempi o contenuti.",
@@ -8225,7 +8225,7 @@
           ]
         },
         "q11": {
-          "question": "In riunione il tuo lavoro viene criticato davanti a tutti. Tu:",
+          "question": "In riunione il tuo lavoro viene criticato davanti a tutti. Come reagisci?",
           "options": [
             "Ascolto fino in fondo e chiedo di essere preciso nelle critiche.",
             "Mi segno i punti e verifico quali reggono davvero.",
@@ -8234,7 +8234,7 @@
           ]
         },
         "q12": {
-          "question": "Devi lavorare su un tema che non conosci per niente. Tu:",
+          "question": "Ti affidano un lavoro su un tema che non conosci per niente. Da dove parti?",
           "options": [
             "Mi documento finché non lo capisco bene.",
             "Parlo con chi lo vive tutti i giorni.",
@@ -8243,7 +8243,7 @@
           ]
         },
         "q13": {
-          "question": "Ti accorgi che il lavoro somiglia troppo a una cosa già vista. Tu:",
+          "question": "Guardando il lavoro finito ti accorgi che somiglia troppo a una cosa già vista in giro. Cosa fai?",
           "options": [
             "Verifico quanto somiglia davvero, punto per punto.",
             "Lo dico al gruppo prima che lo noti qualcun altro.",
@@ -8252,7 +8252,7 @@
           ]
         },
         "q14": {
-          "question": "Ti chiedono un'idea per farsi notare con poco budget. Tu:",
+          "question": "Ti chiedono un'idea per farsi notare con pochissimo budget. Come rispondi?",
           "options": [
             "Guardo cosa ha funzionato e quanto è costato.",
             "Chiedo alle persone a cui parliamo cosa le colpirebbe.",
@@ -8261,7 +8261,7 @@
           ]
         },
         "q15": {
-          "question": "Ultimo controllo prima di consegnare. Tu:",
+          "question": "Ultimo controllo prima di consegnare: hai ancora un'ora. Su cosa la spendi?",
           "options": [
             "Controllo tutto punto per punto: misure, testi, formati.",
             "Lo faccio guardare a un altro paio di occhi.",
@@ -8270,7 +8270,7 @@
           ]
         },
         "q16": {
-          "question": "Primo giorno in uno studio nuovo. Tu:",
+          "question": "Primo giorno in uno studio nuovo, con un modo di lavorare diverso dal tuo. Come ti inserisci?",
           "options": [
             "Mi presento e chiedo come lavorano qui.",
             "Guardo i lavori fatti e capisco il loro linguaggio.",
@@ -8279,7 +8279,7 @@
           ]
         },
         "q17": {
-          "question": "Lo stesso passaggio ti viene sempre male. Tu:",
+          "question": "C'è un passaggio del tuo lavoro che ti viene sempre male, ogni volta lo stesso. Cosa fai?",
           "options": [
             "Capisco cosa succede esattamente in quel passaggio.",
             "Lo faccio in un altro modo e vedo se migliora.",
@@ -8288,7 +8288,7 @@
           ]
         },
         "q18": {
-          "question": "Ti affidano due stagisti. Tu:",
+          "question": "Ti affidano due stagisti da seguire, oltre al tuo lavoro. Come la prendi?",
           "options": [
             "Accetto: mi piace spiegare e vedere che crescono.",
             "Accetto: gli passo il mestiere, non solo i programmi.",
@@ -8297,7 +8297,7 @@
           ]
         },
         "q19": {
-          "question": "Ti chiedono quanto tempo serve per il progetto. Tu:",
+          "question": "Ti chiedono quanto tempo serve per il progetto, e aspettano una risposta adesso. Cosa dici?",
           "options": [
             "Conto le fasi e do una data.",
             "Rispondo per esperienza: un lavoro così ci mette tanto.",
@@ -8306,7 +8306,7 @@
           ]
         },
         "q20": {
-          "question": "Esce un programma nuovo che promette di fare metà del tuo lavoro. Tu:",
+          "question": "Esce un programma nuovo che promette di fare metà del lavoro che fai tu. Qual è la tua prima reazione?",
           "options": [
             "Lo provo subito su un lavoro vero.",
             "Leggo e guardo come lo usano gli altri prima di metterci le mani.",
@@ -8315,7 +8315,7 @@
           ]
         },
         "q21": {
-          "question": "A fine progetto si fa il punto. Tu:",
+          "question": "Il progetto è finito e si fa il punto su com'è andata. Cosa porti?",
           "options": [
             "Riporto quello che hanno detto il cliente e il gruppo.",
             "Porto i punti dove abbiamo perso più tempo.",
@@ -8376,7 +8376,7 @@
       "subtitle": "Strategia, management, consulenza, vendite, HR.",
       "questions": {
         "q1": {
-          "question": "Un cliente importante minaccia di andarsene. Tu:",
+          "question": "Un cliente importante ti scrive che sta valutando di andare da un concorrente. Cosa fai per prima cosa?",
           "options": [
             "Lo chiamo io, di persona, e lo ascolto prima di proporre.",
             "Ricostruisco cosa è successo davvero e quanto vale per noi.",
@@ -8385,7 +8385,7 @@
           ]
         },
         "q2": {
-          "question": "Devi decidere in fretta con informazioni incomplete. Tu:",
+          "question": "Devi decidere entro domani, e le informazioni che hai sono incomplete. Come decidi?",
           "options": [
             "Decido con quello che c'è, mettendo in fila i rischi.",
             "Sento due persone di cui mi fido, poi decido.",
@@ -8394,7 +8394,7 @@
           ]
         },
         "q3": {
-          "question": "Il gruppo è demotivato dopo un trimestre difficile. Tu:",
+          "question": "Il gruppo esce da un trimestre andato male ed è visibilmente giù di morale. Cosa fai?",
           "options": [
             "Parlo con ciascuno, uno alla volta, per capire cosa pesa.",
             "Guardo i numeri per vedere dove si è inceppato davvero.",
@@ -8403,7 +8403,7 @@
           ]
         },
         "q4": {
-          "question": "Un collaboratore bravo sbaglia una cosa grossa. Tu:",
+          "question": "Un tuo collaboratore, di solito bravo, commette un errore che costa caro. Come ti comporti?",
           "options": [
             "Gliene parlo da solo, chiaro, senza umiliarlo.",
             "Capisco quanto è costato e cosa serve per rimediare.",
@@ -8412,7 +8412,7 @@
           ]
         },
         "q5": {
-          "question": "Devi presentare un piano a chi decide il budget. Tu:",
+          "question": "Devi presentare un piano a chi tiene i cordoni del budget. Come lo imposti?",
           "options": [
             "Porto tre numeri che contano e li difendo.",
             "Racconto il piano come una storia: da dove partiamo, dove arriviamo.",
@@ -8421,7 +8421,7 @@
           ]
         },
         "q6": {
-          "question": "Un concorrente abbassa i prezzi. Tu:",
+          "question": "Un concorrente abbassa i prezzi sotto i vostri e i clienti se ne accorgono. Cosa fai?",
           "options": [
             "Calcolo fin dove possiamo seguirli e cosa ci costa.",
             "Chiamo i clienti chiave per capire quanto conta per loro.",
@@ -8430,7 +8430,7 @@
           ]
         },
         "q7": {
-          "question": "Due persone del gruppo non si sopportano. Tu:",
+          "question": "Due persone del tuo gruppo non si sopportano e si vede anche nel lavoro. Come intervieni?",
           "options": [
             "Le metto nella stessa stanza e faccio parlare prima loro.",
             "Capisco dove il conflitto costa davvero al lavoro.",
@@ -8439,7 +8439,7 @@
           ]
         },
         "q8": {
-          "question": "Ti chiedono di tagliare i costi del dieci per cento. Tu:",
+          "question": "Ti chiedono di tagliare i costi del dieci per cento entro il trimestre. Da dove cominci?",
           "options": [
             "Vado voce per voce e taglio dove rende meno.",
             "Coinvolgo il gruppo: chi fa il lavoro sa dove si spreca.",
@@ -8448,7 +8448,7 @@
           ]
         },
         "q9": {
-          "question": "Un progetto va male e tutti fanno finta di niente. Tu:",
+          "question": "Un progetto sta andando male e in riunione nessuno lo dice. Cosa fai?",
           "options": [
             "Lo dico apertamente in riunione, con calma.",
             "Porto i dati che lo dimostrano, così non si discute.",
@@ -8457,7 +8457,7 @@
           ]
         },
         "q10": {
-          "question": "Devi assumere una persona e hai due candidati opposti. Tu:",
+          "question": "Devi assumere una persona e hai due candidati opposti: uno solidissimo, uno promettente ma acerbo. Come scegli?",
           "options": [
             "Confronto punto per punto cosa serve al ruolo.",
             "Li sento di nuovo e vedo con chi il gruppo lavorerebbe meglio.",
@@ -8466,7 +8466,7 @@
           ]
         },
         "q11": {
-          "question": "Un'idea tua viene bocciata dai superiori. Tu:",
+          "question": "Una tua proposta viene bocciata dai superiori, senza troppe spiegazioni. Cosa fai?",
           "options": [
             "Chiedo cosa non convince e ci lavoro sopra.",
             "Rifaccio i conti per capire se avevano ragione.",
@@ -8475,7 +8475,7 @@
           ]
         },
         "q12": {
-          "question": "Il mercato cambia più in fretta del vostro piano. Tu:",
+          "question": "Il mercato si muove più in fretta del piano che avete approvato sei mesi fa. Cosa fai?",
           "options": [
             "Rifaccio il piano con i numeri nuovi.",
             "Riunisco le persone giuste e ridecidiamo insieme.",
@@ -8484,7 +8484,7 @@
           ]
         },
         "q13": {
-          "question": "Manca una figura chiave e il lavoro si accumula. Tu:",
+          "question": "Se ne va una figura chiave e il lavoro comincia ad accumularsi. Come ti muovi?",
           "options": [
             "Redistribuisco il carico in base a chi può reggere cosa.",
             "Chiedo al gruppo chi se la sente di coprire, e come.",
@@ -8493,7 +8493,7 @@
           ]
         },
         "q14": {
-          "question": "Ti chiedono un'idea per far crescere il fatturato. Tu:",
+          "question": "Ti chiedono un'idea per far crescere il fatturato senza aumentare i costi. Come rispondi?",
           "options": [
             "Guardo dove i numeri dicono che c'è margine.",
             "Chiedo ai clienti cosa comprerebbero che non offriamo.",
@@ -8502,7 +8502,7 @@
           ]
         },
         "q15": {
-          "question": "Prima di firmare un accordo importante. Tu:",
+          "question": "Stai per firmare un accordo importante e hai ancora un giorno. Cosa fai con quel giorno?",
           "options": [
             "Rileggo ogni clausola e faccio i conti degli scenari.",
             "Ne parlo con chi lo dovrà far funzionare ogni giorno.",
@@ -8511,7 +8511,7 @@
           ]
         },
         "q16": {
-          "question": "Primo giorno alla guida di un gruppo nuovo. Tu:",
+          "question": "Primo giorno alla guida di un gruppo che non conoscevi. Come cominci?",
           "options": [
             "Incontro tutti, uno per uno, e ascolto.",
             "Studio come ha lavorato finora, prima di toccare qualcosa.",
@@ -8520,7 +8520,7 @@
           ]
         },
         "q17": {
-          "question": "Lo stesso problema riemerge ogni mese in riunione. Tu:",
+          "question": "Lo stesso problema riemerge in riunione ogni mese, e ogni volta si rimanda. Cosa fai?",
           "options": [
             "Capisco esattamente da dove nasce.",
             "Cambio il modo in cui lavoriamo su quel punto e osservo.",
@@ -8529,7 +8529,7 @@
           ]
         },
         "q18": {
-          "question": "Ti affidano due persone da far crescere. Tu:",
+          "question": "Ti affidano due persone da far crescere, oltre ai tuoi obiettivi. Come la prendi?",
           "options": [
             "Le seguo da vicino: mi piace vedere le persone crescere.",
             "Gli passo quello che ho imparato in questi anni.",
@@ -8538,7 +8538,7 @@
           ]
         },
         "q19": {
-          "question": "Ti chiedono quanto tempo serve per un cambiamento importante. Tu:",
+          "question": "Ti chiedono quanto tempo serve per portare a casa un cambiamento importante, e aspettano una risposta adesso. Cosa dici?",
           "options": [
             "Scompongo in fasi e do una data.",
             "Rispondo per esperienza: cambiamenti così ci mettono tanto.",
@@ -8547,7 +8547,7 @@
           ]
         },
         "q20": {
-          "question": "Arriva uno strumento nuovo che promette di cambiare il lavoro del gruppo. Tu:",
+          "question": "Arriva uno strumento nuovo che promette di cambiare il modo di lavorare del gruppo. Qual è la tua prima reazione?",
           "options": [
             "Lo provo io per primo su qualcosa di vero.",
             "Leggo cosa ne dicono aziende come la nostra.",
@@ -8556,7 +8556,7 @@
           ]
         },
         "q21": {
-          "question": "A fine anno si fa il punto. Tu:",
+          "question": "Fine anno, si fa il punto su com'è andata. Cosa porti?",
           "options": [
             "Riporto quello che ho sentito dalle persone e dai clienti.",
             "Porto i punti dove abbiamo perso più tempo o soldi.",
@@ -8617,7 +8617,7 @@
       "subtitle": "Ingegneria, dati, ricerca, prodotto, sviluppo.",
       "questions": {
         "q1": {
-          "question": "Un sistema che funzionava da mesi si ferma senza un motivo evidente. Tu:",
+          "question": "Un sistema che gira da mesi senza problemi si ferma, e a prima vista non è cambiato niente. Da dove parti?",
           "options": [
             "Isolo le variabili una alla volta finché trovo la causa.",
             "Chiedo a chi ci ha lavorato di recente cosa è cambiato.",
@@ -8626,7 +8626,7 @@
           ]
         },
         "q2": {
-          "question": "Ti arrivano dati che contraddicono quello che tutti davano per certo. Tu:",
+          "question": "I dati che ti tornano contraddicono una cosa che nel gruppo davate tutti per certa. Cosa fai?",
           "options": [
             "Prima di dirlo a chiunque li rifaccio e li ricontrollo.",
             "Li porto subito al gruppo: meglio saperlo insieme.",
@@ -8635,7 +8635,7 @@
           ]
         },
         "q3": {
-          "question": "Il responsabile chiede una stima dei tempi per un lavoro mai fatto. Tu:",
+          "question": "Il responsabile ti chiede una stima dei tempi per un lavoro che nessuno di voi ha mai fatto. Cosa gli rispondi?",
           "options": [
             "Lo spezzo in parti e stimo pezzo per pezzo.",
             "Rispondo per esperienza: lavori simili ci hanno messo tanto.",
@@ -8644,7 +8644,7 @@
           ]
         },
         "q4": {
-          "question": "Devi spiegare un risultato tecnico a chi non è del mestiere. Tu:",
+          "question": "Devi spiegare un risultato tecnico a chi decide ma non è del mestiere — per esempio perché un test è andato male. Come lo fai?",
           "options": [
             "Lo racconto con un esempio della vita di tutti i giorni.",
             "Mostro i numeri essenziali e cosa vogliono dire.",
@@ -8653,7 +8653,7 @@
           ]
         },
         "q5": {
-          "question": "Hai due strade per risolvere un problema: una sicura e lenta, una veloce e incerta. Tu:",
+          "question": "Per risolvere un problema hai due strade: una sicura ma lenta, una veloce ma che potrebbe non funzionare. Come scegli?",
           "options": [
             "Confronto costi e rischi delle due e scelgo con i numeri.",
             "Ne parlo con il gruppo e decidiamo insieme.",
@@ -8662,7 +8662,7 @@
           ]
         },
         "q6": {
-          "question": "Un collega usa un metodo che ti sembra sbagliato. Tu:",
+          "question": "Un collega sta usando un metodo che secondo te porterà a un risultato sbagliato. Come ti comporti?",
           "options": [
             "Glielo dico con calma e sento le sue ragioni.",
             "Gli mostro il caso in cui il suo metodo fallisce.",
@@ -8671,7 +8671,7 @@
           ]
         },
         "q7": {
-          "question": "Il progetto cambia obiettivo a metà strada. Tu:",
+          "question": "A metà progetto l'obiettivo cambia: quello che avete costruito finora serve solo in parte. Cosa fai?",
           "options": [
             "Capisco cosa del lavoro fatto si salva e cosa va rifatto.",
             "Chiedo di capire bene il perché prima di ripartire.",
@@ -8680,7 +8680,7 @@
           ]
         },
         "q8": {
-          "question": "Devi imparare uno strumento nuovo in pochi giorni. Tu:",
+          "question": "Ti serve uno strumento nuovo — un linguaggio, un software, una tecnica — e hai pochi giorni per impararlo. Da dove parti?",
           "options": [
             "Lo uso subito su un problema vero e imparo facendo.",
             "Leggo la documentazione dall'inizio.",
@@ -8689,7 +8689,7 @@
           ]
         },
         "q9": {
-          "question": "Ti chiedono di controllare il lavoro di un altro prima del rilascio. Tu:",
+          "question": "Ti chiedono di controllare il lavoro di un altro prima che vada in produzione. Come lo affronti?",
           "options": [
             "Lo verifico punto per punto, con i casi limite.",
             "Lo ripasso con lui: spiegandolo si vedono gli errori.",
@@ -8698,7 +8698,7 @@
           ]
         },
         "q10": {
-          "question": "Ti danno un compito senza dirti bene cosa vogliono. Tu:",
+          "question": "Ti affidano un compito ma ti hanno detto poco: sai cosa consegnare, non che risultato si aspettano. Come ti muovi?",
           "options": [
             "Chiedo finché non è chiaro: meglio una domanda in più.",
             "Definisco io cosa serve e lo scrivo prima di partire.",
@@ -8707,7 +8707,7 @@
           ]
         },
         "q11": {
-          "question": "Scopri un modo per fare in un'ora un lavoro che prendeva un giorno. Tu:",
+          "question": "Trovi un modo per fare in un'ora un lavoro che al gruppo prendeva una giornata. Cosa fai?",
           "options": [
             "Lo racconto agli altri, così ne approfittano tutti.",
             "Prima lo provo su più casi per essere sicuro che regga.",
@@ -8716,7 +8716,7 @@
           ]
         },
         "q12": {
-          "question": "Il risultato che aspettavi non arriva e i tempi stringono. Tu:",
+          "question": "Il risultato che aspettavi non arriva, e la consegna è fra due giorni. Cosa fai?",
           "options": [
             "Ricontrollo tutta la catena per capire dove si perde.",
             "Lo dico subito a chi aspetta il risultato.",
@@ -8725,7 +8725,7 @@
           ]
         },
         "q13": {
-          "question": "Manca un pezzo — un dato, un componente, una libreria. Tu:",
+          "question": "Ti manca un pezzo per andare avanti: un dato, un componente, una libreria che non c'è. Come ti muovi?",
           "options": [
             "Calcolo quanto posso fare senza e quanto posso aspettare.",
             "Chiedo a chi ce l'ha o a chi lo può procurare.",
@@ -8734,7 +8734,7 @@
           ]
         },
         "q14": {
-          "question": "Ti chiedono un'idea per ridurre gli errori del sistema. Tu:",
+          "question": "Ti chiedono un'idea per far succedere meno errori nel sistema. Come rispondi?",
           "options": [
             "Guardo dove e quando succedono più spesso.",
             "Chiedo a chi lo usa ogni giorno dove sbatte.",
@@ -8743,7 +8743,7 @@
           ]
         },
         "q15": {
-          "question": "Ultimo controllo prima di consegnare. Tu:",
+          "question": "Ultimo controllo prima di consegnare: hai ancora un'ora. Su cosa la spendi?",
           "options": [
             "Rieseguo tutto da capo e confronto i risultati.",
             "Chiedo a un collega di provarlo senza spiegargli nulla.",
@@ -8752,7 +8752,7 @@
           ]
         },
         "q16": {
-          "question": "Primo giorno in un gruppo nuovo. Tu:",
+          "question": "Primo giorno in un gruppo nuovo, su un progetto già avviato che non conosci. Come ti inserisci?",
           "options": [
             "Mi presento e chiedo come lavorano.",
             "Leggo il codice, i documenti, le decisioni passate.",
@@ -8761,7 +8761,7 @@
           ]
         },
         "q17": {
-          "question": "Lo stesso errore ricompare ogni settimana. Tu:",
+          "question": "Lo stesso errore ricompare ogni settimana e ogni volta lo sistemate al volo. Cosa fai?",
           "options": [
             "Capisco esattamente da dove nasce.",
             "Cambio il modo in cui è fatto e vedo se sparisce.",
@@ -8770,7 +8770,7 @@
           ]
         },
         "q18": {
-          "question": "Ti affidano due tirocinanti. Tu:",
+          "question": "Ti affidano due tirocinanti da seguire, oltre al tuo lavoro. Come la prendi?",
           "options": [
             "Accetto: mi piace spiegare e vedere che imparano.",
             "Accetto: gli passo quello che ho imparato in questi anni.",
@@ -8779,7 +8779,7 @@
           ]
         },
         "q19": {
-          "question": "Un cliente chiede una funzione che secondo te non serve. Tu:",
+          "question": "Un cliente chiede con insistenza una funzione che secondo te non gli servirà. Cosa fai?",
           "options": [
             "Gli chiedo cosa vuole ottenere davvero, poi ne parliamo.",
             "Gli mostro cosa costa e cosa rende.",
@@ -8788,7 +8788,7 @@
           ]
         },
         "q20": {
-          "question": "Esce uno strumento che promette di fare metà del tuo lavoro. Tu:",
+          "question": "Esce uno strumento nuovo che promette di fare metà del lavoro che fai tu. Qual è la tua prima reazione?",
           "options": [
             "Lo provo subito su un caso reale.",
             "Leggo cosa dicono quelli che lo hanno già usato.",
@@ -8797,7 +8797,7 @@
           ]
         },
         "q21": {
-          "question": "A fine progetto si fa il punto. Tu:",
+          "question": "Il progetto è finito e si fa il punto su com'è andata. Cosa porti?",
           "options": [
             "Riporto quello che ho sentito dal gruppo e da chi usa il risultato.",
             "Porto i punti dove abbiamo perso più tempo.",
@@ -8858,7 +8858,7 @@
       "subtitle": "Sanità, istruzione, hospitality, settore pubblico, supporto.",
       "questions": {
         "q1": {
-          "question": "Una persona arriva fuori orario con una richiesta urgente. Tu:",
+          "question": "Sei alle battute finali del turno e arriva una persona fuori orario con una richiesta che dice essere urgente. Cosa fai?",
           "options": [
             "Guardo cosa posso ancora fare oggi e cosa slitta a domani.",
             "Le spiego come funziona e cerchiamo insieme una via.",
@@ -8867,7 +8867,7 @@
           ]
         },
         "q2": {
-          "question": "Il turno prima ha lasciato il lavoro a metà. Tu:",
+          "question": "Prendi servizio e trovi il lavoro del turno prima lasciato a metà, senza un appunto. Come ti muovi?",
           "options": [
             "Chiamo chi c'era e mi faccio raccontare dove si è fermato.",
             "Ricostruisco io il punto controllando quello che è stato fatto.",
@@ -8876,7 +8876,7 @@
           ]
         },
         "q3": {
-          "question": "Una persona al telefono è arrabbiata e alza la voce. Tu:",
+          "question": "Al telefono una persona è arrabbiata e alza la voce mentre parli. Come ti comporti?",
           "options": [
             "La lascio parlare, poi le rispondo con calma.",
             "Cerco subito cosa è successo davvero nel suo caso.",
@@ -8885,7 +8885,7 @@
           ]
         },
         "q4": {
-          "question": "Devi seguire tre persone nello stesso momento. Tu:",
+          "question": "Hai tre persone da seguire nello stesso momento e tutte e tre aspettano te. Cosa fai?",
           "options": [
             "Capisco chi ha più urgenza e mi muovo in quell'ordine.",
             "Dico a tutti e tre in quanto sarò da loro, così nessuno resta al buio.",
@@ -8894,7 +8894,7 @@
           ]
         },
         "q5": {
-          "question": "La procedura nuova rallenta il servizio. Tu:",
+          "question": "La procedura nuova che vi hanno dato fa perdere più tempo di quella di prima. Cosa fai?",
           "options": [
             "Misuro quanto tempo si perde davvero e dove.",
             "Ne parlo con chi l'ha decisa, portando esempi concreti.",
@@ -8903,7 +8903,7 @@
           ]
         },
         "q6": {
-          "question": "Una persona non capisce cosa deve fare e si innervosisce. Tu:",
+          "question": "Una persona davanti a te non capisce cosa deve fare e comincia a innervosirsi. Come ti comporti?",
           "options": [
             "Glielo rispiego con parole diverse, finché non è chiaro.",
             "Le scrivo i passaggi in ordine, così li ha davanti.",
@@ -8912,7 +8912,7 @@
           ]
         },
         "q7": {
-          "question": "Il sistema informatico è fermo e la gente aspetta. Tu:",
+          "question": "Il sistema informatico è fermo, la coda non si muove e la gente aspetta. Cosa fai?",
           "options": [
             "Avviso le persone e dico cosa stiamo facendo.",
             "Conto quante pratiche posso comunque chiudere a mano.",
@@ -8921,7 +8921,7 @@
           ]
         },
         "q8": {
-          "question": "Un collega nuovo tratta male una persona, senza accorgersene. Tu:",
+          "question": "Un collega nuovo tratta male una persona senza rendersene conto — tono sbrigativo, niente spiegazioni. Cosa fai?",
           "options": [
             "Gliene parlo dopo, da solo, senza farlo sentire sbagliato.",
             "Gli spiego come si tratta il pubblico qui.",
@@ -8930,7 +8930,7 @@
           ]
         },
         "q9": {
-          "question": "Arriva una richiesta che non rientra in nessuna regola. Tu:",
+          "question": "Arriva una richiesta che non rientra in nessuna delle regole che conosci. Come ti muovi?",
           "options": [
             "Cerco il caso più simile tra quelli già visti.",
             "La giro a chi può decidere, spiegando bene la situazione.",
@@ -8939,7 +8939,7 @@
           ]
         },
         "q10": {
-          "question": "Devi organizzare una giornata piena di appuntamenti. Tu:",
+          "question": "Ti trovi una giornata con troppi appuntamenti e poco tempo fra uno e l'altro. Come la organizzi?",
           "options": [
             "Li metto in fila per durata e priorità.",
             "Sento le persone per capire chi può spostarsi.",
@@ -8948,7 +8948,7 @@
           ]
         },
         "q11": {
-          "question": "Una persona si lamenta di un collega. Tu:",
+          "question": "Una persona ti si lamenta di un tuo collega, davanti agli altri. Cosa fai?",
           "options": [
             "La ascolto fino in fondo prima di dire qualsiasi cosa.",
             "Verifico cosa è successo davvero.",
@@ -8957,7 +8957,7 @@
           ]
         },
         "q12": {
-          "question": "La fila si allunga e le persone sbuffano. Tu:",
+          "question": "La fila si allunga, la gente sbuffa e tu stai già andando al massimo. Cosa fai?",
           "options": [
             "Dico ad alta voce quanto manca, così sanno a cosa vanno incontro.",
             "Guardo dove si blocca la fila e sposto lì le forze.",
@@ -8966,7 +8966,7 @@
           ]
         },
         "q13": {
-          "question": "Sta per finire il materiale che serve ogni giorno. Tu:",
+          "question": "Ti accorgi che sta per finire il materiale che vi serve ogni giorno — moduli, buste, quello che usate sempre. Cosa fai?",
           "options": [
             "Calcolo quanto basta e fino a quando.",
             "Avviso chi ordina prima che sia tardi.",
@@ -8975,7 +8975,7 @@
           ]
         },
         "q14": {
-          "question": "Ti chiedono un'idea per far aspettare meno le persone. Tu:",
+          "question": "Il responsabile ti chiede un'idea per far aspettare meno le persone allo sportello. Come rispondi?",
           "options": [
             "Porto i numeri: dove e quando si aspetta di più.",
             "Riporto quello che dicono le persone in attesa.",
@@ -8984,7 +8984,7 @@
           ]
         },
         "q15": {
-          "question": "Devi passare le consegne a fine turno. Tu:",
+          "question": "Fine turno: devi passare le consegne a chi entra dopo di te. Come lo fai?",
           "options": [
             "Lascio una nota ordinata con i punti aperti.",
             "Aspetto il collega e gliene parlo di persona.",
@@ -8993,7 +8993,7 @@
           ]
         },
         "q16": {
-          "question": "Primo giorno in un reparto che non conosci. Tu:",
+          "question": "Primo giorno in un reparto nuovo, con persone e abitudini che non conosci. Come ti inserisci?",
           "options": [
             "Mi presento e chiedo come lavorano.",
             "Osservo e mi adeguo a come fanno qui.",
@@ -9002,7 +9002,7 @@
           ]
         },
         "q17": {
-          "question": "Lo stesso problema si ripresenta ogni settimana. Tu:",
+          "question": "C'è un problema che si ripresenta ogni settimana, sempre lo stesso, e ogni volta lo risolvete lì per lì. Cosa fai?",
           "options": [
             "Capisco esattamente da dove nasce.",
             "Cambio qualcosa nel modo di lavorare e osservo.",
@@ -9011,7 +9011,7 @@
           ]
         },
         "q18": {
-          "question": "Ti affidano due tirocinanti. Tu:",
+          "question": "Ti affidano due tirocinanti da seguire, oltre al tuo lavoro. Come la prendi?",
           "options": [
             "Accetto: spiegare mi viene bene.",
             "Accetto: passo loro quello che ho imparato in questi anni.",
@@ -9020,7 +9020,7 @@
           ]
         },
         "q19": {
-          "question": "Il responsabile chiede quanto tempo serve per smaltire l'arretrato. Tu:",
+          "question": "Il responsabile ti chiede quanto tempo serve per smaltire l'arretrato, e aspetta una risposta adesso. Cosa gli dici?",
           "options": [
             "Conto le pratiche e do una data.",
             "Rispondo per esperienza: un arretrato così si smaltisce in tot.",
@@ -9029,7 +9029,7 @@
           ]
         },
         "q20": {
-          "question": "Arriva un programma nuovo che nessuno sa usare. Tu:",
+          "question": "Arriva un programma nuovo sul computer e per ora nessuno lo sa usare. Cosa fai?",
           "options": [
             "Lo provo subito e imparo usandolo.",
             "Leggo la guida o guardo un video prima di toccarlo.",
@@ -9038,7 +9038,7 @@
           ]
         },
         "q21": {
-          "question": "A fine mese si chiede cosa migliorare. Tu:",
+          "question": "A fine mese vi chiedono se c'è qualcosa da migliorare nel modo di lavorare. Cosa porti?",
           "options": [
             "Riporto quello che ho sentito da colleghi e utenti.",
             "Porto i punti dove si è perso più tempo.",

@@ -90,15 +90,16 @@ export function computeAllHashes(
  * 
  * IMPORTANT: These MUST differ per locale (unless translations are identical).
  */
-// Resealed 2026-09-18: the per-question help examples moved out of
-// assessmentSets into assessmentHelp (they described options the questions no
-// longer had and could not be fixed under the seal). Questions, options and
-// categories are byte-identical to the v1.2.1 seal (en 11ffb15d, it e7b14a09,
-// es d7d4491d); only the examples left the hashed subtree.
+// Resealed 2026-09-23: Roberta took the 2.0 questionnaire and found the
+// scenarios telegraphic and without an example — «Situazione. Tu:» instead of
+// a sentence and a question. All 21 scenarios of all six fields were rewritten
+// in the three languages with a concrete detail and a real question; options,
+// pillars and Drive are untouched. Previous seal: en 1d3c2763, it ce7361df,
+// es 31f9c784.
 export const ASSESSMENT_FREEZE_HASHES: Record<string, string> = {
-  en: "1d3c2763",
-  it: "ce7361df",
-  es: "31f9c784",
+  en: "d3feb0ad",
+  it: "44a5b301",
+  es: "e9668320",
 };
 
 const validatedLocales = new Set<string>();

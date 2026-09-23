@@ -7653,7 +7653,7 @@
       "subtitle": "Building sites, workshops, warehouses, plants, farms.",
       "questions": {
         "q1": {
-          "question": "A tool breaks halfway through the job and the spare arrives tomorrow. You:",
+          "question": "You are halfway through a job when the tool you were using breaks — say the drill — and the spare only arrives tomorrow. What do you do first?",
           "options": [
             "Look at what I can finish today without that tool and reorganise the day.",
             "Tell the boss and the crew right away, so we decide together.",
@@ -7662,7 +7662,7 @@
           ]
         },
         "q2": {
-          "question": "A new colleague arrives and does not know where to start. You:",
+          "question": "A new colleague arrives, it is their first day, and they are standing there waiting to be told where to start. How do you handle it?",
           "options": [
             "Explain the job myself, step by step, and stay available.",
             "Give them an ordered list of things to do, easiest first.",
@@ -7671,7 +7671,7 @@
           ]
         },
         "q3": {
-          "question": "The customer asks for something that you think cannot be done that way. You:",
+          "question": "A client asks for something that in your view cannot be done that way — a socket right where a pipe runs, for example. What do you do?",
           "options": [
             "Explain how it is usually done and why.",
             "Ask what they really want to get, then we talk it through.",
@@ -7680,7 +7680,7 @@
           ]
         },
         "q4": {
-          "question": "You have to assemble something you have never assembled. You:",
+          "question": "You have to fit something you have never fitted: the box is there, the parts too, but you have never seen that model. Where do you start?",
           "options": [
             "Try, watch how it reacts and correct.",
             "Look for the instructions or for someone who has done it before.",
@@ -7689,7 +7689,7 @@
           ]
         },
         "q5": {
-          "question": "At the end of the day you notice a mistake in the work done. You:",
+          "question": "It is the end of the day, you are about to leave, and you notice part of today's work is wrong. What do you do?",
           "options": [
             "Tell whoever needs to know right away, before the job moves on.",
             "Check everything to see how far the mistake goes.",
@@ -7698,7 +7698,7 @@
           ]
         },
         "q6": {
-          "question": "The boss says that from Monday we work in a new way. You:",
+          "question": "The boss announces that from Monday a job will be done a new way, different from how you have always done it. What is your first reaction?",
           "options": [
             "Want to understand what changes compared with how we did it.",
             "Good: maybe it can be done even better than that.",
@@ -7707,7 +7707,7 @@
           ]
         },
         "q7": {
-          "question": "There is an urgent job and there are few of you. You:",
+          "question": "There is an urgent job to deliver and the crew is three instead of six. How do you tackle it?",
           "options": [
             "Split the job into parts and see what can be done at the same time.",
             "Go round the colleagues and we agree who does what.",
@@ -7716,7 +7716,7 @@
           ]
         },
         "q8": {
-          "question": "You have to explain to a colleague why a job is done a certain way. You:",
+          "question": "A colleague asks why a job has to be done that way and not the way they suggest. How do you explain it?",
           "options": [
             "Tell them what happened when it was done differently.",
             "Say it plainly and make sure they understood.",
@@ -7725,7 +7725,7 @@
           ]
         },
         "q9": {
-          "question": "A machine makes a strange noise. You:",
+          "question": "A machine you use every day starts making a noise it did not make before. What do you do?",
           "options": [
             "I know that noise: I know where to look.",
             "Stop it and check one thing at a time until I find the cause.",
@@ -7734,7 +7734,7 @@
           ]
         },
         "q10": {
-          "question": "You are given a task without a clear explanation of what they want. You:",
+          "question": "You are given a job but told very little: you know what to deliver, not how they want it. How do you proceed?",
           "options": [
             "Ask until it is clear: better one question too many.",
             "Work out on my own what is needed, one piece at a time.",
@@ -7743,7 +7743,7 @@
           ]
         },
         "q11": {
-          "question": "You find a way to do a job faster. You:",
+          "question": "While working you spot a way of doing something that saves half an hour every time. What do you do?",
           "options": [
             "Tell the others, so everyone benefits.",
             "Try it several times first, to be sure it holds up.",
@@ -7752,7 +7752,7 @@
           ]
         },
         "q12": {
-          "question": "A colleague does a job in a way that looks wrong to you. You:",
+          "question": "You see a colleague doing a job in a way that looks wrong to you, even though it works for them. How do you handle it?",
           "options": [
             "Tell them calmly and hear their reasons.",
             "Show them how we have always done it.",
@@ -7761,7 +7761,7 @@
           ]
         },
         "q13": {
-          "question": "The material you need has run out. You:",
+          "question": "You need material to finish — screws, glue, a part — and find the stores are out. What do you do?",
           "options": [
             "Look at what there is and see if I can use something else.",
             "Work out how much is really needed and how long I can wait.",
@@ -7770,7 +7770,7 @@
           ]
         },
         "q14": {
-          "question": "You are asked for an idea to reduce accidents in the department. You:",
+          "question": "The boss asks you for an idea to have fewer accidents in the department. How do you answer?",
           "options": [
             "Start from what worked in other places I have worked.",
             "Look at where and when they happen most often.",
@@ -7779,7 +7779,7 @@
           ]
         },
         "q15": {
-          "question": "You have to hand over a job and you are not sure it came out well. You:",
+          "question": "You have to hand in a job but you are not convinced it turned out as it should. What do you do before handing it in?",
           "options": [
             "Check it point by point before handing it over.",
             "Ask a colleague to take a look.",
@@ -7788,7 +7788,7 @@
           ]
         },
         "q16": {
-          "question": "New shift, a crew you do not know. You:",
+          "question": "First day on a new shift, with a crew you have never seen. How do you settle in?",
           "options": [
             "Introduce myself, ask how they work and get stuck in.",
             "Watch how they do things and adapt to their habits.",
@@ -7797,7 +7797,7 @@
           ]
         },
         "q17": {
-          "question": "A job always goes wrong at the same point. You:",
+          "question": "There is a job that, every time you do it, goes wrong at the very same point. What do you do?",
           "options": [
             "Try to understand exactly what happens at that point.",
             "Change the way it is done and see if it improves.",
@@ -7806,7 +7806,7 @@
           ]
         },
         "q18": {
-          "question": "You are offered two new people to train. You:",
+          "question": "You are offered to look after two new lads for a month, on top of your own work. How do you take it?",
           "options": [
             "Accept: I like explaining and seeing people learn.",
             "Accept: I pass on everything I have learnt over the years.",
@@ -7815,7 +7815,7 @@
           ]
         },
         "q19": {
-          "question": "The boss asks how long a job will take. You:",
+          "question": "The boss asks how long a job will take and wants an answer now. What do you tell them?",
           "options": [
             "Do the sums on the steps and give a precise number.",
             "Answer from experience: a job like this usually takes this long.",
@@ -7824,7 +7824,7 @@
           ]
         },
         "q20": {
-          "question": "A new tool arrives that nobody knows how to use. You:",
+          "question": "A new tool arrives in the department and for now nobody knows how to use it, manual included. What do you do?",
           "options": [
             "Try it right away and learn by doing.",
             "Read the manual or find a video before touching it.",
@@ -7833,7 +7833,7 @@
           ]
         },
         "q21": {
-          "question": "At the end of the week the boss asks what could be improved. You:",
+          "question": "At the end of the week the boss asks whether anything about the way you work could be better. What do you bring?",
           "options": [
             "Report what I heard from colleagues, not only my own view.",
             "Bring the points where we lost the most time.",
@@ -7894,7 +7894,7 @@
       "subtitle": "Kitchen, dining room, bar, banquets, deliveries.",
       "questions": {
         "q1": {
-          "question": "Saturday night, a table of twelve turns up without a booking. You:",
+          "question": "Saturday night, the room is full, and twelve people turn up without a booking. What do you do?",
           "options": [
             "Count covers and timings and see where to seat them without upsetting the other tables.",
             "Tell the kitchen and colleagues right away, so we organise ourselves.",
@@ -7903,7 +7903,7 @@
           ]
         },
         "q2": {
-          "question": "A dish comes back: the customer says it is cold. You:",
+          "question": "A dish comes back from the floor: the customer says it is cold. What do you do?",
           "options": [
             "Go to the table, apologise and ask what they would prefer.",
             "Work out where time was lost between kitchen and dining room, so it does not happen again.",
@@ -7912,7 +7912,7 @@
           ]
         },
         "q3": {
-          "question": "An ingredient for the dish of the day is missing. You:",
+          "question": "You are about to make the dish of the day and find an ingredient missing — the fish you needed, say. How do you move?",
           "options": [
             "Replace it with what there is and tweak the recipe a little.",
             "Make the other recipes as I know them: that dish is off today.",
@@ -7921,7 +7921,7 @@
           ]
         },
         "q4": {
-          "question": "New arrival in the kitchen, first day. You:",
+          "question": "Someone new arrives in the kitchen, it is their first day and they do not know where anything is. How do you handle it?",
           "options": [
             "Explain station and pace myself and keep an eye on them.",
             "Show them how it is done here, in the order we have always done it.",
@@ -7930,7 +7930,7 @@
           ]
         },
         "q5": {
-          "question": "Table six has been waiting too long. You:",
+          "question": "Table six has been waiting twenty minutes and looks at you every time you go past. What do you do?",
           "options": [
             "Check what is missing in the kitchen and how long it really takes.",
             "Go to the table, explain and offer something while they wait.",
@@ -7939,7 +7939,7 @@
           ]
         },
         "q6": {
-          "question": "The owner changes the menu from Monday. You:",
+          "question": "The owner announces that from Monday the menu changes and some dishes are made differently. What is your first reaction?",
           "options": [
             "Want to know what changes from before, dish by dish.",
             "Try the new dishes right away, my own way.",
@@ -7948,7 +7948,7 @@
           ]
         },
         "q7": {
-          "question": "Full house and one person short. You:",
+          "question": "A full night and one person short: four of you instead of five. How do you tackle service?",
           "options": [
             "Split tables and tasks so that nobody is left uncovered.",
             "We agree on the fly who covers what.",
@@ -7957,7 +7957,7 @@
           ]
         },
         "q8": {
-          "question": "You have to explain to a colleague why a dish is plated this way. You:",
+          "question": "A colleague asks why a dish is plated that way and not the way that suits them better. How do you explain it?",
           "options": [
             "Tell them what happened the last time it was done differently.",
             "Say it plainly and check they understood.",
@@ -7966,7 +7966,7 @@
           ]
         },
         "q9": {
-          "question": "The coffee machine makes a strange noise. You:",
+          "question": "The coffee machine starts making a noise it did not make before, in the middle of service. What do you do?",
           "options": [
             "I know it: I know what to check.",
             "Switch it off and try one thing at a time.",
@@ -7975,7 +7975,7 @@
           ]
         },
         "q10": {
-          "question": "You are asked to \"sort out the cellar\" without being told how. You:",
+          "question": "They tell you «sort out the cellar», and that is all: neither how nor by when. How do you proceed?",
           "options": [
             "Ask what they mean before starting.",
             "Work out on my own what is needed, one step at a time.",
@@ -7984,7 +7984,7 @@
           ]
         },
         "q11": {
-          "question": "You find a way to set the tables faster. You:",
+          "question": "Setting up the room, you notice a way of laying the tables that saves twenty minutes every evening. What do you do?",
           "options": [
             "Tell the others, so everyone does it.",
             "Try it a few evenings before trusting it.",
@@ -7993,7 +7993,7 @@
           ]
         },
         "q12": {
-          "question": "A colleague does the portions in a way that looks wrong to you. You:",
+          "question": "You see a colleague doing portions in a way that looks wrong to you, even though the plates go out. How do you handle it?",
           "options": [
             "Tell them calmly and hear why.",
             "Show them the portion as it has always been done.",
@@ -8002,7 +8002,7 @@
           ]
         },
         "q13": {
-          "question": "A customer asks for a dish that is not on the menu. You:",
+          "question": "A customer asks for a dish that is not on the menu, but with what is in the kitchen it could be made. What do you do?",
           "options": [
             "See what I can invent with what there is.",
             "Work out whether I really have the time and ingredients to make it.",
@@ -8011,7 +8011,7 @@
           ]
         },
         "q14": {
-          "question": "You are asked for an idea to waste less food. You:",
+          "question": "The owner asks you for an idea to throw away less food at the end of service. How do you answer?",
           "options": [
             "Start from what worked where I worked before.",
             "Look at what is left over most, and when.",
@@ -8020,7 +8020,7 @@
           ]
         },
         "q15": {
-          "question": "You have to send out a dish and you are not sure it came out well. You:",
+          "question": "You have to send out a dish but you are not convinced it turned out as it should. What do you do before it leaves?",
           "options": [
             "Check it piece by piece.",
             "Ask a colleague to taste it.",
@@ -8029,7 +8029,7 @@
           ]
         },
         "q16": {
-          "question": "New shift, a team you do not know. You:",
+          "question": "First day on a new shift, with a crew you have never seen. How do you settle in?",
           "options": [
             "Introduce myself and ask how they work.",
             "Watch how they do things and adapt.",
@@ -8038,7 +8038,7 @@
           ]
         },
         "q17": {
-          "question": "A dish always goes wrong at the same step. You:",
+          "question": "There is a dish that goes wrong at the very same step every time — the cooking, the plating, always that one. What do you do?",
           "options": [
             "Understand exactly what happens at that step.",
             "Change the way it is done and see if it improves.",
@@ -8047,7 +8047,7 @@
           ]
         },
         "q18": {
-          "question": "You are offered two new people to train in the dining room. You:",
+          "question": "You are offered to look after two new front-of-house staff for a month, on top of your own work. How do you take it?",
           "options": [
             "Accept: I like explaining and seeing people learn.",
             "Accept: I pass on everything I have learnt.",
@@ -8056,7 +8056,7 @@
           ]
         },
         "q19": {
-          "question": "The owner asks how long a banquet for sixty will take. You:",
+          "question": "The owner asks how long it takes to prepare a banquet for sixty, and wants an answer now. What do you tell them?",
           "options": [
             "Do the sums on portions and steps and give a precise number.",
             "Answer from experience: a banquet like this usually takes this long.",
@@ -8065,7 +8065,7 @@
           ]
         },
         "q20": {
-          "question": "New equipment arrives that nobody knows how to use. You:",
+          "question": "New equipment arrives in the kitchen and for now nobody knows how to use it. What do you do?",
           "options": [
             "Try it right away and learn by doing.",
             "Read the manual or find a video before touching it.",
@@ -8074,7 +8074,7 @@
           ]
         },
         "q21": {
-          "question": "At the end of the week the owner asks what could be improved. You:",
+          "question": "At the end of the week the owner asks whether anything about the way you work could be better. What do you bring?",
           "options": [
             "Report what I heard from colleagues and customers.",
             "Bring the points where we lost the most time.",
@@ -8135,7 +8135,7 @@
       "subtitle": "Design, content, creative marketing, media, UX/UI.",
       "questions": {
         "q1": {
-          "question": "The client turns down your first proposal without really saying why. You:",
+          "question": "The client turns down your first proposal and, asked what is wrong, says «I don't know, it doesn't convince me». What do you do?",
           "options": [
             "Look at what in the proposal may have jarred and start again from there.",
             "Ask them what does not work, calmly, until I understand.",
@@ -8144,7 +8144,7 @@
           ]
         },
         "q2": {
-          "question": "The brief is vague: \"make something nice\". You:",
+          "question": "The brief you are given is vague: essentially «make something nice». Where do you start?",
           "options": [
             "Ask for examples of what they like and what they do not.",
             "Write the boundaries myself: who it speaks to, where it goes, when it is out.",
@@ -8153,7 +8153,7 @@
           ]
         },
         "q3": {
-          "question": "Delivery is tomorrow and the work does not convince you. You:",
+          "question": "Delivery is tomorrow morning and, looking at the work, it does not convince you. What do you do?",
           "options": [
             "Work out which piece does not hold and fix only that.",
             "Show it to someone I trust and listen.",
@@ -8162,7 +8162,7 @@
           ]
         },
         "q4": {
-          "question": "You have two good ideas and time for one. You:",
+          "question": "You have two ideas you both like and time to develop only one. How do you choose?",
           "options": [
             "Weigh which costs less time and gives more.",
             "Show both and we decide together.",
@@ -8171,7 +8171,7 @@
           ]
         },
         "q5": {
-          "question": "The client asks for a change that, to you, makes the work worse. You:",
+          "question": "The client asks for a change that in your view makes the work worse — enlarging the logo until everything is off balance, say. What do you do?",
           "options": [
             "Explain what is lost, then they decide.",
             "Show them the two results side by side.",
@@ -8180,7 +8180,7 @@
           ]
         },
         "q6": {
-          "question": "You are asked to work in a style that is not yours. You:",
+          "question": "You are asked to work in a style that is not yours and that you do not much like. How do you take it?",
           "options": [
             "Study how that style is done before starting.",
             "Ask for examples and have them explain what they are after.",
@@ -8189,7 +8189,7 @@
           ]
         },
         "q7": {
-          "question": "You are stuck: nothing comes. You:",
+          "question": "You are stuck: you have been in front of the work for an hour and nothing comes. What do you do?",
           "options": [
             "Switch completely: do something else and come back with a clear head.",
             "Go back to method: list, discard, rebuild.",
@@ -8198,7 +8198,7 @@
           ]
         },
         "q8": {
-          "question": "A colleague presents as theirs an idea that came from you. You:",
+          "question": "In a meeting a colleague presents as theirs an idea that started with you. How do you handle it?",
           "options": [
             "Talk to them directly, without making a case of it.",
             "Reconstruct when and how it came about before saying anything.",
@@ -8207,7 +8207,7 @@
           ]
         },
         "q9": {
-          "question": "You have to present the work to decision makers who are not from the trade. You:",
+          "question": "You have to present the work to people who decide and are not in the field. How do you tell it?",
           "options": [
             "Tell the why of each choice in plain words.",
             "Show the numbers: what the people we are speaking to expect.",
@@ -8216,7 +8216,7 @@
           ]
         },
         "q10": {
-          "question": "The project is bigger than the time you have. You:",
+          "question": "The project is bigger than the time you have, and it has only become clear now. What do you do?",
           "options": [
             "Cut: decide what to do well and what to drop.",
             "Say so immediately and renegotiate time or scope.",
@@ -8225,7 +8225,7 @@
           ]
         },
         "q11": {
-          "question": "In the meeting your work is criticised in front of everyone. You:",
+          "question": "In a meeting your work is criticised in front of everyone. How do you react?",
           "options": [
             "Listen right to the end and ask for the criticism to be specific.",
             "Note the points and check which ones actually hold.",
@@ -8234,7 +8234,7 @@
           ]
         },
         "q12": {
-          "question": "You have to work on a subject you know nothing about. You:",
+          "question": "You are given a job on a subject you know nothing about. Where do you start?",
           "options": [
             "Read up until I understand it properly.",
             "Talk to those who live it every day.",
@@ -8243,7 +8243,7 @@
           ]
         },
         "q13": {
-          "question": "You realise the work looks too much like something already seen. You:",
+          "question": "Looking at the finished work you notice it resembles something already out there. What do you do?",
           "options": [
             "Check how close it really is, point by point.",
             "Say it to the team before someone else notices.",
@@ -8252,7 +8252,7 @@
           ]
         },
         "q14": {
-          "question": "You are asked for an idea to stand out on a small budget. You:",
+          "question": "You are asked for an idea to get noticed on almost no budget. How do you answer?",
           "options": [
             "Look at what worked and what it cost.",
             "Ask the people we speak to what would strike them.",
@@ -8261,7 +8261,7 @@
           ]
         },
         "q15": {
-          "question": "Last check before delivery. You:",
+          "question": "Last check before delivery: you have one hour left. What do you spend it on?",
           "options": [
             "Check everything point by point: sizes, texts, formats.",
             "Have another pair of eyes look at it.",
@@ -8270,7 +8270,7 @@
           ]
         },
         "q16": {
-          "question": "First day in a new studio. You:",
+          "question": "First day in a new studio, with a way of working different from yours. How do you settle in?",
           "options": [
             "Introduce myself and ask how they work here.",
             "Look at their past work and learn their language.",
@@ -8279,7 +8279,7 @@
           ]
         },
         "q17": {
-          "question": "The same step always comes out badly. You:",
+          "question": "There is one step of your work that always comes out badly, the same one every time. What do you do?",
           "options": [
             "Work out exactly what happens at that step.",
             "Do it another way and see if it improves.",
@@ -8288,7 +8288,7 @@
           ]
         },
         "q18": {
-          "question": "You are given two interns. You:",
+          "question": "You are given two interns to look after, on top of your own work. How do you take it?",
           "options": [
             "Accept: I like explaining and seeing them grow.",
             "Accept: I pass on the trade, not just the software.",
@@ -8297,7 +8297,7 @@
           ]
         },
         "q19": {
-          "question": "You are asked how long the project will take. You:",
+          "question": "You are asked how long the project will take, and they want an answer now. What do you say?",
           "options": [
             "Count the phases and give a date.",
             "Answer from experience: work like this takes about so long.",
@@ -8306,7 +8306,7 @@
           ]
         },
         "q20": {
-          "question": "New software comes out that promises to do half your job. You:",
+          "question": "A new piece of software comes out that promises to do half of what you do. What is your first reaction?",
           "options": [
             "Try it straight away on a real job.",
             "Read and watch how others use it before touching it.",
@@ -8315,7 +8315,7 @@
           ]
         },
         "q21": {
-          "question": "At the end of the project you take stock. You:",
+          "question": "The project is over and you look back at how it went. What do you bring?",
           "options": [
             "Report what the client and the team said.",
             "Bring the points where we lost the most time.",
@@ -8376,7 +8376,7 @@
       "subtitle": "Strategy, management, consulting, sales, HR.",
       "questions": {
         "q1": {
-          "question": "An important client threatens to leave. You:",
+          "question": "An important client writes that they are considering a competitor. What do you do first?",
           "options": [
             "Call them myself, in person, and listen before proposing anything.",
             "Reconstruct what really happened and what they are worth to us.",
@@ -8385,7 +8385,7 @@
           ]
         },
         "q2": {
-          "question": "You have to decide fast with incomplete information. You:",
+          "question": "You have to decide by tomorrow, and the information you have is incomplete. How do you decide?",
           "options": [
             "Decide with what there is, lining up the risks.",
             "Hear two people I trust, then decide.",
@@ -8394,7 +8394,7 @@
           ]
         },
         "q3": {
-          "question": "The team is demotivated after a hard quarter. You:",
+          "question": "The team is coming out of a bad quarter and morale shows it. What do you do?",
           "options": [
             "Talk to each person, one at a time, to understand what weighs.",
             "Look at the numbers to see where it really jammed.",
@@ -8403,7 +8403,7 @@
           ]
         },
         "q4": {
-          "question": "A good team member makes a big mistake. You:",
+          "question": "One of your people, usually reliable, makes a costly mistake. How do you handle it?",
           "options": [
             "Talk to them alone, plainly, without humiliating them.",
             "Work out what it cost and what it takes to put right.",
@@ -8412,7 +8412,7 @@
           ]
         },
         "q5": {
-          "question": "You have to present a plan to those who decide the budget. You:",
+          "question": "You have to present a plan to whoever holds the budget. How do you set it up?",
           "options": [
             "Bring three numbers that matter and defend them.",
             "Tell the plan as a story: where we start, where we get to.",
@@ -8421,7 +8421,7 @@
           ]
         },
         "q6": {
-          "question": "A competitor cuts prices. You:",
+          "question": "A competitor drops prices below yours and clients notice. What do you do?",
           "options": [
             "Work out how far we can follow and what it costs us.",
             "Call the key clients to find out how much it matters to them.",
@@ -8430,7 +8430,7 @@
           ]
         },
         "q7": {
-          "question": "Two people in the team cannot stand each other. You:",
+          "question": "Two people in your team cannot stand each other and it shows in the work. How do you step in?",
           "options": [
             "Put them in the same room and let them speak first.",
             "Work out where the conflict really costs the work.",
@@ -8439,7 +8439,7 @@
           ]
         },
         "q8": {
-          "question": "You are asked to cut costs by ten per cent. You:",
+          "question": "You are asked to cut costs by ten per cent within the quarter. Where do you begin?",
           "options": [
             "Go line by line and cut where it yields least.",
             "Involve the team: whoever does the work knows where the waste is.",
@@ -8448,7 +8448,7 @@
           ]
         },
         "q9": {
-          "question": "A project is going badly and everyone pretends it is not. You:",
+          "question": "A project is going badly and nobody says so in the meeting. What do you do?",
           "options": [
             "Say it openly in the meeting, calmly.",
             "Bring the data that proves it, so there is no arguing.",
@@ -8457,7 +8457,7 @@
           ]
         },
         "q10": {
-          "question": "You have to hire one person and have two opposite candidates. You:",
+          "question": "You have to hire someone and your two finalists are opposites: one solid, one promising but green. How do you choose?",
           "options": [
             "Compare point by point what the role needs.",
             "See them again and judge who the team would work better with.",
@@ -8466,7 +8466,7 @@
           ]
         },
         "q11": {
-          "question": "An idea of yours is turned down by your superiors. You:",
+          "question": "A proposal of yours is turned down by the people above you, with little explanation. What do you do?",
           "options": [
             "Ask what does not convince and work on it.",
             "Redo the numbers to see whether they were right.",
@@ -8475,7 +8475,7 @@
           ]
         },
         "q12": {
-          "question": "The market changes faster than your plan. You:",
+          "question": "The market is moving faster than the plan you approved six months ago. What do you do?",
           "options": [
             "Redo the plan with the new numbers.",
             "Gather the right people and decide again together.",
@@ -8484,7 +8484,7 @@
           ]
         },
         "q13": {
-          "question": "A key person is missing and the work piles up. You:",
+          "question": "A key person leaves and the work starts piling up. How do you move?",
           "options": [
             "Redistribute the load by who can carry what.",
             "Ask the team who feels up to covering, and how.",
@@ -8493,7 +8493,7 @@
           ]
         },
         "q14": {
-          "question": "You are asked for an idea to grow revenue. You:",
+          "question": "You are asked for an idea to grow revenue without growing costs. How do you answer?",
           "options": [
             "Look at where the numbers say there is room.",
             "Ask clients what they would buy that we do not offer.",
@@ -8502,7 +8502,7 @@
           ]
         },
         "q15": {
-          "question": "Before signing an important agreement. You:",
+          "question": "You are about to sign an important agreement and you still have a day. What do you do with it?",
           "options": [
             "Re-read every clause and run the scenarios.",
             "Talk it over with those who will have to make it work every day.",
@@ -8511,7 +8511,7 @@
           ]
         },
         "q16": {
-          "question": "First day leading a new team. You:",
+          "question": "First day leading a team you did not know. How do you start?",
           "options": [
             "Meet everyone, one by one, and listen.",
             "Study how it has worked so far before touching anything.",
@@ -8520,7 +8520,7 @@
           ]
         },
         "q17": {
-          "question": "The same problem resurfaces every month in the meeting. You:",
+          "question": "The same problem comes up in the monthly meeting, and every time it gets postponed. What do you do?",
           "options": [
             "Work out exactly where it starts.",
             "Change how we work on that point and watch.",
@@ -8529,7 +8529,7 @@
           ]
         },
         "q18": {
-          "question": "You are given two people to develop. You:",
+          "question": "You are given two people to develop, on top of your own targets. How do you take it?",
           "options": [
             "Follow them closely: I like seeing people grow.",
             "Pass on what I have learnt over these years.",
@@ -8538,7 +8538,7 @@
           ]
         },
         "q19": {
-          "question": "You are asked how long an important change will take. You:",
+          "question": "You are asked how long an important change will take, and they want an answer now. What do you say?",
           "options": [
             "Break it into phases and give a date.",
             "Answer from experience: changes like this take about so long.",
@@ -8547,7 +8547,7 @@
           ]
         },
         "q20": {
-          "question": "A new tool arrives that promises to change how the team works. You:",
+          "question": "A new tool arrives that promises to change how the team works. What is your first reaction?",
           "options": [
             "Try it myself first on something real.",
             "Read what companies like ours say about it.",
@@ -8556,7 +8556,7 @@
           ]
         },
         "q21": {
-          "question": "At the end of the year you take stock. You:",
+          "question": "End of the year, you look back at how it went. What do you bring?",
           "options": [
             "Report what I heard from people and clients.",
             "Bring the points where we lost the most time or money.",
@@ -8617,7 +8617,7 @@
       "subtitle": "Engineering, data, research, product, development.",
       "questions": {
         "q1": {
-          "question": "A system that has worked for months stops for no obvious reason. You:",
+          "question": "A system that has run for months without trouble stops, and at first sight nothing has changed. Where do you start?",
           "options": [
             "Isolate the variables one at a time until I find the cause.",
             "Ask whoever worked on it recently what changed.",
@@ -8626,7 +8626,7 @@
           ]
         },
         "q2": {
-          "question": "You get data that contradicts what everyone took for granted. You:",
+          "question": "The data coming back contradicts something your team took for granted. What do you do?",
           "options": [
             "Before telling anyone, I redo it and check it again.",
             "Take it to the team straight away: better to know together.",
@@ -8635,7 +8635,7 @@
           ]
         },
         "q3": {
-          "question": "The manager asks for a time estimate on work never done before. You:",
+          "question": "Your manager asks for a time estimate on a job none of you has ever done. What do you tell them?",
           "options": [
             "Break it into parts and estimate piece by piece.",
             "Answer from experience: similar work took about so long.",
@@ -8644,7 +8644,7 @@
           ]
         },
         "q4": {
-          "question": "You have to explain a technical result to someone outside the field. You:",
+          "question": "You have to explain a technical result to someone who decides but is not in the field — say, why a test failed. How do you do it?",
           "options": [
             "Tell it with an example from everyday life.",
             "Show the essential numbers and what they mean.",
@@ -8653,7 +8653,7 @@
           ]
         },
         "q5": {
-          "question": "Two ways to solve a problem: one safe and slow, one fast and uncertain. You:",
+          "question": "You have two ways to solve a problem: one safe but slow, one fast that might not work. How do you choose?",
           "options": [
             "Compare costs and risks of both and choose with the numbers.",
             "Talk it over with the team and decide together.",
@@ -8662,7 +8662,7 @@
           ]
         },
         "q6": {
-          "question": "A colleague uses a method that looks wrong to you. You:",
+          "question": "A colleague is using a method that you think will lead to a wrong result. What do you do?",
           "options": [
             "Tell them calmly and hear their reasons.",
             "Show them the case where their method fails.",
@@ -8671,7 +8671,7 @@
           ]
         },
         "q7": {
-          "question": "The project changes its goal halfway through. You:",
+          "question": "Halfway through, the goal changes: what you have built is only partly useful now. What do you do?",
           "options": [
             "Work out what of the work done survives and what must be redone.",
             "Ask to understand the why properly before restarting.",
@@ -8680,7 +8680,7 @@
           ]
         },
         "q8": {
-          "question": "You have to learn a new tool in a few days. You:",
+          "question": "You need a new tool — a language, a piece of software, a technique — and you have a few days to learn it. Where do you start?",
           "options": [
             "Use it straight away on a real problem and learn by doing.",
             "Read the documentation from the start.",
@@ -8689,7 +8689,7 @@
           ]
         },
         "q9": {
-          "question": "You are asked to check someone else's work before release. You:",
+          "question": "You are asked to review someone else's work before it goes live. How do you approach it?",
           "options": [
             "Verify it point by point, with the edge cases.",
             "Go through it with them: explaining it shows the mistakes.",
@@ -8698,7 +8698,7 @@
           ]
         },
         "q10": {
-          "question": "You are given a task without a clear idea of what they want. You:",
+          "question": "You are given a task but told very little: you know what to deliver, not what result they expect. How do you proceed?",
           "options": [
             "Ask until it is clear: better one question too many.",
             "Define what is needed myself and write it down before starting.",
@@ -8707,7 +8707,7 @@
           ]
         },
         "q11": {
-          "question": "You find a way to do in an hour a job that took a day. You:",
+          "question": "You find a way to do in an hour a job that took the team a full day. What do you do?",
           "options": [
             "Tell the others, so everyone benefits.",
             "Try it on more cases first, to be sure it holds.",
@@ -8716,7 +8716,7 @@
           ]
         },
         "q12": {
-          "question": "The result you were expecting does not come and time is short. You:",
+          "question": "The result you were waiting for is not coming, and delivery is in two days. What do you do?",
           "options": [
             "Re-check the whole chain to see where it is lost.",
             "Tell whoever is waiting for the result right away.",
@@ -8725,7 +8725,7 @@
           ]
         },
         "q13": {
-          "question": "A piece is missing — a dataset, a component, a library. You:",
+          "question": "You are missing a piece to move on: a dataset, a component, a library that is not there. How do you proceed?",
           "options": [
             "Work out how much I can do without it and how long I can wait.",
             "Ask whoever has it or can get it.",
@@ -8734,7 +8734,7 @@
           ]
         },
         "q14": {
-          "question": "You are asked for an idea to reduce the system's errors. You:",
+          "question": "You are asked for an idea to make the system fail less often. How do you answer?",
           "options": [
             "Look at where and when they happen most often.",
             "Ask those who use it every day where it bites.",
@@ -8743,7 +8743,7 @@
           ]
         },
         "q15": {
-          "question": "Last check before delivery. You:",
+          "question": "Last check before delivery: you have one hour left. What do you spend it on?",
           "options": [
             "Run everything again from scratch and compare the results.",
             "Ask a colleague to try it without explaining anything.",
@@ -8752,7 +8752,7 @@
           ]
         },
         "q16": {
-          "question": "First day in a new team. You:",
+          "question": "First day in a new team, on a project already under way that you do not know. How do you settle in?",
           "options": [
             "Introduce myself and ask how they work.",
             "Read the code, the documents, the past decisions.",
@@ -8761,7 +8761,7 @@
           ]
         },
         "q17": {
-          "question": "The same error comes back every week. You:",
+          "question": "The same error comes back every week and every time you patch it on the spot. What do you do?",
           "options": [
             "Work out exactly where it starts.",
             "Change how it is built and see if it disappears.",
@@ -8770,7 +8770,7 @@
           ]
         },
         "q18": {
-          "question": "You are given two trainees. You:",
+          "question": "You are given two interns to look after, on top of your own work. How do you take it?",
           "options": [
             "Accept: I like explaining and seeing people learn.",
             "Accept: I pass on what I have learnt over these years.",
@@ -8779,7 +8779,7 @@
           ]
         },
         "q19": {
-          "question": "A client asks for a feature you think is not needed. You:",
+          "question": "A client keeps asking for a feature that you think they will never use. What do you do?",
           "options": [
             "Ask what they really want to achieve, then we talk it through.",
             "Show them what it costs and what it yields.",
@@ -8788,7 +8788,7 @@
           ]
         },
         "q20": {
-          "question": "A tool comes out that promises to do half your job. You:",
+          "question": "A new tool comes out that promises to do half of what you do. What is your first reaction?",
           "options": [
             "Try it straight away on a real case.",
             "Read what those who already used it say.",
@@ -8797,7 +8797,7 @@
           ]
         },
         "q21": {
-          "question": "At the end of the project you take stock. You:",
+          "question": "The project is over and you look back at how it went. What do you bring?",
           "options": [
             "Report what I heard from the team and from those who use the result.",
             "Bring the points where we lost the most time.",
@@ -8858,7 +8858,7 @@
       "subtitle": "Healthcare, education, hospitality, public sector, support.",
       "questions": {
         "q1": {
-          "question": "Someone arrives after hours with an urgent request. You:",
+          "question": "You are at the end of your shift when someone arrives after hours with a request they call urgent. What do you do?",
           "options": [
             "Look at what I can still do today and what moves to tomorrow.",
             "Explain how it works and we look for a way together.",
@@ -8867,7 +8867,7 @@
           ]
         },
         "q2": {
-          "question": "The previous shift left the work half done. You:",
+          "question": "You come on shift and find the previous one left the work half done, with no note. How do you proceed?",
           "options": [
             "Call whoever was on and have them tell me where they stopped.",
             "Work out the point myself by checking what has been done.",
@@ -8876,7 +8876,7 @@
           ]
         },
         "q3": {
-          "question": "Someone on the phone is angry and raising their voice. You:",
+          "question": "On the phone, someone is angry and raises their voice while you speak. How do you handle it?",
           "options": [
             "Let them speak, then answer calmly.",
             "Look up straight away what actually happened in their case.",
@@ -8885,7 +8885,7 @@
           ]
         },
         "q4": {
-          "question": "You have to look after three people at the same time. You:",
+          "question": "You have three people to look after at the same time and all three are waiting for you. What do you do?",
           "options": [
             "Work out who is most urgent and move in that order.",
             "Tell all three how long I will be, so nobody is left in the dark.",
@@ -8894,7 +8894,7 @@
           ]
         },
         "q5": {
-          "question": "The new procedure slows the service down. You:",
+          "question": "The new procedure you have been given takes longer than the old one. What do you do?",
           "options": [
             "Measure how much time is really lost, and where.",
             "Talk to whoever decided it, with concrete examples.",
@@ -8903,7 +8903,7 @@
           ]
         },
         "q6": {
-          "question": "Someone does not understand what they have to do and is getting upset. You:",
+          "question": "Someone in front of you does not understand what they have to do and starts getting irritated. How do you handle it?",
           "options": [
             "Explain it again in different words, until it is clear.",
             "Write the steps down in order, so they have them in front of them.",
@@ -8912,7 +8912,7 @@
           ]
         },
         "q7": {
-          "question": "The computer system is down and people are waiting. You:",
+          "question": "The system is down, the queue is not moving and people are waiting. What do you do?",
           "options": [
             "Tell people and say what we are doing about it.",
             "Count how many cases I can still close by hand.",
@@ -8921,7 +8921,7 @@
           ]
         },
         "q8": {
-          "question": "A new colleague treats someone badly without realising. You:",
+          "question": "A new colleague treats someone badly without realising it — short tone, no explanation. What do you do?",
           "options": [
             "Talk to them later, alone, without making them feel wrong.",
             "Explain how the public is treated here.",
@@ -8930,7 +8930,7 @@
           ]
         },
         "q9": {
-          "question": "A request arrives that fits no rule at all. You:",
+          "question": "A request comes in that fits none of the rules you know. How do you proceed?",
           "options": [
             "Look for the closest case among those already seen.",
             "Pass it to whoever can decide, explaining the situation well.",
@@ -8939,7 +8939,7 @@
           ]
         },
         "q10": {
-          "question": "You have to organise a day full of appointments. You:",
+          "question": "You find yourself with a day of too many appointments and little time between them. How do you organise it?",
           "options": [
             "Line them up by length and priority.",
             "Ask people to find out who can move.",
@@ -8948,7 +8948,7 @@
           ]
         },
         "q11": {
-          "question": "Someone complains about a colleague. You:",
+          "question": "Someone complains to you about a colleague, in front of others. What do you do?",
           "options": [
             "Listen right to the end before saying anything.",
             "Check what actually happened.",
@@ -8957,7 +8957,7 @@
           ]
         },
         "q12": {
-          "question": "The queue grows and people are huffing. You:",
+          "question": "The queue grows, people are sighing, and you are already going flat out. What do you do?",
           "options": [
             "Say out loud how long is left, so they know what they are in for.",
             "See where the queue jams and move people there.",
@@ -8966,7 +8966,7 @@
           ]
         },
         "q13": {
-          "question": "The supplies needed every day are about to run out. You:",
+          "question": "You notice the material you need every day is running out — forms, envelopes, the usual. What do you do?",
           "options": [
             "Work out how much is enough and until when.",
             "Tell whoever orders before it is too late.",
@@ -8975,7 +8975,7 @@
           ]
         },
         "q14": {
-          "question": "You are asked for an idea to make people wait less. You:",
+          "question": "Your manager asks for an idea to make people wait less at the desk. How do you answer?",
           "options": [
             "Bring the numbers: where and when the wait is longest.",
             "Report what the people waiting are saying.",
@@ -8984,7 +8984,7 @@
           ]
         },
         "q15": {
-          "question": "You have to hand over at the end of the shift. You:",
+          "question": "End of shift: you have to hand over to whoever comes after you. How do you do it?",
           "options": [
             "Leave an orderly note with the open points.",
             "Wait for the colleague and tell them in person.",
@@ -8993,7 +8993,7 @@
           ]
         },
         "q16": {
-          "question": "First day in a department you do not know. You:",
+          "question": "First day in a new department, with people and habits you do not know. How do you settle in?",
           "options": [
             "Introduce myself and ask how they work.",
             "Watch and adapt to how they do things here.",
@@ -9002,7 +9002,7 @@
           ]
         },
         "q17": {
-          "question": "The same problem comes back every week. You:",
+          "question": "There is a problem that comes back every week, the same one, and every time you fix it on the spot. What do you do?",
           "options": [
             "Work out exactly where it starts.",
             "Change something in how we work and watch.",
@@ -9011,7 +9011,7 @@
           ]
         },
         "q18": {
-          "question": "You are given two trainees. You:",
+          "question": "You are given two trainees to look after, on top of your own work. How do you take it?",
           "options": [
             "Accept: explaining comes naturally to me.",
             "Accept: I pass on what I have learnt over these years.",
@@ -9020,7 +9020,7 @@
           ]
         },
         "q19": {
-          "question": "The manager asks how long it takes to clear the backlog. You:",
+          "question": "Your manager asks how long it will take to clear the backlog, and wants an answer now. What do you tell them?",
           "options": [
             "Count the cases and give a date.",
             "Answer from experience: a backlog like this clears in about so long.",
@@ -9029,7 +9029,7 @@
           ]
         },
         "q20": {
-          "question": "New software arrives that nobody knows how to use. You:",
+          "question": "New software arrives on the computers and for now nobody knows how to use it. What do you do?",
           "options": [
             "Try it right away and learn by using it.",
             "Read the guide or watch a video before touching it.",
@@ -9038,7 +9038,7 @@
           ]
         },
         "q21": {
-          "question": "At the end of the month you are asked what could be improved. You:",
+          "question": "At the end of the month you are asked whether anything about the way you work could be better. What do you bring?",
           "options": [
             "Report what I heard from colleagues and users.",
             "Bring the points where the most time was lost.",
