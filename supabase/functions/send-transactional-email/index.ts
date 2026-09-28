@@ -184,7 +184,7 @@ Deno.serve(async (req) => {
   // 2. Check suppression list (fail-closed: if we can't verify, don't send)
   const { data: suppressed, error: suppressionError } = await supabase
     .from('suppressed_emails')
-    .select('id')
+    .select('email')
     .eq('email', effectiveRecipient.toLowerCase())
     .maybeSingle()
 

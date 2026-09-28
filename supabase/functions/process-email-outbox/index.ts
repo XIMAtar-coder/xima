@@ -124,7 +124,7 @@ Deno.serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "XIMA Platform <noreply@xima.com>",
+          from: "XIMA <noreply@ximatar.com>",
           to: [email.recipient_email],
           subject: email.subject,
           html: email.html_body,
