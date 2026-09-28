@@ -137,10 +137,10 @@ const Profile = () => {
         const professional = JSON.parse(selectedProfessionalData);
         const { data, error } = await supabase.functions.invoke('assign-mentor', { body: { professional_id: professional.id } });
         if (error) {
-          toast({ title: "Note", description: "We'll assign your selected mentor shortly." });
+          toast({ title: t('results2.mentor_assign_later') });
         } else if (data?.success) {
           localStorage.removeItem('selected_professional_data');
-          toast({ title: "Success", description: `${professional.full_name} has been assigned as your mentor!` });
+          toast({ title: t('results2.mentor_assigned', { name: String(professional.full_name || '').split(/\s+/)[0] }) });
           setProfileRefreshKey(prev => prev + 1);
         }
       } catch (error) {
@@ -293,7 +293,15 @@ const Profile = () => {
       <div className={cn('mt-5 grid gap-5', cv && 'lg:grid-cols-[1.3fr_1fr]')}>
         <Panel className="border-l-4 border-l-primary">
           <Eyebrow className="!text-primary">{t('dashboard.next_step_label', 'The next step')}</Eyebrow>
-          {profileCompleted ? (
+          {!mentor ? (
+            <>
+              <h2 className="mt-2 text-[22px] font-semibold tracking-[-0.4px] text-foreground">{t('dashboard.choose_mentor_title', 'Choose your mentor')}</h2>
+              <p className="mt-1.5 text-[14px] text-muted-foreground">{t('dashboard.choose_mentor_body', 'We suggest the mentors closest to your profile. The first 30-minute call is free.')}</p>
+              <Button className="mt-4" onClick={() => openSection('mentor')}>
+                {t('dashboard.choose_mentor_cta', 'See your mentors')} <span aria-hidden="true">→</span>
+              </Button>
+            </>
+          ) : profileCompleted ? (
             <>
               <h2 className="mt-2 text-[22px] font-semibold tracking-[-0.4px] text-foreground">{t('dashboard.prefs_set_title', 'Your preferences are set.')}</h2>
               <p className="mt-1.5 text-[14px] text-muted-foreground">{t('dashboard.prefs_set_body', 'Update them whenever something changes.')}</p>
@@ -362,7 +370,7 @@ const Profile = () => {
             ) : t('dashboard.mentor_none', 'No mentor assigned yet. Availability is published by the mentor.')}
           </p>
           <button type="button" onClick={() => openSection('mentor')} className={linkClass}>
-            {t('dashboard.meet_mentor', 'Meet the mentor')} <span aria-hidden="true">→</span>
+            {mentor ? t('dashboard.meet_mentor', 'Meet the mentor') : t('dashboard.choose_mentor_cta', 'See your mentors')} <span aria-hidden="true">→</span>
           </button>
         </Panel>
 
@@ -390,7 +398,7 @@ const Profile = () => {
           </DetailSection>
 
           <DetailSection id="mentor" number="03" title={t('dashboard.mentor_title')} hint={mentor ? mentor.name : t('dashboard.mentor_none', 'No mentor assigned yet. Availability is published by the mentor.')} open={!!openSections.mentor} onToggle={() => toggleSection('mentor')}>
-            <MentorSection mentor={profileData.mentor_profile} onBookingSuccess={handleMentorBookingSuccess} />
+            <MentorSection mentor={profileData.mentor_profile} onBookingSuccess={handleMentorBookingSuccess} pillarScores={scores as Record<string, number> | null} ximatar={profileData.ximatar} onMentorAssigned={handleMentorBookingSuccess} />
           </DetailSection>
 
           <DetailSection id="challenges" number="04" title={t('dashboard.your_challenges', 'Your challenges')} hint={t('dashboard.section_challenges_hint', 'Invitations from companies and their status')} open={!!openSections.challenges} onToggle={() => toggleSection('challenges')}>

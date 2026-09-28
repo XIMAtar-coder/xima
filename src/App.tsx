@@ -20,6 +20,7 @@ import { useUser } from "./context/UserContext";
 // ---- Public / marketing ----
 const Index = lazy(() => import("./pages/Index"));
 const About = lazy(() => import("./pages/About"));
+const Investors = lazy(() => import("./pages/Investors"));
 const HowItWorks = lazy(() => import("./pages/HowItWorks"));
 const Business = lazy(() => import("./pages/Business"));
 const Pricing = lazy(() => import("./pages/Pricing"));
@@ -143,6 +144,7 @@ const RoutesTree = () => {
         <Routes location={location}>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
+          <Route path="/investitori" element={<Investors />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/contact-sales" element={<ContactSales />} />

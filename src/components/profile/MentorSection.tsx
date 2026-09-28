@@ -7,6 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Separator } from '@/components/ui/separator';
+import { MentorPicker } from '@/components/profile/MentorPicker';
 import { 
   Calendar, 
   ExternalLink, 
@@ -77,11 +78,15 @@ interface PendingSession {
 interface MentorSectionProps {
   mentor: MentorLike | null;
   onBookingSuccess?: () => void;
+  /** For the mentor choice when none is assigned yet. */
+  pillarScores?: Record<string, number> | null;
+  ximatar?: string | null;
+  onMentorAssigned?: () => void;
 }
 
 type AvailabilityState = 'loading' | 'no_availability' | 'no_slots' | 'has_slots' | 'has_pending_session' | 'free_intro_used';
 
-export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingSuccess }) => {
+export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingSuccess, pillarScores, ximatar, onMentorAssigned }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -426,23 +431,12 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
     );
   };
 
-  // No mentor selected state
+  // No mentor yet: the choice happens here, with the mentors closest to the profile.
   if (!mentor) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            {t('profile.your_mentor', 'Your Mentor')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 text-center py-8">
-          <div className="flex justify-center">
-            <User className="h-16 w-16 text-muted-foreground/30" />
-          </div>
-          <p className="text-muted-foreground">
-            {t('profile.no_mentor_assigned', 'Complete your first evaluation to receive a mentor')}
-          </p>
+        <CardContent className="pt-6">
+          <MentorPicker pillarScores={pillarScores ?? null} ximatar={ximatar} onAssigned={() => onMentorAssigned?.()} />
         </CardContent>
       </Card>
     );

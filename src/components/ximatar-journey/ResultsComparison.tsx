@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,8 @@ import { normalizeXimatarImageUrl } from '@/utils/normalizeXimatarImage';
 import { useToast } from '@/hooks/use-toast';
 import { log } from '@/lib/log';
 import { loadSignals, summarise } from '@/lib/salita/signals';
+import { Ximatar3D, has3DModel, canOpenAR, openXimatarAR, type Ximatar3DRef } from '@/components/ximatar3d/Ximatar3D';
+import { useAssessmentBenchmarks } from '@/hooks/useAssessmentBenchmarks';
 
 interface ResultsComparisonProps {
   onComplete: (step: number) => void;
@@ -66,6 +68,9 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   const [openAnswerChars, setOpenAnswerChars] = useState<number | null>(null);
   const [hasNoAssessment, setHasNoAssessment] = useState(false);
   const [fieldKey, setFieldKey] = useState<string | null>(null);
+  const viewerRef = useRef<Ximatar3DRef>(null);
+  // Averages over all fields: per-field numbers need many more tests.
+  const { data: benchmarks } = useAssessmentBenchmarks();
 
   useEffect(() => {
     const fetchComputedResults = async () => {
@@ -301,25 +306,14 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         
         if (error) {
           log.error('[ResultsComparison] Error assigning mentor:', error);
-          toast({
-            title: "Error",
-            description: "Failed to assign mentor. Please try again.",
-            variant: "destructive"
-          });
+          toast({ title: t('results2.mentor_assign_error_title'), description: t('results2.mentor_assign_error'), variant: 'destructive' });
         } else if (data?.success) {
           log.debug('[ResultsComparison] Mentor assigned successfully:', data.mentor);
-          toast({
-            title: "Success",
-            description: "Mentor assigned successfully!",
-          });
+          toast({ title: t('results2.mentor_assigned', { name: String(mentor.full_name || '').split(/\s+/)[0] }) });
         }
       } catch (error) {
         log.error('[ResultsComparison] Failed to assign mentor:', error);
-        toast({
-          title: "Error", 
-          description: "Failed to assign mentor. Please try again.",
-          variant: "destructive"
-        });
+        toast({ title: t('results2.mentor_assign_error_title'), description: t('results2.mentor_assign_error'), variant: 'destructive' });
       }
     } else {
       log.debug('[ResultsComparison] Not calling edge function - user not authenticated or no user ID');
@@ -359,26 +353,19 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   const fmt = (n: number) => formatScore(n, locale);
   const currentFieldKey = fieldKey || (typeof window !== 'undefined' ? localStorage.getItem('preferred_field') : null);
   const fieldTitle = currentFieldKey ? t(`field.${currentFieldKey}.title`, { defaultValue: '' }) : '';
-  const firstName = user?.name?.trim().split(/\s+/)[0] || '';
 
   const header = (
-    <div className="mb-6 flex flex-col gap-4 sm:mb-7 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
-      <div className="min-w-0">
-        <Eyebrow className="mb-2.5">
-          {t('guestJourney.results.eyebrow')}{fieldTitle ? ` / ${fieldTitle}` : ''}
-        </Eyebrow>
-        <h1 className="xs-title">
-          {firstName ? t('guestJourney.results.title_named', { name: firstName }) : t('guestJourney.results.title')}
-        </h1>
-        <p className="mt-2.5 max-w-[610px] text-[15px] text-muted-foreground">{t('guestJourney.results.subtitle')}</p>
-      </div>
-      <JourneyInline current={3} className="shrink-0 sm:pb-1" />
+    <div className="mb-6">
+      <Eyebrow className="mb-2.5 text-primary">
+        {t('guestJourney.results.eyebrow')}{fieldTitle ? ` / ${fieldTitle}` : ''}
+      </Eyebrow>
+      <JourneyInline current={3} className="mb-4" />
     </div>
   );
 
   if (isAnalyzing) {
     return (
-      <div>
+      <div className="mx-auto max-w-[720px]">
         {header}
         <Panel className="flex flex-col items-center gap-5 py-14 text-center">
           <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-primary" />
@@ -393,7 +380,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
   if (hasNoAssessment) {
     return (
-      <div>
+      <div className="mx-auto max-w-[720px]">
         {header}
         <Panel className="flex flex-col items-center gap-5 py-14 text-center">
           <AlertCircle className="h-12 w-12 text-muted-foreground" />
@@ -407,7 +394,6 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     );
   }
 
-  // Calculate Drive level
   const driveScore = pillarScores.find(p => p.pillar === 'drive')?.score || 0;
   const getDriveLevel = (score: number): 'high' | 'medium' | 'low' => {
     if (score >= 7.5) return 'high';
@@ -417,240 +403,186 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   const driveLevel = getDriveLevel(driveScore);
   const salita = summarise(loadSignals());
 
-  // Get strongest and weakest pillars (excluding Drive)
+  // Strongest and weakest among the four content pillars; Drive is read apart.
   const nonDrivePillars = pillarScores.filter(p => p.pillar !== 'drive');
   const sortedPillars = [...nonDrivePillars].sort((a, b) => b.score - a.score);
   const strongestPillar = sortedPillars[0];
   const weakestPillar = sortedPillars[sortedPillars.length - 1];
-
-  const legacyPillarKey = (pillar: string) => (pillar === 'computational_power' ? 'computational' : pillar);
-  const orderedScores = PILLAR_ORDER
+  const contentScores = PILLAR_ORDER
     .map((id) => pillarScores.find((p) => p.pillar === id))
-    .filter((p): p is PillarScore => !!p);
+    .filter((p): p is PillarScore => !!p && p.pillar !== 'drive');
 
   const translations = ximatarData?.translations;
-  const ximatarName = ximatarData
-    ? String(t(`ximatar.${ximatarData.label?.toLowerCase()}.name`, { defaultValue: ximatarData.label }))
-    : '';
-  const traits = splitTraits(translations?.core_traits);
+  const ximatarKey = (ximatarData?.label || '').toLowerCase();
+  const ximatarName = ximatarData ? String(t(`ximatar.${ximatarKey}.name`, { defaultValue: ximatarData.label })) : '';
+  const ximatarTitle = ximatarData ? String(t(`ximatar.${ximatarKey}.title`, { defaultValue: translations?.title || '' })) : '';
   const lowEvidence = openAnswerChars !== null && openAnswerChars < 150;
+  const weakName = weakestPillar ? pillarShortName(t, weakestPillar.pillar) : '';
+  const strongName = strongestPillar ? pillarShortName(t, strongestPillar.pillar) : '';
+  const averages = benchmarks?.averages ?? null;
+  const with3D = has3DModel(ximatarKey);
+  const withAR = with3D && canOpenAR();
 
-  const savedText = hasCv ? t('ximatarJourney.register_value_saved_with_cv') : t('ximatarJourney.register_value_saved');
+  const compareLine = (score: number, avg: number) => {
+    const diff = Math.round((score - avg) * 10) / 10;
+    if (Math.abs(diff) < 0.3) return t('results2.compare_in_line');
+    return diff > 0
+      ? t('results2.compare_above', { diff: fmt(diff) })
+      : t('results2.compare_below', { diff: fmt(Math.abs(diff)) });
+  };
+
+  const ScoreRow = ({ label, score, avg }: { label: string; score: number; avg: number | null }) => (
+    <div className="border-b border-[hsl(var(--xs-line))] py-5 last:border-b-0">
+      <div className="flex items-baseline justify-between gap-4">
+        <span className="text-[15px] text-foreground">{label}</span>
+        <b className="text-[22px] font-semibold tabular-nums tracking-[-0.5px] text-foreground">
+          {fmt(score)}<small className="text-[13px] font-normal text-muted-foreground"> / 10</small>
+        </b>
+      </div>
+      <div
+        className="relative mt-3 h-[6px] rounded-full bg-[hsl(var(--xs-line))]"
+        role="meter" aria-valuemin={0} aria-valuemax={10} aria-valuenow={Number(score.toFixed(1))} aria-label={label}
+      >
+        <span className="absolute inset-y-0 left-0 rounded-full bg-primary/25" style={{ width: `${Math.min(100, score * 10)}%` }} />
+        {avg !== null && (
+          <span className="absolute -top-[6px] h-[18px] w-[2px] rounded bg-foreground/70" style={{ left: `calc(${Math.min(100, avg * 10)}% - 1px)` }} aria-hidden />
+        )}
+        <span className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-background bg-primary shadow" style={{ left: `${Math.min(100, score * 10)}%` }} aria-hidden />
+      </div>
+      {avg !== null && (
+        <div className="mt-2.5 flex justify-between gap-3 text-[12px] text-muted-foreground">
+          <span>{t('results2.average_value', { value: fmt(avg) })}</span>
+          <span>{compareLine(score, avg)}</span>
+        </div>
+      )}
+    </div>
+  );
+
+  const goToSave = () => document.getElementById('xima-save')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
   return (
-    <div>
+    <div className="mx-auto max-w-[720px]">
       {header}
 
-      <div className="grid gap-5 lg:grid-cols-[1.06fr_1fr] lg:gap-6">
-        {/* 1 · Identity */}
-        <Panel className="p-6 sm:p-7">
-          {ximatarData ? (
-            <>
-              <div className="flex items-center gap-5 sm:gap-6">
-                <img
-                  src={ximatarData.image_url}
-                  alt={ximatarName}
-                  width={138}
-                  height={138}
-                  loading="lazy"
-                  decoding="async"
-                  className="h-[104px] w-[104px] shrink-0 rounded-[14px] bg-[hsl(var(--xs-page))] object-contain p-1 sm:h-[138px] sm:w-[138px]"
-                  onError={(e) => { e.currentTarget.src = '/ximatars/fox.webp'; }}
-                />
-                <div className="min-w-0">
-                  <Eyebrow className="text-primary">{t('ximatarJourney.your_ximatar_label')}</Eyebrow>
-                  <h2 className="my-1 text-[28px] font-semibold capitalize leading-tight tracking-[-0.8px] text-foreground sm:text-[34px] sm:tracking-[-1px]">
-                    {ximatarName}
-                  </h2>
-                  {/* Taxonomy 2.0: the subtitle names the shape (locale first, catalogue as fallback)
-                      and the line under it says why this animal: the pair. */}
-                  <p className="text-[15px] text-foreground sm:text-[17px]">
-                    {ximatarData.label
-                      ? t(`ximatar.${ximatarData.label.toLowerCase()}.title`, { defaultValue: translations?.title || '' })
-                      : translations?.title}
-                  </p>
-                  {strongestPillar && weakestPillar && (
-                    <p className="mt-1 text-[13px] text-muted-foreground">
-                      {t('ximatarJourney.pair_line', {
-                        strong: pillarShortName(t, strongestPillar.pillar),
-                        weak: pillarShortName(t, weakestPillar.pillar),
-                        defaultValue: 'Strong in {{strong}}, {{weak}} to cultivate.',
-                      })}
-                    </p>
-                  )}
-                  {traits && (
-                    <ul className="mt-3 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-2">
-                      {traits.map((trait) => (
-                        <li key={trait} className="rounded border border-[hsl(var(--xs-line))] px-2 py-0.5 text-[11px] text-foreground sm:px-2.5 sm:py-1 sm:text-xs">
-                          {trait}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
-              {translations?.behavior && (
-                <p className="mt-6 max-w-[620px] text-[15px] text-muted-foreground">{translations.behavior}</p>
-              )}
-              {!traits && translations?.core_traits && (
-                <p className="mt-3 max-w-[620px] text-sm text-muted-foreground">{translations.core_traits}</p>
-              )}
-            </>
-          ) : (
-            <p className="text-sm text-muted-foreground">{t('results.no_assessment_subtitle')}</p>
-          )}
+      {/* 1 · The reveal */}
+      <h1 className="text-[34px] font-semibold leading-[1.05] tracking-[-1.2px] text-foreground sm:text-[44px]">
+        {ximatarTitle ? `${ximatarTitle.replace(/[.!]$/, '')}.` : t('guestJourney.results.title')}
+      </h1>
+      <p className="mt-2 text-[15px] text-muted-foreground">{t('results2.subtitle')}</p>
 
+      {ximatarData && (
+        <section className="mt-6 overflow-hidden rounded-[26px] bg-[#0E1B3D] text-white">
+          <div className="flex items-center justify-between px-5 pt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-white/70">
+            <span>{t('ximatarJourney.your_ximatar_label')}</span>
+            <span>{ximatarName}</span>
+          </div>
+          <Ximatar3D
+            ref={viewerRef}
+            ximatarId={ximatarKey}
+            mode="reveal"
+            fallbackSrc={ximatarData.image_url}
+            alt={t('results2.stage_alt', { name: ximatarName })}
+            className="h-[320px] sm:h-[380px]"
+          />
+          <div className="flex flex-wrap items-center justify-between gap-2 px-5 pb-5 text-[13px] text-white/75">
+            <span>{with3D ? t('results2.drag_hint') : ''}</span>
+            <div className="flex gap-2">
+              {with3D && (
+                <button type="button" onClick={() => viewerRef.current?.replay()} className="min-h-[40px] rounded-full border border-white/30 px-3.5 text-white hover:bg-white/10">
+                  {t('results2.replay')}
+                </button>
+              )}
+              {withAR && (
+                <button type="button" onClick={() => openXimatarAR(ximatarKey)} className="min-h-[40px] rounded-full bg-white px-3.5 font-semibold text-[#0E1B3D]">
+                  {t('results2.ar')}
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 2 · The profile */}
+      {ximatarData && (
+        <section className="mt-10">
+          <Eyebrow>{t('results2.profile_eyebrow')}</Eyebrow>
+          <h2 className="mt-2 text-[44px] font-semibold capitalize leading-none tracking-[-1.6px] text-foreground">{ximatarName}.</h2>
+          {translations?.behavior && (
+            <p className="mt-4 text-[16px] leading-relaxed text-foreground">{translations.behavior.split(/(?<=[.!?])\s/)[0]}</p>
+          )}
           {strongestPillar && weakestPillar && (
-            <div className="mt-6 grid gap-5 border-t border-[hsl(var(--xs-line))] pt-6 sm:grid-cols-2 sm:gap-6">
-              <div>
-                <Eyebrow>{t('guestJourney.results.strength')}</Eyebrow>
-                <h3 className="mt-1.5 text-[17px] font-semibold text-foreground">
-                  {pillarShortName(t, strongestPillar.pillar)} · <span className="tabular-nums">{fmt(strongestPillar.score)}</span>
-                </h3>
-                <p className="mt-1.5 text-[13px] text-muted-foreground">{t(`pillars.${legacyPillarKey(strongestPillar.pillar)}.as_strength`)}</p>
+            <div className="mt-6 grid grid-cols-2 gap-5">
+              <div className="border-l-2 border-primary pl-3.5">
+                <small className="block text-[12px] text-muted-foreground">{t('results2.your_resource')}</small>
+                <b className="mt-1 block text-[16px] font-semibold text-foreground">{strongName}</b>
               </div>
-              <div>
-                <Eyebrow>{t('guestJourney.results.growth')}</Eyebrow>
-                <h3 className="mt-1.5 text-[17px] font-semibold text-foreground">
-                  {pillarShortName(t, weakestPillar.pillar)} · <span className="tabular-nums">{fmt(weakestPillar.score)}</span>
-                </h3>
-                <p className="mt-1.5 text-[13px] text-muted-foreground">{t(`pillars.${legacyPillarKey(weakestPillar.pillar)}.as_weakness`)}</p>
+              <div className="border-l-2 border-[hsl(var(--xs-line))] pl-3.5">
+                <small className="block text-[12px] text-muted-foreground">{t('results2.to_grow')}</small>
+                <b className="mt-1 block text-[16px] font-semibold text-foreground">{weakName}</b>
               </div>
             </div>
           )}
-
           {lowEvidence && (
-            <p className="mt-5 text-[13px] text-foreground">{t('ximatarJourney.result_low_evidence')}</p>
-          )}
-
-          {translations?.ideal_roles && (
-            <p className="mt-5 text-[13px] text-muted-foreground">
-              <b className="font-semibold text-foreground">{t('guestJourney.results.roles')}</b>
-              <br />
-              {translations.ideal_roles}
-            </p>
-          )}
-
-          <details className="mt-5 border-t border-[hsl(var(--xs-line))] pt-4 text-[13px]">
-            <summary className="cursor-pointer font-semibold text-primary">{t('guestJourney.results.how_to_read')}</summary>
-            <div className="mt-3 space-y-3 text-muted-foreground">
-              <p>{t('ximatarJourney.result_reading')}</p>
-              {driveLevel !== 'high' && <p>{t('ximatarJourney.result_drive_separate')}</p>}
-              {translations?.weaknesses && <p>{translations.weaknesses}</p>}
+            <div className="mt-6 border-l-2 border-foreground/60 pl-3.5">
+              <b className="block text-[14px] font-semibold text-foreground">{t('results2.reliability_title')}</b>
+              <p className="mt-1 text-[14px] text-muted-foreground">{t('ximatarJourney.result_low_evidence')}</p>
             </div>
+          )}
+        </section>
+      )}
+
+      {/* 3 · Resources compared with the average */}
+      {contentScores.length > 0 && (
+        <section className="mt-12">
+          <h2 className="text-[30px] font-semibold leading-[1.1] tracking-[-1px] text-foreground">{t('results2.compare_title')}</h2>
+          <p className="mt-3 text-[14px] text-muted-foreground">
+            {averages ? t('results2.compare_intro', { count: benchmarks?.count ?? 0 }) : t('results2.compare_pending', { count: benchmarks?.count ?? 0, min: benchmarks?.minCount ?? 30 })}
+          </p>
+          {averages && (
+            <div className="mt-4 flex gap-5 text-[12px] text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-primary" />{t('results2.legend_you')}</span>
+              <span className="inline-flex items-center gap-1.5"><span className="h-3 w-[2px] rounded bg-foreground/70" />{t('results2.legend_average')}</span>
+            </div>
+          )}
+          <div className="mt-2">
+            {contentScores.map((p) => (
+              <ScoreRow key={p.pillar} label={pillarShortName(t, p.pillar)} score={p.score} avg={averages ? averages[p.pillar as keyof typeof averages] ?? null : null} />
+            ))}
+          </div>
+          <details className="border-t border-[hsl(var(--xs-line))] py-4 text-[14px]">
+            <summary className="cursor-pointer font-semibold text-foreground">{t('results2.faq_resource_q')}</summary>
+            <p className="mt-2 text-muted-foreground">{t('results2.faq_resource_a')}</p>
           </details>
-        </Panel>
+          <details className="border-t border-[hsl(var(--xs-line))] py-4 text-[14px]">
+            <summary className="cursor-pointer font-semibold text-foreground">{t('results2.faq_read_q')}</summary>
+            <p className="mt-2 text-muted-foreground">{t('ximatarJourney.result_reading')}</p>
+          </details>
+        </section>
+      )}
 
-        {/* 2 · The five pillars */}
-        {pillarScores.length > 0 && (
-          <Panel className="p-6 sm:p-7">
-            <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-[21px] font-semibold tracking-[-0.5px] text-foreground sm:text-[23px]">{t('guestJourney.results.pillars_title')}</h2>
-              <small className="text-[13px] text-muted-foreground">{t('guestJourney.results.pillars_scale')}</small>
-            </div>
-            <p className="text-[13px] text-muted-foreground">{t('guestJourney.results.pillars_intro')}</p>
-            <div className="mt-2">
-              {orderedScores.map((pillar) => {
-                const isStrong = strongestPillar?.pillar === pillar.pillar;
-                const isWeak = weakestPillar?.pillar === pillar.pillar;
-                const pct = Math.max(0, Math.min(100, pillar.score * 10));
-                return (
-                  <div key={pillar.pillar} className="mt-5 sm:mt-6">
-                    <div className="mb-2 flex items-center justify-between gap-4 text-[13px]">
-                      <span className="text-foreground">{pillarShortName(t, pillar.pillar)}</span>
-                      <b className="font-semibold tabular-nums text-foreground">{fmt(pillar.score)}</b>
-                    </div>
-                    <div
-                      className="h-[7px] rounded-sm bg-[hsl(var(--xs-line))]"
-                      role="meter"
-                      aria-valuemin={0}
-                      aria-valuemax={10}
-                      aria-valuenow={Number(pillar.score.toFixed(1))}
-                      aria-label={pillarShortName(t, pillar.pillar)}
-                    >
-                      <span className="block h-full rounded-sm bg-primary transition-[width] duration-500" style={{ width: `${pct}%` }} />
-                    </div>
-                    {(isStrong || isWeak) && (
-                      <small className="mt-1.5 block text-[11px] text-muted-foreground">
-                        {isStrong ? t('guestJourney.results.strength_tag') : t('guestJourney.results.growth_tag')}
-                      </small>
-                    )}
-                  </div>
-                );
-              })}
-              <div className="mt-4 flex justify-between font-mono text-[11px] text-muted-foreground" aria-hidden>
-                <span>0</span><span>5</span><span>10</span>
-              </div>
-            </div>
-            <p className="mt-4 text-[11px] text-muted-foreground">{t('guestJourney.results.pillars_note')}</p>
-            {totalScore !== null && (
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                {t('ximatarJourney.scores_total_label')} <span className="font-semibold tabular-nums text-foreground">{fmt(totalScore)}/50</span>
-              </p>
-            )}
-          </Panel>
-        )}
+      {/* 4 · Drive, on its own scale */}
+      <section className="mt-8 rounded-[22px] bg-[hsl(var(--xs-page))] p-5 sm:p-6">
+        <Eyebrow className="text-primary">{t('results2.drive_eyebrow')}</Eyebrow>
+        <h2 className="mt-2 text-[30px] font-semibold tracking-[-1px] text-foreground">Drive</h2>
+        <p className="mt-2 text-[14px] text-muted-foreground">{t('results2.drive_body')}</p>
+        <ScoreRow label={`Drive · ${String(t(`guestJourney.results.drive_${driveLevel}`)).toLowerCase()}`} score={driveScore} avg={averages ? averages.drive ?? null : null} />
+        <div className="mt-2 border-t border-[hsl(var(--xs-line))] pt-4">
+          <p className="text-[14px] font-semibold text-foreground">{t('salita.cta_title')}</p>
+          <p className="mt-1 text-[13px] text-muted-foreground">
+            {salita ? t('salita.facts_line', { attempts: salita.hardAttempts, retries: salita.retries }) : t('salita.cta_body')}
+          </p>
+          <Button size="sm" variant="outline" className="mt-3" onClick={() => navigate('/salita')}>{t('salita.cta_button')}</Button>
+        </div>
+      </section>
 
-        {/* 3 · Drive */}
-        <Panel className="flex flex-col justify-center p-6 sm:p-7">
-          <div className="mb-3 flex items-center justify-between gap-4">
-            <h2 className="text-[21px] font-semibold tracking-[-0.5px] text-foreground sm:text-[23px]">{t('guestJourney.results.drive_title')}</h2>
-            <small className="text-[13px] text-muted-foreground">{t('guestJourney.results.drive_small')}</small>
-          </div>
-          <div className="my-3 flex items-baseline gap-3.5">
-            <b className="text-[40px] font-semibold leading-none tracking-[-1.5px] text-foreground sm:text-[52px]">
-              <span className="tabular-nums">{fmt(driveScore)}</span>
-              <small className="text-base font-normal tracking-normal text-muted-foreground"> / 10</small>
-            </b>
-            <span className="rounded bg-primary/10 px-2.5 py-0.5 text-xs text-primary">{t(`guestJourney.results.drive_${driveLevel}`)}</span>
-          </div>
-          <p className="max-w-[450px] text-[13px] text-muted-foreground">{t(`ximatarJourney.drive_${driveLevel}_body`)}</p>
-          <div className="my-5 flex gap-1" role="list" aria-label={t('guestJourney.results.drive_title')}>
-            {(['low', 'medium', 'high'] as const).map((level) => {
-              const active = level === driveLevel;
-              return (
-                <span
-                  key={level}
-                  role="listitem"
-                  aria-current={active ? 'true' : undefined}
-                  className={cn(
-                    'flex-1 border-b-[5px] pb-2 text-center text-[11px]',
-                    active ? 'border-primary font-bold text-primary' : 'border-[hsl(var(--xs-line))] text-muted-foreground',
-                  )}
-                >
-                  {t(`guestJourney.results.drive_${level}`)}
-                  {active && ` · ${t('guestJourney.results.drive_yours')}`}
-                </span>
-              );
-            })}
-          </div>
-          <p className="max-w-[450px] text-[13px] text-muted-foreground">{t('ximatarJourney.drive_section_body')}</p>
-          <p className="mt-3 text-[11px] text-muted-foreground">{t('guestJourney.results.drive_note')}</p>
-
-          {/* La Salita: Drive read on behaviour, offered after the result, never required. */}
-          <div className="mt-5 rounded-xl border border-[hsl(var(--xs-line))] bg-[hsl(var(--xs-page))] p-4">
-            <p className="text-[14px] font-semibold text-foreground">{t('salita.cta_title')}</p>
-            {salita ? (
-              <p className="mt-1 text-[13px] text-muted-foreground">
-                {t('salita.facts_line', { attempts: salita.hardAttempts, retries: salita.retries })}
-              </p>
-            ) : (
-              <p className="mt-1 text-[13px] text-muted-foreground">{t('salita.cta_body')}</p>
-            )}
-            <Button size="sm" variant={salita ? 'outline' : 'default'} className="mt-3" onClick={() => navigate('/salita')}>
-              {t('salita.cta_button')}
-            </Button>
-          </div>
-        </Panel>
-
-        {/* 4 · Mentor (optional) */}
-        <Panel className="p-6 sm:p-7">
-          <div className="mb-3 flex items-center justify-between gap-4">
-            <h2 className="text-[21px] font-semibold tracking-[-0.5px] text-foreground sm:text-[23px]">{t('guestJourney.results.mentor_title')}</h2>
-            <small className="text-[13px] text-muted-foreground">{t('guestJourney.results.mentor_optional')}</small>
-          </div>
-          <p className="mb-5 max-w-[590px] text-[13px] text-muted-foreground">{t('guestJourney.results.mentor_intro')}</p>
-
+      {/* 5 · The mentor: the next step of the growth */}
+      <section className="mt-12" id="xima-mentor">
+        <Eyebrow className="text-primary">{t('results2.mentor_eyebrow', { pillar: weakName })}</Eyebrow>
+        <h2 className="mt-2 text-[30px] font-semibold leading-[1.1] tracking-[-1px] text-foreground">{t('results2.mentor_title')}</h2>
+        <p className="mt-3 text-[15px] text-muted-foreground">{t('results2.mentor_body', { pillar: weakName })}</p>
+        <p className="mt-3 inline-block border-b-2 border-primary pb-1 text-[14px] font-semibold text-primary">{t('results2.mentor_free_call')}</p>
+        <p className="mt-4 text-[13px] text-muted-foreground">{t('results2.mentor_matched')}</p>
+        <div className="mt-4">
           <FeaturedProfessionals
             variant="compact"
             limit={2}
@@ -659,90 +591,99 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             pillarScores={pillarScores}
             ximatar={ximatarData?.label}
           />
-
-          <div className="mt-4 flex flex-col gap-2 border-t border-[hsl(var(--xs-line))] pt-4 text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-4" aria-live="polite">
-            {selectedProfessional ? (
-              <>
-                <span className="text-primary">
-                  {t('guestJourney.results.mentor_selected_note', {
-                    name: (JSON.parse(localStorage.getItem('selected_professional_data') || 'null')?.full_name || '').split(/\s+/)[0],
-                  })}
-                </span>
-                <button type="button" onClick={handleDeselectMentor} className="shrink-0 text-left text-primary hover:underline sm:text-right">
-                  {t('guestJourney.results.mentor_later')}
-                </button>
-              </>
-            ) : (
-              <span className="text-muted-foreground">{t('ximatarJourney.mentor_choose_later')}</span>
-            )}
+        </div>
+        {selectedProfessional && (
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[13px]" aria-live="polite">
+            <span className="text-primary">
+              {t('guestJourney.results.mentor_selected_note', {
+                name: (JSON.parse(localStorage.getItem('selected_professional_data') || 'null')?.full_name || '').split(/\s+/)[0],
+              })}
+            </span>
+            <button type="button" onClick={handleDeselectMentor} className="text-primary hover:underline">{t('guestJourney.results.mentor_later')}</button>
           </div>
-        </Panel>
-      </div>
+        )}
+        <ol className="mt-6 grid gap-2.5 text-[14px] text-foreground">
+          {(isAuthenticated ? ['results2.step_auth_1', 'results2.step_auth_2', 'results2.step_3'] : ['results2.step_1', 'results2.step_2', 'results2.step_3']).map((key, i) => (
+            <li key={key} className="grid grid-cols-[22px_1fr] gap-2"><span className="font-mono text-[12px] text-primary">{i + 1}</span>{t(key)}</li>
+          ))}
+        </ol>
+        <details className="mt-4 border-t border-[hsl(var(--xs-line))] py-4 text-[14px]">
+          <summary className="cursor-pointer font-semibold text-foreground">{t('results2.mentor_after_q')}</summary>
+          <p className="mt-2 text-muted-foreground">{t('results2.mentor_after_a')}</p>
+        </details>
+        <details className="border-t border-[hsl(var(--xs-line))] py-4 text-[14px]">
+          <summary className="cursor-pointer font-semibold text-foreground">{t('results2.mentor_sees_q')}</summary>
+          <p className="mt-2 text-muted-foreground">{t('results2.mentor_sees_a')}</p>
+        </details>
+      </section>
+
+      {/* 6 · Save: in the flow, never over the text */}
+      <section id="xima-save" className="mt-8 rounded-[26px] bg-primary p-6 text-primary-foreground sm:p-7">
+        <Eyebrow className="!text-white/80">{t('results2.save_eyebrow')}</Eyebrow>
+        <h2 className="mt-2 text-[30px] font-semibold leading-[1.1] tracking-[-1px]">
+          {isAuthenticated ? t('guestJourney.results.save_title_auth') : t('results2.save_title', { name: ximatarName })}
+        </h2>
+        {!isAuthenticated && <p className="mt-3 text-[15px] text-white/90">{t('results2.save_body')}</p>}
+        <Button onClick={handleProceedWithSelection} className="mt-5 h-[52px] w-full rounded-[12px] bg-white text-[16px] font-semibold text-primary hover:bg-white/90">
+          {isAuthenticated ? t('results.proceed_to_dashboard') : t('results2.save_cta')}
+          <ArrowUpRight size={17} aria-hidden />
+        </Button>
+        {!isAuthenticated && (
+          <>
+            <p className="mt-2 text-[13px] text-white/80">{t('results2.save_how')}</p>
+            <ul className="mt-5 grid gap-4 border-t border-white/25 pt-5">
+              {(['keep', 'grow', 'visible'] as const).map((k) => (
+                <li key={k}>
+                  <b className="block text-[15px] font-semibold">{t(`results2.benefit_${k}_title`)}</b>
+                  <span className="text-[13px] text-white/85">{t(`results2.benefit_${k}_body`)}</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </section>
+      {!isAuthenticated && <p className="mt-3 text-[13px] text-muted-foreground">{t('results2.save_without')}</p>}
+
+      {/* 7 · Where to look next */}
+      {translations?.ideal_roles && (
+        <section className="mt-12">
+          <Eyebrow className="text-primary">{t('results2.roles_eyebrow')}</Eyebrow>
+          <h2 className="mt-2 text-[30px] font-semibold tracking-[-1px] text-foreground">{t('results2.roles_title')}</h2>
+          <p className="mt-3 text-[15px] text-foreground">{translations.ideal_roles}</p>
+          <p className="mt-2 text-[13px] text-muted-foreground">{t('results2.roles_note')}</p>
+        </section>
+      )}
+      {translations?.behavior && (
+        <details className="mt-6 border-t border-[hsl(var(--xs-line))] py-4 text-[14px]">
+          <summary className="cursor-pointer font-semibold text-foreground">{t('results2.how_born', { name: ximatarName })}</summary>
+          <div className="mt-2 space-y-2 text-muted-foreground">
+            <p>{translations.behavior}</p>
+            {strongestPillar && weakestPillar && (
+              <p>{t('ximatarJourney.pair_line', { strong: strongName, weak: weakName, defaultValue: 'Strong in {{strong}}, {{weak}} to cultivate.' })}</p>
+            )}
+            {translations.weaknesses && <p>{translations.weaknesses}</p>}
+          </div>
+        </details>
+      )}
 
       {!hasCv && openResponses.length > 0 && (
-        <Panel className="mt-5 p-6 sm:p-7 lg:mt-6">
+        <Panel className="mt-8 p-6 sm:p-7">
           <h2 className="mb-5 text-[21px] font-semibold tracking-[-0.5px] text-foreground sm:text-[23px]">{t('ximatarJourney.open_scores_title')}</h2>
           <div className="space-y-6">
             {openResponses.map((response) => (
-              <OpenAnswerScore
-                key={response.open_key}
-                openKey={response.open_key}
-                answer={response.answer}
-                rubric={response.rubric}
-                fieldKey={fieldKey || undefined}
-              />
+              <OpenAnswerScore key={response.open_key} openKey={response.open_key} answer={response.answer} rubric={response.rubric} fieldKey={fieldKey || undefined} />
             ))}
           </div>
         </Panel>
       )}
 
-      {/* What the account keeps. On a phone it stays here, in the flow: inside
-          the sticky bar it would cover half the screen for the whole page. */}
       {!isAuthenticated && (
-        <div className="mt-5 px-1 sm:hidden">
-          <p className="text-[13px] text-muted-foreground">{savedText} {t('ximatarJourney.register_value_next')}</p>
-          {!hasCv && guestOpenAnswerCount > 0 && (
-            <p className="mt-1 text-[11px] text-muted-foreground">
-              {t('ximatarJourney.open_scores_after_register', { count: guestOpenAnswerCount })}
-            </p>
-          )}
-        </div>
+        <p className="mt-10 text-center">
+          <button type="button" onClick={goToSave} className="text-[14px] text-foreground underline underline-offset-4">{t('results2.back_to_save')}</button>
+        </p>
       )}
-
-      {/* The one translucent surface of the page: the save bar, sticky at the bottom. */}
-      <div className="xs-glass sticky bottom-4 z-20 mt-3 flex flex-col gap-3 !p-4 sm:mt-5 sm:!px-7 sm:!py-6 lg:mt-6 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
-        <div className="min-w-0">
-          <h2 className="text-base font-semibold tracking-[-0.3px] text-foreground sm:text-xl">
-            {isAuthenticated ? t('guestJourney.results.save_title_auth') : t('guestJourney.results.save_title')}
-          </h2>
-          {!isAuthenticated && (
-            <div className="hidden sm:block">
-              <p className="mt-1 max-w-[600px] text-[13px] text-muted-foreground">
-                {savedText} {t('ximatarJourney.register_value_next')}
-              </p>
-              {!hasCv && guestOpenAnswerCount > 0 && (
-                <p className="mt-1 max-w-[600px] text-[11px] text-muted-foreground">
-                  {t('ximatarJourney.open_scores_after_register', { count: guestOpenAnswerCount })}
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-        <Button onClick={handleProceedWithSelection} className="h-12 shrink-0 rounded-[7px] px-5 text-[15px] lg:w-auto">
-          {isAuthenticated ? t('results.proceed_to_dashboard') : t('guestJourney.results.save_cta')}
-          <ArrowUpRight size={17} aria-hidden />
-        </Button>
-      </div>
     </div>
   );
 };
-
-/** "Affidabilità, Costanza, Lealtà" → chips; a sentence stays a sentence. */
-function splitTraits(text: string | null | undefined): string[] | null {
-  if (!text) return null;
-  const parts = text.split(/[,;·•\n]+/).map((s) => s.trim().replace(/\.$/, '')).filter(Boolean);
-  if (parts.length < 2 || parts.length > 6 || parts.some((p) => p.length > 32)) return null;
-  return parts;
-}
 
 export default ResultsComparison;
