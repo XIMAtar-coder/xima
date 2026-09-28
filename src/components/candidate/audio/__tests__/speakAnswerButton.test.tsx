@@ -86,13 +86,7 @@ describe('SpeakAnswerButton', () => {
     fireEvent.click(screen.getByRole('button', { name: /answer by voice/i }));
     const rec = recognitions[0];
 
-    act(() => rec.onresult?.({
-      resultIndex: 0,
-      results: [
-        { isFinal: true, 0: { transcript: 'Una cosa' } },
-        { isFinal: true, 0: { transcript: 'e un’altra' } },
-      ],
-    }));
+    act(() => rec.onresult?.(finalEvent(result('Una cosa'), result('e un’altra'))));
 
     expect(screen.getByTestId('answer').textContent).toBe('Una cosa e un’altra');
   });
