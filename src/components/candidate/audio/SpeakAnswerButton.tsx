@@ -70,12 +70,13 @@ export const SpeakAnswerButton: React.FC<{ onAppend: (text: string) => void; dis
     rec.continuous = true;
     rec.interimResults = false;
     rec.onresult = (e) => {
-      let chunk = '';
+      const chunks: string[] = [];
       for (let i = e.resultIndex; i < e.results.length; i += 1) {
         const r = e.results[i];
-        if (r.isFinal) chunk += r[0].transcript;
+        if (r.isFinal) chunks.push(r[0].transcript);
       }
-      if (chunk.trim()) onAppendRef.current(chunk.trim());
+      const chunk = chunks.join(' ').trim();
+      if (chunk) onAppendRef.current(chunk);
     };
     rec.onerror = () => setListening(false);
     rec.onend = () => setListening(false);
