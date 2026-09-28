@@ -37,6 +37,16 @@ export const SpeakAnswerButton: React.FC<{ onAppend: (text: string) => void; dis
   const [supported, setSupported] = useState(false);
   const [listening, setListening] = useState(false);
   const recRef = useRef<Recognition | null>(null);
+  // Dictation keeps the recogniser alive across utterances, and each caller
+  // builds the new answer from the value of the render that created the
+  // callback. The onresult handler registered in start() would otherwise
+  // close over that first render forever, appending every later chunk onto
+  // the pre-dictation text and dropping earlier chunks. Keep the latest
+  // callback in a ref so each result appends onto the current answer.
+  const onAppendRef = useRef(onAppend);
+  useEffect(() => {
+    onAppendRef.current = onAppend;
+  });
 
   useEffect(() => { setSupported(Boolean(getRecognitionCtor())); }, []);
   useEffect(() => () => { try { recRef.current?.stop(); } catch { /* ignore */ } }, []);
@@ -60,12 +70,13 @@ export const SpeakAnswerButton: React.FC<{ onAppend: (text: string) => void; dis
     rec.continuous = true;
     rec.interimResults = false;
     rec.onresult = (e) => {
-      let chunk = '';
+      const chunks: string[] = [];
       for (let i = e.resultIndex; i < e.results.length; i += 1) {
         const r = e.results[i];
-        if (r.isFinal) chunk += r[0].transcript;
+        if (r.isFinal) chunks.push(r[0].transcript);
       }
-      if (chunk.trim()) onAppend(chunk.trim());
+      const chunk = chunks.join(' ').trim();
+      if (chunk) onAppendRef.current(chunk);
     };
     rec.onerror = () => setListening(false);
     rec.onend = () => setListening(false);
