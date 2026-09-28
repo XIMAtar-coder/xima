@@ -38,6 +38,12 @@ interface MentorRecord {
   experience_years: number | null;
   is_active: boolean;
   updated_at: string;
+  fields?: string[] | null;
+  title_i18n?: Record<string, string> | null;
+  bio_i18n?: Record<string, string> | null;
+  specialties_i18n?: Record<string, string[]> | null;
+  free_intro_enabled?: boolean | null;
+  free_intro_duration_minutes?: number | null;
 }
 
 interface TensionGap {
@@ -132,30 +138,41 @@ function computeMentorScoreWithTension(
 function computeMentorScoreBasic(
   mentor: MentorRecord,
   pillarScores: Array<{ pillar: string; score: number }>,
-  userXimatar: string | null
+  userXimatar: string | null,
+  userField: string | null = null
 ): { score: number; reasons: string[] } {
   const reasons: string[] = [];
-
-  const sortedPillars = [...pillarScores].sort((a, b) => b.score - a.score);
+  // Drive is a separate scale: strongest and weakest among the four pillars.
+  const content = pillarScores.filter(p => p.pillar !== "drive");
+  const sortedPillars = [...content].sort((a, b) => b.score - a.score);
   const weakestPillar = sortedPillars[sortedPillars.length - 1]?.pillar;
   const strongestPillar = sortedPillars[0]?.pillar;
 
   const mentorPillars = (mentor.xima_pillars || []).map(p =>
     p === "computational" ? "computational_power" : p
   );
+  const mentorFields = mentor.fields || [];
 
-  // Growth potential
-  const coversWeakness = weakestPillar && mentorPillars.includes(weakestPillar);
-  const growthScore = coversWeakness ? 40 : 15;
-  if (coversWeakness) reasons.push(`Can help develop your ${weakestPillar.replace("_", " ")}`);
+  // Field: the mentor works in the candidate's field (0-30). Unknown on
+  // either side stays neutral instead of rewarding everyone.
+  let fieldScore = 12;
+  if (userField && mentorFields.length > 0) {
+    fieldScore = mentorFields.includes(userField) ? 30 : 0;
+    if (fieldScore) reasons.push("Works in your field");
+  }
 
-  // Strength alignment
-  const coversStrength = strongestPillar && mentorPillars.includes(strongestPillar);
-  const alignScore = coversStrength ? 25 : 10;
-  if (coversStrength) reasons.push(`Matches your strength in ${strongestPillar.replace("_", " ")}`);
+  // Growth: covers the pillar to grow (0-30)
+  const coversWeakness = !!weakestPillar && mentorPillars.includes(weakestPillar);
+  const growthScore = coversWeakness ? 30 : 5;
+  if (coversWeakness) reasons.push(`Can help develop your ${weakestPillar!.replace("_", " ")}`);
 
-  // XIMAtar compatibility
-  let ximatarScore = 15;
+  // Strength alignment (0-15)
+  const coversStrength = !!strongestPillar && mentorPillars.includes(strongestPillar);
+  const alignScore = coversStrength ? 15 : 5;
+  if (coversStrength) reasons.push(`Matches your strength in ${strongestPillar!.replace("_", " ")}`);
+
+  // XIMAtar compatibility (0-15)
+  let ximatarScore = 5;
   if (userXimatar && XIMATAR_PROFILES[userXimatar]) {
     const profile = XIMATAR_PROFILES[userXimatar];
     const topArchetypePillars = Object.entries(profile.pillars)
@@ -163,15 +180,15 @@ function computeMentorScoreBasic(
       .slice(0, 2)
       .map(([k]) => k);
     const matches = mentorPillars.filter(p => topArchetypePillars.includes(p));
-    ximatarScore = matches.length > 0 ? 25 : 10;
+    ximatarScore = matches.length > 0 ? 15 : 5;
     if (matches.length > 0) reasons.push(`Complements your ${profile.name} profile`);
   }
 
-  // Rating
-  const ratingScore = mentor.rating ? Math.round((mentor.rating / 5) * 15) : 10;
+  // Rating (0-10)
+  const ratingScore = mentor.rating ? Math.round((Number(mentor.rating) / 5) * 10) : 5;
 
   return {
-    score: Math.min(100, growthScore + alignScore + ximatarScore + ratingScore),
+    score: Math.min(100, fieldScore + growthScore + alignScore + ximatarScore + ratingScore),
     reasons: reasons.length > 0 ? reasons : ["Recommended mentor"],
   };
 }
@@ -232,7 +249,8 @@ serve(async (req) => {
 
     // Parse body
     const body = await req.json().catch(() => ({}));
-    const { pillar_scores, ximatar, refresh_seed, mode, current_mentor_id } = body;
+    const { pillar_scores, ximatar, refresh_seed, mode, current_mentor_id, field } = body;
+    const userField: string | null = typeof field === "string" && field ? field : null;
 
     console.log(JSON.stringify({ type: "recommend_mentors_start", correlation_id: correlationId, user_id: userId, mode: mode || "initial", is_guest: !userId }));
 
@@ -244,7 +262,7 @@ serve(async (req) => {
       cacheVersionTag = await buildUserVersionTag(userId!);
       try {
         const encoder = new TextEncoder();
-        const canonical = JSON.stringify({ ximatar: ximatar ?? null });
+        const canonical = JSON.stringify({ ximatar: ximatar ?? null, field: userField });
         const buf = await crypto.subtle.digest(
           "SHA-256",
           encoder.encode(`recommend-mentors\n${cacheVersionTag}\n${canonical}`)
@@ -285,7 +303,7 @@ serve(async (req) => {
     // ---- Fetch mentors ----
     const { data: mentors, error: mentorsError } = await supabase
       .from("mentors")
-      .select("id, name, title, bio, profile_image_url, specialties, xima_pillars, rating, experience_years, is_active, updated_at")
+      .select("id, name, title, bio, profile_image_url, specialties, xima_pillars, rating, experience_years, is_active, updated_at, fields, title_i18n, bio_i18n, specialties_i18n, free_intro_enabled, free_intro_duration_minutes")
       .eq("is_active", true)
       .order("rating", { ascending: false });
 
@@ -357,7 +375,7 @@ serve(async (req) => {
       // Score current mentor with tension data
       const currentScore = hasTension
         ? computeMentorScoreWithTension(currentMentor, tensionGaps, userArchetype || "", userLevel, alignmentScore)
-        : computeMentorScoreBasic(currentMentor, userPillarScores, userArchetype);
+        : computeMentorScoreBasic(currentMentor, userPillarScores, userArchetype, userField);
 
       // Score all others to find best alternative
       const alternatives = mentors
@@ -365,7 +383,7 @@ serve(async (req) => {
         .map((m: MentorRecord) => {
           const s = hasTension
             ? computeMentorScoreWithTension(m, tensionGaps, userArchetype || "", userLevel, alignmentScore)
-            : computeMentorScoreBasic(m, userPillarScores, userArchetype);
+            : computeMentorScoreBasic(m, userPillarScores, userArchetype, userField);
           return { ...m, score: s.score, reasons: s.reasons } as ScoredMentor;
         })
         .sort((a, b) => b.score - a.score);
@@ -400,10 +418,16 @@ serve(async (req) => {
 
     // ---- Initial mode: score all mentors ----
     const scored: ScoredMentor[] = mentors.map((mentor: MentorRecord) => {
-      const { score, reasons } = hasTension
-        ? computeMentorScoreWithTension(mentor, tensionGaps, userArchetype || "", userLevel, alignmentScore)
-        : computeMentorScoreBasic(mentor, userPillarScores, userArchetype);
-      return { ...mentor, score, reasons };
+      if (!hasTension) {
+        const { score, reasons } = computeMentorScoreBasic(mentor, userPillarScores, userArchetype, userField);
+        return { ...mentor, score, reasons };
+      }
+      // With the CV tension the gaps lead; the field still counts for a fifth.
+      const t = computeMentorScoreWithTension(mentor, tensionGaps, userArchetype || "", userLevel, alignmentScore);
+      const mentorFields = mentor.fields || [];
+      const inField = !!userField && mentorFields.includes(userField);
+      const fieldPart = !userField || mentorFields.length === 0 ? 10 : inField ? 20 : 0;
+      return { ...mentor, score: Math.min(100, Math.round(t.score * 0.8) + fieldPart), reasons: inField ? ["Works in your field", ...t.reasons] : t.reasons };
     });
 
     scored.sort((a, b) => b.score - a.score);
@@ -526,6 +550,12 @@ Return ONLY a JSON array of strings:
         experience_years: mentor.experience_years,
         compatibility_score: mentor.score,
         match_reasons: mentor.reasons,
+        fields: mentor.fields || [],
+        title_i18n: mentor.title_i18n || null,
+        bio_i18n: mentor.bio_i18n || null,
+        specialties_i18n: mentor.specialties_i18n || null,
+        free_intro_enabled: !!mentor.free_intro_enabled,
+        free_intro_duration_minutes: mentor.free_intro_duration_minutes ?? null,
         xima_narrative: narratives[i] || mentor.reasons.join(". "),
         ...(hasTension ? {
           growth_focus: {

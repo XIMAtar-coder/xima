@@ -19,7 +19,8 @@ const languages = [
 const LanguageSwitcher: React.FC = () => {
   const { i18n, t } = useTranslation();
 
-  const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
+  const base = (i18n.resolvedLanguage || i18n.language || 'it').split('-')[0];
+  const currentLanguage = languages.find(lang => lang.code === base) || languages[0];
 
   const handleLanguageChange = (languageCode: string) => {
     i18n.changeLanguage(languageCode);
@@ -44,7 +45,7 @@ const LanguageSwitcher: React.FC = () => {
             key={language.code}
             onClick={() => handleLanguageChange(language.code)}
             className={`flex items-center gap-3 cursor-pointer ${
-              i18n.language === language.code ? 'bg-primary/10 text-primary' : ''
+              base === language.code ? 'bg-primary/10 text-primary' : ''
             }`}
           >
             <span className="text-lg">{language.flag}</span>

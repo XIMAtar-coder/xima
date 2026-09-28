@@ -795,7 +795,8 @@
   "mentors": {
     "select_title": "Choose Your Mentor",
     "select_subtitle": "Select the mentor who will guide your professional growth journey",
-    "choose_to_continue": "Choose your mentor to continue"
+    "choose_to_continue": "Choose your mentor to continue",
+    "free_intro_minutes": "First call free · {{minutes}} min"
   },
   "open_scoring": {
     "title": "Open Question Scores",
@@ -1508,7 +1509,7 @@
     "cv_role_fit_title": "Role fit and growth paths",
     "drive_overview_body": "Measured by the choices with a cost in the questionnaire: how often you pick the road that makes you grow. It shows your pace of growth, not your worth.",
     "choose_mentor_title": "Choose your mentor",
-    "choose_mentor_body": "We suggest the mentors closest to your profile. The first 30-minute call is free.",
+    "choose_mentor_body": "We suggest the mentors closest to your profile. The first introductory call is free.",
     "choose_mentor_cta": "See your mentors"
   },
   "about": {
@@ -10204,7 +10205,7 @@
     "mentor_eyebrow": "The next step · {{pillar}}",
     "mentor_title": "With someone by your side.",
     "mentor_body": "A mentor knows your profile and helps you train {{pillar}}, with exercises and resources picked for you.",
-    "mentor_free_call": "First call: 30 minutes, free.",
+    "mentor_free_call": "The first introductory call is free.",
     "mentor_matched": "We suggest the mentors closest to your profile.",
     "step_1": "Save your result, with Google or your email.",
     "step_2": "Choose the mentor and suggest a time.",
@@ -10273,7 +10274,7 @@
     "mentor_body": "The mentor knows your profile and helps you with the pillar to grow.",
     "mentor_example_1": "For example, for the Owl:",
     "mentor_example_2": "more room for Creativity.",
-    "mentor_free": "First call: 30 minutes, free.",
+    "mentor_free": "The first introductory call is free.",
     "mentor_how": "Choose the mentor and suggest a time: the mentor confirms or suggests another one.",
     "mentor_growth": "Together with your growth path: courses, books and podcasts to keep going.",
     "animals_eyebrow": "12 animals, different ways of working",

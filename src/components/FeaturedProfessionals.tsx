@@ -31,6 +31,9 @@ type Professional = {
   updated_at?: string | null;
   active_coached_profiles_count?: number;
   total_coached_profiles_count?: number;
+  /** First call free, and how long, as the mentor set it. */
+  free_intro_enabled?: boolean;
+  free_intro_duration_minutes?: number | null;
 };
 
 interface FeaturedProfessionalsProps {
@@ -42,6 +45,17 @@ interface FeaturedProfessionalsProps {
   /** `compact`: the flat two-up cards of the guest results page. */
   variant?: 'default' | 'compact';
 }
+
+/** Title, bio and specialties in the reader's language, falling back to the stored text. */
+const localized = (m: any, locale: string) => {
+  const pick = (obj: any) => (obj && typeof obj === 'object' ? obj[locale] || obj.it || obj.en : null);
+  const bio = pick(m.bio_i18n) || m.bio || '';
+  return {
+    title: pick(m.title_i18n) || m.title || '',
+    locale_bio: { en: bio, it: bio, es: bio } as Record<string, string>,
+    expertise_tags: (pick(m.specialties_i18n) as string[] | null) || m.specialties || [],
+  };
+};
 
 // Simple seeded shuffle for client-side fallback
 function seededShuffle<T>(arr: T[], seed: string): T[] {
@@ -96,6 +110,7 @@ export default function FeaturedProfessionals({
         body: { 
           pillar_scores: pillarScores || [],
           ximatar: ximatar || null,
+          field: (() => { try { return localStorage.getItem('preferred_field') || null; } catch { return null; } })(),
           refresh_seed: seed || undefined
         }
       });
@@ -113,11 +128,11 @@ export default function FeaturedProfessionals({
         const mapped = data.recommendations.map((m: any) => ({
           id: m.id,
           full_name: m.name || 'Unknown',
-          title: m.title || '',
+          ...localized(m, locale),
           linkedin_url: '',
           avatar_path: m.profile_image_url,
-          locale_bio: { en: m.bio || '', it: m.bio || '', es: m.bio || '' },
-          expertise_tags: m.specialties || [],
+          free_intro_enabled: !!m.free_intro_enabled,
+          free_intro_duration_minutes: m.free_intro_duration_minutes ?? null,
           compatibility_score: typeof m.compatibility_score === 'number' ? m.compatibility_score : null,
           xima_pillars: m.xima_pillars || [],
           match_reasons: m.match_reasons || [],
@@ -165,7 +180,7 @@ export default function FeaturedProfessionals({
     // Use the public view that is accessible to both anon and authenticated users
     const { data, error: viewError } = await supabase
       .from('mentors_public')
-      .select('id, name, title, bio, profile_image_url, specialties, xima_pillars, rating, updated_at, active_coached_profiles_count, total_coached_profiles_count')
+      .select('id, name, title, bio, profile_image_url, specialties, xima_pillars, rating, updated_at, active_coached_profiles_count, total_coached_profiles_count, title_i18n, bio_i18n, specialties_i18n, free_intro_enabled, free_intro_duration_minutes')
       .order('rating', { ascending: false });
 
     if (viewError) {
@@ -178,11 +193,11 @@ export default function FeaturedProfessionals({
       let mapped = data.map((m: any) => ({
         id: m.id,
         full_name: m.name || 'Unknown',
-        title: m.title || '',
+        ...localized(m, locale),
         linkedin_url: '',
         avatar_path: m.profile_image_url,
-        locale_bio: { en: m.bio || '', it: m.bio || '', es: m.bio || '' },
-        expertise_tags: m.specialties || [],
+        free_intro_enabled: !!m.free_intro_enabled,
+        free_intro_duration_minutes: m.free_intro_duration_minutes ?? null,
         // A star rating scaled to 0-100 used to be shown here as "% match"
         // (and 85 when there was no rating). It says nothing about fit with
         // this candidate, so the fallback shows no percentage at all.
@@ -336,6 +351,11 @@ export default function FeaturedProfessionals({
                     <b className="font-semibold text-foreground">{t('guestJourney.results.mentor_pillars')}</b>
                     <br />
                     {p.xima_pillars.slice(0, 3).map((pillar) => pillarShortName(t, pillar)).join(' · ')}
+                  </p>
+                )}
+                {p.free_intro_enabled && (
+                  <p className="mt-3 text-xs font-semibold text-primary">
+                    {t('mentors.free_intro_minutes', { minutes: p.free_intro_duration_minutes || 15, defaultValue: 'First call free · {{minutes}} min' })}
                   </p>
                 )}
                 <div className="mt-auto pt-4">

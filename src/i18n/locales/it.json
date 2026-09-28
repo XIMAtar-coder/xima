@@ -1435,7 +1435,7 @@
     "cv_role_fit_title": "Ruoli adatti e percorsi di crescita",
     "drive_overview_body": "Misurato dalle scelte con un costo del questionario: quanto spesso scegli la strada che ti fa crescere. Indica il ritmo di crescita, non il tuo valore.",
     "choose_mentor_title": "Scegli il tuo mentor",
-    "choose_mentor_body": "Ti proponiamo i mentor più vicini al tuo profilo. La prima chiamata di 30 minuti è gratuita.",
+    "choose_mentor_body": "Ti proponiamo i mentor più vicini al tuo profilo. La prima chiamata conoscitiva è gratuita.",
     "choose_mentor_cta": "Vedi i tuoi mentor"
   },
   "cv_analysis": {
@@ -1485,7 +1485,8 @@
   "mentors": {
     "select_title": "Scegli il tuo mentor",
     "select_subtitle": "Seleziona il mentor che guiderà il tuo percorso di crescita professionale",
-    "choose_to_continue": "Scegli il tuo mentor per continuare"
+    "choose_to_continue": "Scegli il tuo mentor per continuare",
+    "free_intro_minutes": "Prima chiamata gratuita · {{minutes}} min"
   },
   "open_scoring": {
     "title": "Punteggi delle domande aperte",
@@ -10204,7 +10205,7 @@
     "mentor_eyebrow": "Il prossimo passo · {{pillar}}",
     "mentor_title": "Con qualcuno al tuo fianco.",
     "mentor_body": "Un mentor conosce il tuo profilo e ti aiuta ad allenare la {{pillar}}, con esercizi e risorse scelte per te.",
-    "mentor_free_call": "Prima chiamata: 30 minuti, gratuita.",
+    "mentor_free_call": "La prima chiamata conoscitiva è gratuita.",
     "mentor_matched": "Ti proponiamo i mentor più vicini al tuo profilo.",
     "step_1": "Salva il risultato, con Google o con la tua email.",
     "step_2": "Scegli il mentor e proponi un orario.",
@@ -10273,7 +10274,7 @@
     "mentor_body": "Il mentor conosce il tuo profilo e ti aiuta sul pilastro da far crescere.",
     "mentor_example_1": "Per esempio, per il Gufo:",
     "mentor_example_2": "più spazio alla Creatività.",
-    "mentor_free": "Prima chiamata: 30 minuti, gratuita.",
+    "mentor_free": "La prima chiamata conoscitiva è gratuita.",
     "mentor_how": "Scegli il mentor e proponi un orario: il mentor conferma o ti propone un'alternativa.",
     "mentor_growth": "Insieme al tuo percorso di crescita: corsi, libri e podcast per continuare.",
     "animals_eyebrow": "12 animali, modi diversi di lavorare",

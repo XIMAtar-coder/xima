@@ -155,7 +155,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
             <DropdownMenuItem
               key={language.code}
               onClick={() => handleLanguageChange(language.code)}
-              className={`flex cursor-pointer items-center gap-3 ${i18n.language === language.code ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`flex cursor-pointer items-center gap-3 ${locale === language.code ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'}`}
             >
               <span className="font-medium">{language.name}</span>
             </DropdownMenuItem>

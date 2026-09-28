@@ -292,9 +292,10 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           log.debug('[useProfileData] Using cached mentor from profile:', mentor_profile.name);
         } else if (mentor_profile_id) {
           log.debug('[useProfileData] Fetching mentor from mentors table:', mentor_profile_id);
-          const { data: mentorData, error: profError } = await supabase
-            .from('mentors_public')
-            .select('id, user_id, name, title, profile_image_url, bio, specialties, xima_pillars')
+          // bio_i18n is newer than the generated types.
+          const { data: mentorData, error: profError } = await (supabase
+            .from('mentors_public') as any)
+            .select('id, user_id, name, title, profile_image_url, bio, specialties, xima_pillars, bio_i18n')
             .eq('id', mentor_profile_id)
             .maybeSingle();
 
@@ -306,7 +307,8 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
 
             mentor_profile = {
               name: mentorData.name || '',
-              bio: mentorData.bio || null,
+              // The bio in the interface language when the mentor has one.
+              bio: ((mentorData as any).bio_i18n?.[(typeof document !== 'undefined' && document.documentElement.lang || 'it').slice(0, 2)] as string | undefined) || mentorData.bio || null,
               avatar_url: mentorData.profile_image_url || null,
               calendar_url: null,
             };

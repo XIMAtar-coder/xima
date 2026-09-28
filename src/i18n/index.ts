@@ -61,7 +61,8 @@ const LANGUAGE_STORAGE_KEY = 'xima.language';
 
 const getStoredLanguage = (): string | null => {
   try {
-    return localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    // Older visits cached the full browser tag ("en-GB").
+    return localStorage.getItem(LANGUAGE_STORAGE_KEY)?.split('-')[0].toLowerCase() ?? null;
   } catch {
     return null;
   }
@@ -107,6 +108,9 @@ export function initI18n(): Promise<typeof i18n> {
         order: ['localStorage', 'navigator', 'htmlTag'],
         caches: ['localStorage'],
         lookupLocalStorage: LANGUAGE_STORAGE_KEY,
+        // "en-GB" → "en": i18n.language is always one of it/en/es. With the
+        // full tag the switcher found no match and showed "IT" on English pages.
+        convertDetectedLanguage: (lng: string) => lng.split('-')[0].toLowerCase(),
       },
 
       interpolation: {

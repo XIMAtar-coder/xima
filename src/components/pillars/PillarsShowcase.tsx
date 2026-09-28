@@ -80,7 +80,8 @@ export function PillarsShowcase() {
 
   const handleCTA = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const lang = i18n.language === 'it' ? '' : `/${i18n.language}`;
+    const base = (i18n.language || 'it').split('-')[0];
+    const lang = base === 'it' ? '' : `/${base}`;
     navigate(`${lang}/ximatar-journey`);
   };
 
