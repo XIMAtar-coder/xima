@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { PublishConsentDialog, publishConsentFields } from '@/components/business/PublishConsentDialog';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
@@ -46,8 +47,10 @@ const CreateJobOffer = () => {
     }
   }, [isAuthenticated, isBusiness, businessLoading, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent, saveAsDraft = true) => {
-    e.preventDefault();
+  const [consentOpen, setConsentOpen] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent | null, saveAsDraft = true) => {
+    e?.preventDefault();
     
     if (!formData.title || !formData.description) {
       toast({
@@ -76,7 +79,9 @@ const CreateJobOffer = () => {
           seniority: formData.seniority || null,
           department: formData.department || null,
           salary_range: formData.salary_range || null,
-          status: saveAsDraft ? 'draft' : 'active',
+          // Publishing goes through the consent dialog and writes 'published'
+          // (the status the candidate listings read) with the consent stamp.
+          ...(saveAsDraft ? { status: 'draft' } : publishConsentFields()),
           locale: 'en',
         });
 
@@ -87,6 +92,7 @@ const CreateJobOffer = () => {
         description: saveAsDraft ? t('jobs.job_draft_saved') : t('jobs.job_published'),
       });
 
+      setConsentOpen(false);
       navigate('/business/jobs');
     } catch (error: any) {
       log.error('Error creating job offer:', error);
@@ -329,7 +335,10 @@ const CreateJobOffer = () => {
                 </Button>
                 <Button
                   type="button"
-                  onClick={(e) => handleSubmit(e, false)}
+                  onClick={() => {
+                    if (!formData.title || !formData.description) { handleSubmit(null, false); return; }
+                    setConsentOpen(true);
+                  }}
                   disabled={loading}
                   className="flex-1 bg-primary hover:bg-primary/90"
                 >
@@ -347,6 +356,7 @@ const CreateJobOffer = () => {
           </Card>
         </form>
       </div>
+      <PublishConsentDialog open={consentOpen} onOpenChange={setConsentOpen} onConfirm={() => handleSubmit(null, false)} busy={loading} />
     </BusinessLayout>
   );
 };

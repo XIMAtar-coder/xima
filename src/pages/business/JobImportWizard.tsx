@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { PublishConsentDialog, publishConsentFields } from '@/components/business/PublishConsentDialog';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
@@ -261,14 +262,18 @@ const JobImportWizard = () => {
     }
   };
 
+  const [consentOpen, setConsentOpen] = useState(false);
+
+  // XIMA HR publishes the listing straight away, so it needs the consent.
   const handleActivateXimaHr = async () => {
+    setConsentOpen(false);
     setSaving(true);
     try {
       // XIMA HR listings publish immediately: XIMA HR team runs selection
       // from real candidate interest, not from a dormant draft.
       const { data: jp, error: jpErr } = await supabase
         .from('job_posts')
-        .insert(buildJobPostRow('published', true))
+        .insert({ ...buildJobPostRow('published', true), ...publishConsentFields() } as any)
         .select('id')
         .single();
       if (jpErr || !jp) throw jpErr || new Error('Failed to create job post');
@@ -530,13 +535,14 @@ const JobImportWizard = () => {
               <Button onClick={handleConvertToGoal} disabled={saving} className="flex-1">
                 {t('business.jobs.import.step2.convert_to_goal')}
               </Button>
-              <Button variant="outline" onClick={handleActivateXimaHr} disabled={saving} className="flex-1">
+              <Button variant="outline" onClick={() => setConsentOpen(true)} disabled={saving} className="flex-1">
                 {t('business.jobs.import.step2.activate_xima_hr')}
               </Button>
             </div>
           </div>
         )}
       </div>
+      <PublishConsentDialog open={consentOpen} onOpenChange={setConsentOpen} onConfirm={handleActivateXimaHr} busy={saving} />
     </BusinessLayout>
   );
 };

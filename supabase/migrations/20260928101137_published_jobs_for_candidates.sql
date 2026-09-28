@@ -1,3 +1,11 @@
+-- Publishing a listing now requires the company's consent to show it to
+-- every XIMA candidate and to spread it on other channels. The consent is
+-- stored on the post; listings published before this have none and stay
+-- out of the candidate list until the company publishes them again.
+ALTER TABLE public.job_posts
+  ADD COLUMN IF NOT EXISTS publish_consent_at timestamptz,
+  ADD COLUMN IF NOT EXISTS publish_consent_version text;
+
 -- Candidates could not read any job post: job_posts only lets the owning
 -- business select its own rows. The opportunities page therefore always
 -- showed "0". This function exposes the published, complete listings to
@@ -41,6 +49,7 @@ AS $$
   FROM public.job_posts j
   LEFT JOIN public.business_profiles bp ON bp.user_id = j.business_id
   WHERE j.status = 'published'
+    AND j.publish_consent_at IS NOT NULL
     AND auth.uid() IS NOT NULL
     AND coalesce(trim(j.title), '') <> ''
     AND j.title NOT ILIKE 'imported job position%'

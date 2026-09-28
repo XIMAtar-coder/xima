@@ -4662,7 +4662,13 @@
     "import_data": "Dati di importazione",
     "original_title": "Titolo originale",
     "open_listing": "Apri l’annuncio",
-    "select_hint": "Seleziona un annuncio per vedere la sua scheda."
+    "select_hint": "Seleziona un annuncio per vedere la sua scheda.",
+    "publish_consent": {
+      "title": "Pubblica questo annuncio",
+      "body": "Un annuncio pubblicato è visibile a tutti i candidati XIMA e XIMA può diffonderlo su altri canali, come il sito, i portali di lavoro e i social.",
+      "checkbox": "Autorizzo XIMA a pubblicare questo annuncio e a renderlo visibile a tutti i candidati, sulla piattaforma e su altri canali.",
+      "confirm": "Pubblica"
+    }
   },
   "opportunities": {
     "my_opportunities": "Le mie opportunità",

@@ -4663,7 +4663,13 @@
     "import_data": "Import data",
     "original_title": "Original title",
     "open_listing": "Open the listing",
-    "select_hint": "Select a listing to see its record."
+    "select_hint": "Select a listing to see its record.",
+    "publish_consent": {
+      "title": "Publish this listing",
+      "body": "A published listing is visible to every XIMA candidate and can be shared by XIMA on other channels, such as the website, job boards and social networks.",
+      "checkbox": "I authorise XIMA to publish this listing and make it visible to all candidates, on the platform and on other channels.",
+      "confirm": "Publish"
+    }
   },
   "opportunities": {
     "my_opportunities": "My Opportunities",

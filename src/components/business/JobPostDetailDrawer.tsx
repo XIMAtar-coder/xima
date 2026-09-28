@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { PublishConsentDialog, publishConsentFields } from '@/components/business/PublishConsentDialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -122,18 +123,27 @@ export default function JobPostDetailDrawer({
     }
   };
 
+  const [consentOpen, setConsentOpen] = useState(false);
+
+  // Publishing asks for the consent first; taking a listing down does not.
   const handleToggleStatus = async () => {
-    const newStatus = job.status === 'published' ? 'draft' : 'published';
+    if (job.status !== 'published') { setConsentOpen(true); return; }
+    await applyStatus({ status: 'draft' });
+  };
+
+  const applyStatus = async (fields: Record<string, unknown>) => {
+    const newStatus = fields.status as string;
     try {
       const { error } = await supabase
         .from('job_posts')
-        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .update({ ...fields, updated_at: new Date().toISOString() } as any)
         .eq('id', job.id)
         .eq('business_id', user?.id ?? '');
 
       if (error) throw error;
 
       toast.success(newStatus === 'published' ? t('jobs.job_published') : t('jobs.job_unpublished'));
+      setConsentOpen(false);
       onUpdate();
     } catch (error: any) {
       toast.error(error.message || t('common.error'));
@@ -183,6 +193,7 @@ export default function JobPostDetailDrawer({
             {t('jobs.create_challenge')}
           </Button>
 
+          <PublishConsentDialog open={consentOpen} onOpenChange={setConsentOpen} onConfirm={() => applyStatus(publishConsentFields())} />
           {job.status !== 'archived' && (
             <Button variant="outline" onClick={handleToggleStatus} className="gap-2">
               {job.status === 'published' ? (
