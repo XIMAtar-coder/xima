@@ -75,7 +75,7 @@ export const SpeakAnswerButton: React.FC<{ onAppend: (text: string) => void; dis
         const r = e.results[i];
         if (r.isFinal) chunk += r[0].transcript;
       }
-      if (chunk.trim()) onAppend(chunk.trim());
+      if (chunk.trim()) onAppendRef.current(chunk.trim());
     };
     rec.onerror = () => setListening(false);
     rec.onend = () => setListening(false);
