@@ -97,6 +97,32 @@ interface Props {
   onGame: (run: GameRun) => void;
 }
 
+const STARTED_KEY = 'xima.v2.startedAt';
+
+/**
+ * One anonymous row per completed test (field, duration, the five scores):
+ * the base for the averages shown on the results and for the real duration
+ * of the test. No identifier leaves the browser. Never blocks the flow.
+ */
+const recordCompletion = (fieldKey: string, scores: Record<string, number>) => {
+  let seconds: number | null = null;
+  try {
+    const started = Number(sessionStorage.getItem(STARTED_KEY));
+    if (started) seconds = Math.round((Date.now() - started) / 1000);
+    sessionStorage.removeItem(STARTED_KEY);
+  } catch { /* storage unavailable */ }
+  const round = (n: number) => Math.round(n * 100) / 100;
+  void supabase.rpc('record_assessment_completion' as never, {
+    p_field: fieldKey,
+    p_version: '2.0',
+    p_duration_seconds: seconds,
+    p_scores: {
+      computational_power: round(scores.computational_power), communication: round(scores.communication),
+      knowledge: round(scores.knowledge), creativity: round(scores.creativity), drive: round(scores.drive),
+    },
+  } as never).then(({ error }) => { if (error) log.warn('[v2] benchmark row not stored', error); });
+};
+
 const AssessmentV2: React.FC<Props> = ({
   fieldKey, onComplete, onGoBack, questionIndex, onQuestionChange,
   v2, openAnswers, onMcAnswer, onDriveAnswer, onOrder, onOpenAnswerChange, onPause, onGame,
@@ -160,6 +186,13 @@ const AssessmentV2: React.FC<Props> = ({
 
   const go = (next: number) => onQuestionChange(Math.min(Math.max(next, 0), flow.length - 1));
 
+  // The timing for the benchmark starts at the first scene, after the intro.
+  useEffect(() => {
+    if (index >= 1) {
+      try { if (!sessionStorage.getItem(STARTED_KEY)) sessionStorage.setItem(STARTED_KEY, String(Date.now())); } catch { /* storage unavailable */ }
+    }
+  }, [index]);
+
   // The examples live outside the sealed content, like in v1: they are help,
   // and they can be corrected without resealing. Not every field has them yet;
   // no example, no button.
@@ -173,6 +206,7 @@ const AssessmentV2: React.FC<Props> = ({
     const scores = computeScoresV2(answers);
     const derived = selectArchetypeFromAssessmentPillars(scores);
     const language = ((i18n.language || 'en').split('-')[0] as 'it' | 'en' | 'es');
+    recordCompletion(fieldKey, scores);
     try {
       if (!isAuthenticated || !user) {
         // Guest: the same keys the v1 flow leaves for the results page and
