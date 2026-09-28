@@ -3676,6 +3676,8 @@ export type Database = {
           linked_hiring_goal_id: string | null
           locale: string | null
           location: string | null
+          publish_consent_at: string | null
+          publish_consent_version: string | null
           published_at: string | null
           ral_max: number | null
           ral_min: number | null
@@ -3713,6 +3715,8 @@ export type Database = {
           linked_hiring_goal_id?: string | null
           locale?: string | null
           location?: string | null
+          publish_consent_at?: string | null
+          publish_consent_version?: string | null
           published_at?: string | null
           ral_max?: number | null
           ral_min?: number | null
@@ -3750,6 +3754,8 @@ export type Database = {
           linked_hiring_goal_id?: string | null
           locale?: string | null
           location?: string | null
+          publish_consent_at?: string | null
+          publish_consent_version?: string | null
           published_at?: string | null
           ral_max?: number | null
           ral_min?: number | null
@@ -6553,6 +6559,24 @@ export type Database = {
       is_thread_participant: {
         Args: { p_thread_id: string; p_user_id: string }
         Returns: boolean
+      }
+      list_published_jobs: {
+        Args: { p_limit?: number }
+        Returns: {
+          company_name: string
+          created_at: string
+          description: string
+          employment_type: string
+          id: string
+          locale: string
+          location: string
+          published_at: string
+          ral_max: number
+          ral_min: number
+          salary_range: string
+          seniority: string
+          title: string
+        }[]
       }
       log_bot_event: {
         Args: {
