@@ -47,7 +47,8 @@ const normalise = (job: any): NormalisedJob => ({
   location: job.location || job.job?.location || null,
   workMode: job.work_mode || job.job?.work_mode || null,
   seniority: job.seniority || job.job?.seniority || null,
-  salary: job.salary_range || job.salary || job.job?.salary || null,
+  salary: job.salary_range || job.salary || job.job?.salary
+    || (job.ral_min && job.ral_max ? `${job.ral_min}–${job.ral_max}` : null),
   rawTitle: job.raw_title || job.original_title || null,
   createdAt: job.created_at || null,
 });
@@ -94,18 +95,17 @@ const JobsBrowse = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [importOpen, setImportOpen] = useState(false);
 
-  // Fetch all active hiring goals
+  // Published listings. Candidates cannot read job_posts directly (only the
+  // owning business can), so the listings come from list_published_jobs,
+  // which returns the complete published posts with the fields a listing needs.
   const { data: jobs, isLoading: jobsLoading } = useQuery({
-    queryKey: ['jobs-browse', filters],
+    queryKey: ['jobs-browse'],
     queryFn: async () => {
-      const query = supabase
-        .from('hiring_goal_drafts' as any)
-        .select('id, role_title, description, created_at, status')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(50);
-
-      const { data } = await query;
+      const { data, error } = await supabase.rpc('list_published_jobs' as any, { p_limit: 100 });
+      if (error) {
+        log.warn('[jobs-browse] list_published_jobs failed:', error);
+        return [];
+      }
       return (data || []) as any[];
     },
   });
@@ -132,7 +132,14 @@ const JobsBrowse = () => {
   });
 
   const suggestions: NormalisedJob[] = (matches || []).map(normalise);
-  const allJobs: NormalisedJob[] = (jobs || []).map(normalise);
+  const matchesFilters = (job: NormalisedJob) => {
+    const loc = filters.location.trim().toLowerCase();
+    if (loc && !(job.location || '').toLowerCase().includes(loc)) return false;
+    if (filters.work_mode && (job.workMode || '').toLowerCase() !== filters.work_mode.toLowerCase()) return false;
+    if (filters.seniority && (job.seniority || '').toLowerCase() !== filters.seniority.toLowerCase()) return false;
+    return true;
+  };
+  const allJobs: NormalisedJob[] = (jobs || []).map(normalise).filter(matchesFilters);
   const everything = [...suggestions, ...allJobs];
   const selected = everything.find(j => j.id === selectedId) || suggestions[0] || allJobs[0] || null;
 
@@ -150,7 +157,7 @@ const JobsBrowse = () => {
   return (
     <CandidateLayout breadcrumb={<span className="block truncate">{t('nav.candidate_area', 'Your space')} / {t('jobs.hero_title', 'Your opportunities')}</span>}>
       <Seo
-        title="Job Opportunities — Browse Open Roles | XIMA"
+        title={`${t('page_title.opportunities', 'Your opportunities')} — XIMA`}
         description="Browse open job opportunities matched to your XIMAtar profile. Discover roles aligned with your behavioral strengths and growth path."
         path="/jobs"
       />
