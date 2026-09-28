@@ -13,7 +13,7 @@ import { SpeakAnswerButton } from '../SpeakAnswerButton';
 
 type FakeResultEvent = {
   resultIndex: number;
-  results: Array<ArrayLike<{ transcript: string }> & { isFinal: boolean }>;
+  results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }>;
 };
 
 class FakeRecognition {
@@ -39,9 +39,13 @@ beforeEach(() => {
   });
 });
 
-const finalEvent = (transcript: string): FakeResultEvent => ({
+/** One final recogniser result, shaped like the Web Speech API object. */
+const result = (transcript: string) =>
+  Object.assign([{ transcript }], { isFinal: true });
+
+const finalEvent = (...rs: ReturnType<typeof result>[]): FakeResultEvent => ({
   resultIndex: 0,
-  results: [{ isFinal: true, 0: { transcript } }],
+  results: rs,
 });
 
 /** Mirrors the real callers: append onto the value of the current render. */
