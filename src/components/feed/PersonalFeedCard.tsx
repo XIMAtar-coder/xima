@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { localizeFeedItem } from '@/lib/feedText';
 import {
   TrendingUp, TrendingDown, CheckCircle, RefreshCw, Zap,
   BookOpen, Star, FileText, Users, Target, Award, Info,
@@ -26,17 +27,17 @@ const iconMap: Record<string, LucideIcon> = {
   lightbulb: Lightbulb,
 };
 
-const formatRelativeTime = (dateStr: string): string => {
+/** "3 minuti fa", "ieri", "3 min ago" — in the reader's language. */
+const formatRelativeTime = (dateStr: string, lang: string): string => {
   const diff = Date.now() - new Date(dateStr).getTime();
+  const rtf = new Intl.RelativeTimeFormat(lang, { numeric: 'auto', style: 'short' });
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'Just now';
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 60) return rtf.format(-Math.max(mins, 0), 'minute');
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return rtf.format(-hours, 'hour');
   const days = Math.floor(hours / 24);
-  if (days === 1) return 'Yesterday';
-  if (days < 7) return `${days}d ago`;
-  return new Date(dateStr).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  if (days < 7) return rtf.format(-days, 'day');
+  return new Date(dateStr).toLocaleDateString(lang, { month: 'short', day: 'numeric' });
 };
 
 const pillarLabels: Record<string, string> = {
@@ -95,7 +96,8 @@ const Chip = ({ children }: { children: React.ReactNode }) => (
 // Personal journey items
 const JourneyCard = ({ item, onMarkRead, hoursSinceLastGrowth }: { item: PersonalFeedItem; onMarkRead?: (id: string) => void; hoursSinceLastGrowth?: number | null }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const text = localizeFeedItem(t, item);
   const IconComponent = iconMap[item.icon || 'info'] || Info;
 
   const handleAction = (e: React.MouseEvent) => {
@@ -124,11 +126,11 @@ const JourneyCard = ({ item, onMarkRead, hoursSinceLastGrowth }: { item: Persona
             {!item.is_read && <i className="h-1.5 w-1.5 rounded-full bg-primary" aria-label={t('feed.unread', 'Unread')} />}
             {typeLabel}
           </span>
-          <time className="shrink-0 text-[12px] text-muted-foreground">{formatRelativeTime(item.created_at)}</time>
+          <time className="shrink-0 text-[12px] text-muted-foreground">{formatRelativeTime(item.created_at, i18n.language)}</time>
         </div>
 
-        <h3 className={cn('mt-1.5 text-[16px] font-semibold leading-snug text-foreground', item.priority >= 3 && 'text-[18px]')}>{item.title}</h3>
-        {item.body && <p className="mt-1 text-[14px] leading-relaxed text-muted-foreground">{item.body}</p>}
+        <h3 className={cn('mt-1.5 text-[16px] font-semibold leading-snug text-foreground', item.priority >= 3 && 'text-[18px]')}>{text.title}</h3>
+        {text.body && <p className="mt-1 text-[14px] leading-relaxed text-muted-foreground">{text.body}</p>}
 
         {(item.feed_type === 'growth_recommendation' || item.feed_type === 'growth_test_result') && hoursSinceLastGrowth !== null && hoursSinceLastGrowth !== undefined && hoursSinceLastGrowth > 0 && (
           <p className="mt-1.5 text-[12px] text-muted-foreground/80">
@@ -141,15 +143,15 @@ const JourneyCard = ({ item, onMarkRead, hoursSinceLastGrowth }: { item: Persona
           </p>
         )}
 
-        {(item.actor_name || pillar || (item.action_url && item.action_label)) && (
+        {(item.actor_name || pillar || (item.action_url && text.action)) && (
           <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-1.5">
               {item.actor_name && <Chip>{item.actor_name}</Chip>}
-              {pillar && <Chip>{pillarLabels[pillar] || pillar}</Chip>}
+              {pillar && <Chip>{t(`pillars.${pillar}.name`, { defaultValue: pillarLabels[pillar] || pillar })}</Chip>}
             </div>
-            {item.action_url && item.action_label && (
+            {item.action_url && text.action && (
               <button type="button" className="text-[14px] font-semibold text-primary hover:underline" onClick={handleAction}>
-                {item.action_label} <span aria-hidden="true">→</span>
+                {text.action} <span aria-hidden="true">→</span>
               </button>
             )}
           </div>
@@ -189,7 +191,7 @@ const ExternalContentCard = ({
     const capitalArchetype = userArchetype.charAt(0).toUpperCase() + userArchetype.slice(1);
     relevanceLabel = `Recommended for ${capitalArchetype}s`;
   } else if (targetPillars.length > 0) {
-    const pillar = pillarLabels[targetPillars[0]] || targetPillars[0];
+    const pillar = t(`pillars.${targetPillars[0]}.name`, { defaultValue: pillarLabels[targetPillars[0]] || targetPillars[0] }) as string;
     relevanceLabel = `Boosts your ${pillar}`;
   }
 

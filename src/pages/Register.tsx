@@ -115,7 +115,7 @@ const Register = () => {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await signUp(formData.email, formData.password, formData.name);
+      const { data, error } = await signUp(formData.email.trim(), formData.password, formData.name.trim());
       if (error) {
         if (isPasswordAuthError(error)) {
           // Supabase also rejects leaked passwords; say so at the field.
@@ -160,7 +160,7 @@ const Register = () => {
             body: {
               user_id: newUserId,
               email: formData.email,
-              name: formData.name,
+              name: formData.name.trim(),
             },
           });
           if (emailErr) {
@@ -283,19 +283,15 @@ const Register = () => {
           </p>
 
           <form onSubmit={handleSubmit} noValidate>
-            {/* Consent applies to both ways of signing up: Google used to skip it. */}
-            <ConsentCheckboxes
-              legend={t('register.consents_legend')}
-              privacyAccepted={privacyAccepted} termsAccepted={termsAccepted}
-              onPrivacyChange={setPrivacyAccepted} onTermsChange={setTermsAccepted}
-              showError={showConsentError} className="mb-4"
-            />
-
             <GoogleAuthButton
               mode="register"
               beforeStart={() => {
-                if (!validateConsents()) return false;
-                try { sessionStorage.setItem(PENDING_CONSENT_KEY, i18n.language); } catch { /* storage unavailable */ }
+                // Google goes straight through: if the boxes below are already
+                // ticked the consent is recorded on return, otherwise the
+                // /consent page asks for it before entry (AuthCallback).
+                if (privacyAccepted && termsAccepted) {
+                  try { sessionStorage.setItem(PENDING_CONSENT_KEY, i18n.language); } catch { /* storage unavailable */ }
+                }
                 return true;
               }}
             />
@@ -303,6 +299,14 @@ const Register = () => {
             <div className="my-5 flex items-center gap-3.5 text-[11px] text-muted-foreground before:h-px before:flex-1 before:bg-[hsl(var(--xs-line))] after:h-px after:flex-1 after:bg-[hsl(var(--xs-line))]">
               {t('register.or_with_email_short')}
             </div>
+
+            {/* Email sign-up needs the consent here; Google asks for it on /consent. */}
+            <ConsentCheckboxes
+              legend={t('register.consents_legend')}
+              privacyAccepted={privacyAccepted} termsAccepted={termsAccepted}
+              onPrivacyChange={setPrivacyAccepted} onTermsChange={setTermsAccepted}
+              showError={showConsentError} className="mb-4"
+            />
 
             <div className="grid gap-3.5">
               <div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
 import { Card } from '@/components/ui/card';
@@ -57,6 +58,7 @@ const animalAvatars = [
 ];
 
 const Onboarding = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, updateUserProfile, updatePillars, updateAvatar, assignMentor, isAuthenticated } = useUser();
@@ -164,7 +166,7 @@ const Onboarding = () => {
   
   return (
     <MainLayout requireAuth>
-      <Seo title="Onboarding — XIMA" description="Set up your XIMA profile." path="/onboarding" noindex />
+      <Seo title={`${t('page_title.onboarding', 'First steps')} — XIMA`} description="Set up your XIMA profile." path="/onboarding" noindex />
       <div className="container max-w-4xl mx-auto pt-4">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2 text-foreground">

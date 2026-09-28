@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ximatarDisplayName } from '@/lib/ximatarName';
 import { Upload, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
@@ -77,6 +78,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
 
   const initials = fullName ? fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'U';
   const driveValue = typeof pillarScores?.drive === 'number' ? pillarScores.drive : null;
+  const shownName = ximatarDisplayName(t, ximatarName);
   const driveLabel = driveLevel ? t(`profile.drive_level_${driveLevel}`) : null;
   const tagline = storytelling ? storytelling.split(/(?<=[.!?])\s/)[0] : null;
 
@@ -85,13 +87,13 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
       <div className="flex items-start gap-5">
         <div className="h-[104px] w-[104px] shrink-0 overflow-hidden rounded-[10px] bg-[hsl(var(--xs-page))] sm:h-[132px] sm:w-[132px]">
           {ximatarImage ? (
-            <OptimizedImage src={ximatarImage} alt={ximatarName || 'XIMAtar'} width={132} height={132} priority className="h-full w-full object-cover" />
+            <OptimizedImage src={ximatarImage} alt={shownName || 'XIMAtar'} width={132} height={132} priority className="h-full w-full object-cover" />
           ) : null}
         </div>
         <div className="min-w-0 flex-1">
           <Eyebrow>{t('dashboard.ximatar_label', 'Your XIMAtar')}</Eyebrow>
           <h2 className="mt-1.5 truncate text-[26px] font-semibold leading-tight tracking-[-0.6px] text-foreground sm:text-[30px]">
-            {ximatarName || t('profile.ximatar_archetype', 'XIMAtar Archetype')}
+            {shownName || t('profile.ximatar_archetype', 'XIMAtar Archetype')}
           </h2>
           {tagline && <p className="mt-1.5 line-clamp-2 text-[14px] text-muted-foreground">{tagline}</p>}
           {driveLabel && (

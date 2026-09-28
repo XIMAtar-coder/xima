@@ -257,7 +257,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                 <p className={`text-sm mt-1 ${
                   overallDelta > 0 ? 'text-primary' : overallDelta < 0 ? 'text-destructive' : 'text-muted-foreground'
                 }`}>
-                  {t('dashboard.cv_score_alignment', 'Score Alignment')}: {overallDelta > 0 ? '+' : ''}{overallDelta.toFixed(1)} overall
+                  {t('dashboard.cv_score_alignment', 'Score Alignment')}: {overallDelta > 0 ? '+' : ''}{overallDelta.toFixed(1)} {t('dashboard.cv_overall', 'overall')}
                 </p>
               )}
             </div>
@@ -510,7 +510,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
           <div className="space-y-4 pt-4 border-t">
             <h4 className="text-sm font-semibold flex items-center gap-2">
               <Briefcase className="w-4 h-4 text-primary" />
-              Role fit and growth paths
+              {t('dashboard.cv_role_fit_title', 'Role fit and growth paths')}
             </h4>
             <div className="space-y-4">
               {cvAnalysis.roleFit.cvQualifiedRoles.length > 0 && (

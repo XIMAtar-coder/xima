@@ -120,7 +120,7 @@ const BusinessRegister = () => {
         'register_business_account' as any,
         {
           p_user_id: authData.user.id,
-          p_company_name: formData.companyName,
+          p_company_name: formData.companyName.trim(),
           p_website_url: formData.website || null,
           p_recruiter_email: null,
           p_industry: formData.industry || null,
@@ -142,7 +142,7 @@ const BusinessRegister = () => {
         supabase.functions.invoke('generate-company-profile', {
           body: {
             company_id: authData.user.id,
-            company_name: formData.companyName,
+            company_name: formData.companyName.trim(),
             website: formData.website,
           },
         }).then(({ data, error }) => {

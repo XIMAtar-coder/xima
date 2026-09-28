@@ -148,7 +148,7 @@ const XimaChat = () => {
   if (!user) {
     return (
       <CandidateLayout breadcrumb={breadcrumb}>
-        <Seo title="Feed — XIMA" description="Your XIMA feed." path="/xima-chat" noindex />
+        <Seo title={`${t('page_title.feed', 'Your feed')} — XIMA`} description="Your XIMA feed." path="/xima-chat" noindex />
         <Panel className="mx-auto max-w-md py-10 text-center">
           <MessageCircle className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
           <p className="text-muted-foreground">{t('chat.login_required')}</p>
@@ -163,7 +163,7 @@ const XimaChat = () => {
   if (showConversations) {
     return (
       <CandidateLayout breadcrumb={breadcrumb}>
-        <Seo title="Conversations — XIMA" description="Your conversations." path="/xima-chat" noindex />
+        <Seo title={`${t('page_title.messages', 'Messages')} — XIMA`} description="Your conversations." path="/xima-chat" noindex />
         <div className="flex flex-col">
           <div className="min-w-0">
             {/* Back to Feed button */}
@@ -410,7 +410,7 @@ const XimaChat = () => {
   // Default: Show the XIMA Feed (read-only, anonymous signals)
   return (
     <CandidateLayout breadcrumb={breadcrumb}>
-      <Seo title="Feed — XIMA" description="Your XIMA feed." path="/xima-chat" noindex />
+      <Seo title={`${t('page_title.feed', 'Your feed')} — XIMA`} description="Your XIMA feed." path="/xima-chat" noindex />
       <EmailVerificationBanner slim />
       <PageHeader
         eyebrow={t('dashboard.eyebrow', 'Your personal space')}

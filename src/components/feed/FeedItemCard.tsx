@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ximatarDisplayName } from '@/lib/ximatarName';
+import type { TFunction } from 'i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -46,8 +48,8 @@ const TYPE_CONFIG = {
 };
 
 // Helper: safely extract XIMAtar data from payload
-const getSafeXimatar = (payload: Record<string, unknown>): { name: string; image: string | null } => ({
-  name: (payload.ximatar_name as string) || 'XIMAtar',
+const getSafeXimatar = (payload: Record<string, unknown>, t: TFunction): { name: string; image: string | null } => ({
+  name: ximatarDisplayName(t, payload.ximatar_name as string) || 'XIMAtar',
   image: (payload.ximatar_image as string) || null
 });
 
@@ -114,7 +116,7 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
   };
 
   // Extract payload data using helpers
-  const ximatar = getSafeXimatar(item.payload);
+  const ximatar = getSafeXimatar(item.payload, t);
   const level = getLevel(item.payload);
   const count = getCount(item.payload);
   const skillTags = (item.payload.skill_tags as string[]) || [];

@@ -392,13 +392,10 @@ const CreateXimaCoreChallenge = () => {
       '',
       `**${t('challenge.xima_core.scenario_label')}:**`,
       scenario,
-      '',
-      '---',
-      '',
-      `**${t('challenge.xima_core.questions_title')}:**`,
-      '',
-      ...localizedQuestions.map((q, idx) => `${idx + 1}. **${q.title}**\n${q.text}`),
     ];
+    // The candidate now goes through the four-phase Mindset experience
+    // (instinct, simulated day, debrief with Aria, outcome): the old five
+    // written questions are no longer shown in the description.
     return parts.join('\n');
   };
 

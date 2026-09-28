@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { LoadingScreen } from '@/components/LoadingScreen';
@@ -32,6 +33,7 @@ const ensureConsent = async (userId: string): Promise<string | null> => {
 };
 
 const AuthCallback = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(true);
 
@@ -148,7 +150,7 @@ const AuthCallback = () => {
 
   return (
     <>
-      <Seo title="Signing you in — XIMA" description="Completing authentication." path="/auth/callback" noindex />
+      <Seo title={`${t('page_title.signing_in', 'Signing you in')} — XIMA`} description="Completing authentication." path="/auth/callback" noindex />
       <LoadingScreen isLoading={true} />
     </>
   );

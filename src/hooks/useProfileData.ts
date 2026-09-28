@@ -330,7 +330,8 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
         const derivedAssessment = pillar_scores
           ? selectArchetypeFromAssessmentPillars(pillar_scores as AssessmentPillarScores)
           : null;
-        const cv_pillar_scores = normalizePillars(
+        const hasCv = !!(cvAnalysisRes.data || cvIdentityRes.data || (profile as any)?.cv_scores);
+        const cv_pillar_scores = !hasCv ? null : normalizePillars(
           (cvIdentityRes.data?.cv_pillar_scores as any) ||
           (profile?.cv_scores as any) ||
           (cvAnalysisRes.data?.pillar_vector as any)
@@ -388,7 +389,9 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           mentor_profile,
           open_answers,
           assessment_rationale: latestResult?.rationale ?? null,
-          cv_analysis: {
+          // Only a real CV gets an analysis. Without one the comparison would
+          // read every CV pillar as 0 and invent the gaps.
+          cv_analysis: !hasCv ? null : {
             summary: cvAnalysisRes.data?.summary ?? cvIdentityRes.data?.tension_narrative ?? (profile?.cv_comments as any)?.summary ?? null,
             strengths: cvAnalysisRes.data?.strengths ?? (skillsFallback.length ? skillsFallback : null),
             soft_skills: cvAnalysisRes.data?.soft_skills ?? null,

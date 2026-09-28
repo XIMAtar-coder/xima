@@ -1,4 +1,6 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ximatarDisplayName } from '@/lib/ximatarName';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { useSupabaseQuery } from '@/lib/data/useSupabaseQuery';
@@ -20,6 +22,7 @@ interface SnapshotRow {
 
 export const useCandidateSnapshot = () => {
   const { user } = useUser();
+  const { t } = useTranslation();
   const { data, isLoading } = useSupabaseQuery<SnapshotRow>(
     ['candidate_snapshot', user?.id],
     () => supabase
@@ -35,7 +38,9 @@ export const useCandidateSnapshot = () => {
     let strongest: PillarKey | null = null;
     let weakest: PillarKey | null = null;
     if (scores) {
-      const known = PILLAR_ORDER.map((k) => [k, readPillar(scores, k)] as const).filter(([, v]) => v !== null) as Array<[PillarKey, number]>;
+      // Drive is read on its own scale: the strongest and weakest pillar are
+      // chosen among the four content pillars, as on the dashboard.
+      const known = PILLAR_ORDER.filter((k) => k !== 'drive').map((k) => [k, readPillar(scores, k)] as const).filter(([, v]) => v !== null) as Array<[PillarKey, number]>;
       if (known.length) {
         strongest = known.reduce((a, b) => (b[1] > a[1] ? b : a))[0];
         weakest = known.reduce((a, b) => (b[1] < a[1] ? b : a))[0];
@@ -44,8 +49,8 @@ export const useCandidateSnapshot = () => {
     const image = data?.ximatar_image ? data.ximatar_image.replace(/^public\//, '/') : null;
     return {
       isLoading,
-      name: data?.full_name || data?.name || user?.name || '',
-      ximatarName: data?.ximatar_name ?? null,
+      name: (data?.full_name || data?.name || user?.name || '').trim(),
+      ximatarName: ximatarDisplayName(t, data?.ximatar_name),
       ximatarImage: image,
       pillarScores: scores,
       strongest,
@@ -53,7 +58,7 @@ export const useCandidateSnapshot = () => {
       profileCompleted: !!data?.profile_completed,
       hasAssessment: !!scores,
     };
-  }, [data, isLoading, user?.name]);
+  }, [data, isLoading, user?.name, t]);
 };
 
 export default useCandidateSnapshot;

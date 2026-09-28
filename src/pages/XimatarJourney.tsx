@@ -97,7 +97,7 @@ const XimatarJourney = () => {
   if (isAuthenticated && !businessRoleLoading && isBusiness) {
     return (
       <MainLayout>
-        <Seo title="XIMAtar Journey — XIMA" description="Your personalized assessment journey." path="/ximatar-journey" noindex />
+        <Seo title={`${t('page_title.journey', 'Your XIMAtar')} — XIMA`} description="Your personalized assessment journey." path="/ximatar-journey" noindex />
         <div className="mx-auto max-w-lg px-4 py-16">
           <Panel className="space-y-4">
             <h1 className="text-xl font-semibold">{t('ximatarJourney.business_account_title')}</h1>
@@ -116,7 +116,7 @@ const XimatarJourney = () => {
 
   return (
     <MainLayout>
-      <Seo title="XIMAtar Journey — XIMA" description="Your personalized assessment journey." path="/ximatar-journey" noindex />
+      <Seo title={`${t('page_title.journey', 'Your XIMAtar')} — XIMA`} description="Your personalized assessment journey." path="/ximatar-journey" noindex />
       {/* Resume Modal */}
       <AlertDialog open={showResumeModal} onOpenChange={setShowResumeModal}>
         <AlertDialogContent>

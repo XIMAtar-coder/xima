@@ -205,7 +205,7 @@ const Profile = () => {
     );
   }
 
-  const name = profileData.full_name || user?.name || t('profile.user');
+  const name = (profileData.full_name || user?.name || '').trim() || t('profile.user');
   const scores = profileData.pillar_scores;
   const strongest = profileData.strongest_pillar as PillarKey | null;
   const weakest = profileData.weakest_pillar as PillarKey | null;
@@ -219,7 +219,7 @@ const Profile = () => {
   return (
     <CandidateLayout breadcrumb={breadcrumb}>
       <Seo
-        title="Your Profile — XIMA Dashboard"
+        title={`${t('page_title.dashboard', 'Your space')} — XIMA`}
         description="Your personal XIMA dashboard: XIMAtar profile, pillar insights, mentor sessions, and matched opportunities."
         path="/profile"
         noindex

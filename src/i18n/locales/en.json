@@ -288,7 +288,7 @@
     "change_photo": "Change Photo",
     "uploading": "Uploading...",
     "growth_area": "Growth Area",
-    "no_mentor_assigned": "Complete your first assessment to be matched with a mentor",
+    "no_mentor_assigned": "No mentor assigned yet: availability is published by the mentor.",
     "challenges_for_you": "Challenges for You",
     "active": "Active",
     "no_challenges_yet": "No challenges yet.",
@@ -598,7 +598,7 @@
     "page_subtitle": "A standardized decision-making instrument with AI-personalized scenario",
     "what_is_title": "What is XIMA Core?",
     "what_is_desc": "A standardized Level 1 instrument that evaluates how candidates think in ambiguous situations. The scenario is personalized, but the structure is identical for fair comparison.",
-    "feature_1": "5 fixed questions measuring decision signals",
+    "feature_1": "Four phases, the same for everyone: instinct, a simulated day, a debrief with Aria, the outcome",
     "feature_2": "AI-personalized scenario for your context",
     "feature_3": "No right/wrong answers - we evaluate reasoning",
     "scenario_title": "Personalized Scenario",
@@ -931,7 +931,9 @@
       "name": "Computational Power",
       "description": "The ability to break down complex problems into logical steps, use data and tools to find efficient solutions, and think systematically about challenges",
       "as_strength": "You are structured, precise, and fast under pressure",
-      "as_weakness": "You may struggle with systems, avoid complexity, or lose clarity"
+      "as_weakness": "You may struggle with systems, avoid complexity, or lose clarity",
+      "strength_description": "You analyse, structure and solve with rigour: where others see confusion, you find order. It is your natural strength, use it.",
+      "growth_description": "Train structured reasoning: break problems into parts, work with data and test assumptions before deciding."
     },
     "cta_primary": "Get your XIMAtar now",
     "cta_secondary": "Learn more",
@@ -1362,7 +1364,7 @@
     "intro_cv_done": "CV analysed. That step is done.",
     "intro_whats_next": "Now the questionnaire: {{mc}} multiple-choice questions, then {{open}} written answers. About {{minutes}} minutes; your progress is saved as you go.",
     "open_min_required": "Minimum {{count}} characters",
-    "open_min_reached": "Minimum reached. More detail helps your score.",
+    "open_min_reached": "Good. A concrete episode makes your profile more precise.",
     "open_earlier_too_short": "Your answer to written question {{number}} is under {{count}} characters. Go back and add a little more.",
     "listen": "Listen",
     "listen_stop": "Stop",
@@ -1432,14 +1434,14 @@
     "cv_analyzing": "Analyzing...",
     "challenges_title": "CHALLENGES FOR YOU",
     "challenges_empty_headline": "No challenges right now.",
-    "challenges_empty_body": "When companies invite you to a selection process, challenges will appear here. Complete your assessment to increase the likelihood of being invited.",
+    "challenges_empty_body": "When a company invites you to a selection process, challenges will appear here.",
     "opportunities_title": "My Opportunities",
     "opportunities_refresh": "Refresh",
     "opportunities_tab_for_you": "For You",
     "opportunities_tab_saved": "Saved",
     "opportunities_tab_applied": "Applied",
     "opportunities_empty_headline": "No opportunities available at the moment.",
-    "opportunities_empty_body": "Complete your assessment to improve matching and start receiving opportunities tailored to your profile.",
+    "opportunities_empty_body": "Set role, location and availability in your preferences to receive opportunities closer to you.",
     "pillar_computational_power": "Computational Power",
     "pillar_communication": "Communication",
     "pillar_knowledge": "Knowledge",
@@ -1456,7 +1458,8 @@
       "manage": "Manage membership",
       "invite": "Invite a friend & earn credits",
       "hint": "A standard 45-min mentor session costs 5 credits. Every referral counts.",
-      "settingsHelper": "You can change your plan or manage referrals anytime in Settings."
+      "settingsHelper": "You can change your plan or manage referrals anytime in Settings.",
+      "credits_label": "credits"
     },
     "eyebrow": "YOUR PERSONAL SPACE",
     "welcome_back": "Welcome back, {{name}}.",
@@ -1500,7 +1503,10 @@
     "section_cv_hint": "Comparison, suggestions and a new upload",
     "section_challenges_hint": "Invitations from companies and their status",
     "section_opportunities_hint": "For you, saved and applications",
-    "plan_label": "PLAN"
+    "plan_label": "PLAN",
+    "cv_overall": "overall",
+    "cv_role_fit_title": "Role fit and growth paths",
+    "drive_overview_body": "Measured by the choices with a cost in the questionnaire: how often you pick the road that makes you grow. It shows your pace of growth, not your worth."
   },
   "about": {
     "hero": {
@@ -1712,7 +1718,7 @@
     "kicker": "Your XIMA space",
     "title_new": "Create your account.",
     "intro_with_results": "Save your result and continue your journey.",
-    "consents_legend": "Before continuing, also with Google",
+    "consents_legend": "To sign up with email",
     "or_with_email_short": "or with your email",
     "show": "Show",
     "hide": "Hide",
@@ -2975,7 +2981,7 @@
     "completed_badge": "Completed",
     "next_steps_title": "Next Steps",
     "next_step_1_title": "Start with Priorities",
-    "next_step_1_body": "Tests marked as Priority have the highest impact on your profile. Start there — every completion updates your XIMAtar in real time.",
+    "next_step_1_body": "Tests marked Priority work most on your development area. Start there: tests check what you learned, they do not change your assessment scores.",
     "next_step_2_title": "Consistent Practice",
     "next_step_2_body": "1–2 tests per week produces optimal development. Consistency beats intensity. Drive is measured over time, not in a single session.",
     "next_step_3_title": "Activate Your Mentor",
@@ -3013,7 +3019,7 @@
     "tests_passed": "{{passed}} of {{total}} tests passed",
     "remaining": "{{count}} to complete",
     "resources_title": "Your resources",
-    "regenerate": "Regenerate in my language",
+    "regenerate": "Regenerate path",
     "resource_type": "Resource type",
     "tab_courses": "Courses",
     "tab_books": "Books",
@@ -4737,7 +4743,7 @@
     "recommended": "Recommended",
     "xima_core_title": "XIMA Core Challenge",
     "xima_core_desc": "Standardized decision-making challenge with AI-generated scenario based on your company and hiring goal.",
-    "xima_feature_1": "5 fixed questions measuring decision signals",
+    "xima_feature_1": "Four phases, the same for everyone: instinct, a simulated day, a debrief with Aria, the outcome",
     "xima_feature_2": "AI-personalized scenario",
     "xima_feature_3": "Level 1 — Required first",
     "xima_feature_4": "Fair comparison across candidates",
@@ -4857,7 +4863,7 @@
       "standardized": "Standardized",
       "what_is_title": "What is XIMA Core?",
       "what_is_description": "A standardized Level 1 instrument that evaluates how candidates think in ambiguous situations. The scenario is personalized, but the structure is identical for fair comparison.",
-      "feature_1": "5 fixed questions measuring decision signals",
+      "feature_1": "Four phases, the same for everyone: instinct, a simulated day, a debrief with Aria, the outcome",
       "feature_2": "AI-personalized scenario for your context",
       "feature_3": "No right/wrong answers — we evaluate reasoning",
       "scenario_title": "Personalized scenario",
@@ -5762,6 +5768,26 @@
       "actor_interaction": "Your opportunities",
       "external_content": "Selected reading",
       "cv_analysis": "Professional profile"
+    },
+    "items": {
+      "assessment_complete": {
+        "title": "Welcome, {{ximatar}}!",
+        "title_generic": "Your XIMAtar is ready",
+        "body": "Upload your CV to see where it tells your story and where it does not.",
+        "action": "Upload CV"
+      },
+      "cv_analysis": {
+        "title": "CV analysis ready",
+        "body": "See how your CV tells your professional identity, and where it leaves something out.",
+        "action": "Read the analysis"
+      },
+      "challenge_invitation": {
+        "a_company": "A company",
+        "title": "{{company}} invited you",
+        "body_role": "Your profile fits what they look for as {{role}}. The challenge shows how you work.",
+        "body": "Your profile fits what they look for. The challenge shows how you work.",
+        "action": "Open the challenge"
+      }
     }
   },
   "settings": {
@@ -5769,7 +5795,7 @@
     "page_subtitle": "Manage your account, privacy preferences, and data.",
     "mentor_cv_title": "Mentor CV Access",
     "mentor_cv_body": "Control whether your mentor can access your CV during sessions. Disabled by default — your CV stays private until you choose to share it.",
-    "mentor_cv_incomplete": "Complete your assessment to get a mentor and manage CV access.",
+    "mentor_cv_incomplete": "Once a mentor is assigned to you, you can decide here whether they can see your CV.",
     "membership_title": "Membership Plan",
     "membership_subtitle": "Your current plan and benefits.",
     "membership_freemium_badge": "Freemium",
@@ -5889,7 +5915,7 @@
     "cv_consent_note": "When enabled, your mentor can view your CV to better help with career guidance. You can revoke access at any time.",
     "cv_consent_error": "Failed to update consent",
     "toggle_cv_access": "Toggle CV access",
-    "no_mentor_for_cv": "Complete your assessment to get a mentor and manage CV access.",
+    "no_mentor_for_cv": "Once a mentor is assigned to you, you can decide here whether they can see your CV.",
     "benefit_free_intro": "1 free intro session (30 min)",
     "benefit_referral_credits": "Earn credits by inviting friends",
     "benefit_monthly_session": "1 mentor session per month",
@@ -6838,7 +6864,7 @@
       "duration_value": "~{{minutes}} min",
       "example": "Example",
       "mc_hint": "Pick the answer that best describes your approach.",
-      "open_hint": "Tell it in your own words. At least {{count}} characters.",
+      "open_hint": "Two or three sentences are enough: a real episode, what you did and how it went. You can also dictate it. At least {{count}} characters.",
       "open_field_label": "Your answer",
       "open_tag": "Open question · {{n}} of {{total}}",
       "back": "Back",
@@ -10123,5 +10149,23 @@
         "q21": "End of the month, department meeting, and you are asked whether anything makes you lose time every day."
       }
     }
+  },
+  "page_title": {
+    "business_overview": "Overview",
+    "hiring_goals": "Hiring goals",
+    "candidate_pool": "Candidate pool",
+    "challenges": "Challenges",
+    "job_posts": "Job posts",
+    "evaluations": "Evaluations",
+    "messages": "Messages",
+    "settings": "Settings",
+    "dashboard": "Your space",
+    "growth_hub": "Growth Hub",
+    "opportunities": "Your opportunities",
+    "offers": "Offers received",
+    "feed": "Your feed",
+    "journey": "Your XIMAtar",
+    "onboarding": "First steps",
+    "signing_in": "Signing you in"
   }
 }

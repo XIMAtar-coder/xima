@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import { RouteTitle } from '@/components/RouteTitle';
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -137,6 +138,7 @@ const RoutesTree = () => {
   const location = useLocation();
   return (
     <ChunkErrorBoundary>
+      <RouteTitle />
       <Suspense key={location.pathname} fallback={<RouteSkeleton />}>
         <Routes location={location}>
           <Route path="/" element={<Index />} />

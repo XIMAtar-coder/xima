@@ -351,7 +351,7 @@ const BusinessDashboard = () => {
           eyebrow={t('businessPortal.overview_eyebrow', 'Your selection space')}
           title={t('businessPortal.overview_title', 'At a glance.')}
           subtitle={businessProfile?.company_name
-            ? t('businessPortal.overview_subtitle', { company: businessProfile.company_name, defaultValue: '{{company}}, here is where we are.' })
+            ? t('businessPortal.overview_subtitle', { company: businessProfile.company_name.trim(), defaultValue: '{{company}}, here is where we are.' })
             : t('businessPortal.overview_subtitle_anonymous', 'Here is where we are.')}
           actions={
             <Button variant="outline" onClick={() => navigate('/business/hiring-goals/new')} className="gap-1.5">

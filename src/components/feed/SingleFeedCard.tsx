@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { ximatarDisplayName } from '@/lib/ximatarName';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -126,7 +127,7 @@ export const SingleFeedCard = ({ className, compact }: SingleFeedCardProps) => {
               />
               {payload.ximatar_name && (
                 <span className="text-sm font-medium capitalize">
-                  {payload.ximatar_name}
+                  {ximatarDisplayName(t, payload.ximatar_name as string)}
                 </span>
               )}
             </div>
