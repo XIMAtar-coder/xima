@@ -68,15 +68,15 @@ describe('SpeakAnswerButton', () => {
     const rec = recognitions[0];
     expect(rec).toBeDefined();
 
-    act(() => rec.onresult?.(finalEvent('Prima frase')));
+    act(() => rec.onresult?.(finalEvent(result('Prima frase'))));
     expect(screen.getByTestId('answer').textContent).toBe('Prima frase');
 
     // A second utterance fires its own result event, after the re-render.
-    act(() => rec.onresult?.(finalEvent('seconda frase')));
+    act(() => rec.onresult?.(finalEvent(result('seconda frase'))));
     expect(screen.getByTestId('answer').textContent).toBe('Prima frase seconda frase');
 
     // The earlier sentence must still be there after a third one.
-    act(() => rec.onresult?.(finalEvent('terza frase')));
+    act(() => rec.onresult?.(finalEvent(result('terza frase'))));
     expect(screen.getByTestId('answer').textContent).toBe('Prima frase seconda frase terza frase');
   });
 
