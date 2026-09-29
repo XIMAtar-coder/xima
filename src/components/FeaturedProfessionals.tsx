@@ -277,8 +277,8 @@ export default function FeaturedProfessionals({
       // Absolute public path (e.g., "/avatars/daniel-cracau.jpg")
       url = path;
     } else {
-      // Filename only - prefix with /avatars/
-      url = `/avatars/${path}`;
+      // Filename, or "avatars/file" as some rows store it: one /avatars/ prefix.
+      url = `/avatars/${path.replace(/^avatars\//, '')}`;
     }
     
     // Add cache-busting
