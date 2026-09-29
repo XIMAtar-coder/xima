@@ -28,7 +28,8 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO, isAfter, isBefore, addMinutes, subMinutes } from 'date-fns';
-import { it, enUS } from 'date-fns/locale';
+import { it, enUS, es } from 'date-fns/locale';
+import { localizedMentor } from '@/lib/mentorI18n';
 import { log } from '@/lib/log';
 import {
   AlertDialog,
@@ -46,6 +47,8 @@ interface MentorLike {
   full_name?: string | null;
   role?: string | null;
   bio?: string | null;
+  bio_i18n?: Record<string, string> | null;
+  title_i18n?: Record<string, string> | null;
   avatar_url?: string | null;
   photo_url?: string | null;
   calendar_url?: string | null;
@@ -65,6 +68,9 @@ interface MentorInfo {
   name: string;
   title?: string;
   bio?: string;
+  title_i18n?: Record<string, string> | null;
+  bio_i18n?: Record<string, string> | null;
+  specialties_i18n?: Record<string, string[]> | null;
   avatar_url?: string;
 }
 
@@ -102,7 +108,9 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
   const [pendingSession, setPendingSession] = useState<PendingSession | null>(null);
   const [freeIntroUsed, setFreeIntroUsed] = useState(false);
 
-  const dateLocale = i18n.language?.startsWith('it') ? it : enUS;
+  const dateLocale = i18n.language?.startsWith('it') ? it : i18n.language?.startsWith('es') ? es : enUS;
+  // The card in the reader's language: the function returns the i18n columns.
+  const card = localizedMentor({ ...(mentor ?? {}), ...(mentorInfo ?? {}) }, i18n.language || 'it');
   const displayName = mentor?.full_name || mentor?.name || '';
   const photoUrl = mentor?.photo_url || mentor?.avatar_url || undefined;
   const bookingLink = mentor?.booking_link || mentor?.calendar_url || undefined;
@@ -467,9 +475,9 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
               {mentor?.role && (
                 <p className="text-sm text-muted-foreground mt-0.5 font-medium">{mentor.role}</p>
               )}
-              {mentorInfo?.title && (
+              {card.title && (
                 <div className="flex flex-wrap gap-1.5 mt-2">
-                  {mentorInfo.title.split(/[,&]/).slice(0, 2).map((specialty, idx) => (
+                  {card.title.split(/[,&]/).slice(0, 2).map((specialty, idx) => (
                     <Badge key={idx} variant="secondary" className="gap-1 text-xs">
                       <Star className="h-3 w-3" />
                       {specialty.trim()}
@@ -480,9 +488,9 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
             </div>
           </div>
           
-          {mentor?.bio && (
+          {card.bio && (
             <p className="text-sm text-foreground/80 leading-relaxed line-clamp-3">
-              {mentor.bio}
+              {card.bio}
             </p>
           )}
 

@@ -3,6 +3,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { selectArchetypeFromAssessmentPillars, type AssessmentPillarScores } from '@/lib/ximatarTaxonomy';
 import { log } from '@/lib/log';
+import { localizedMentor } from '@/lib/mentorI18n';
+
+const uiLocale = () => (typeof document !== 'undefined' && document.documentElement.lang) || 'it';
 
 export interface OpenAnswerItem {
   question: string;
@@ -285,7 +288,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           const m = profile.mentor as any;
           mentor_profile = {
             name: m?.name ?? '',
-            bio: m?.bio ?? null,
+            bio: localizedMentor(m, uiLocale()).bio || null,
             avatar_url: m?.avatar_url ?? m?.profile_image_url ?? null,
             calendar_url: m?.calendar_url ?? null,
           };
@@ -308,7 +311,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             mentor_profile = {
               name: mentorData.name || '',
               // The bio in the interface language when the mentor has one.
-              bio: ((mentorData as any).bio_i18n?.[(typeof document !== 'undefined' && document.documentElement.lang || 'it').slice(0, 2)] as string | undefined) || mentorData.bio || null,
+              bio: localizedMentor(mentorData, uiLocale()).bio || null,
               avatar_url: mentorData.profile_image_url || null,
               calendar_url: null,
             };

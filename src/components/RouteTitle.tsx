@@ -26,6 +26,8 @@ const ROUTES: Array<[string, string, string]> = [
   ['/xima-chat', 'page_title.feed', 'Your feed'],
   ['/settings', 'page_title.settings', 'Settings'],
   ['/ximatar-journey', 'page_title.journey', 'Your XIMAtar'],
+  ['/register', 'page_title.register', 'Create your account'],
+  ['/login', 'page_title.login', 'Log in'],
 ];
 
 export const RouteTitle = () => {

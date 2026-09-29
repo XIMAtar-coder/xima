@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
     // Fetch mentor details from unified mentors table
     const { data: mentorDetails, error: mentorError } = await supabase
       .from('mentors')
-      .select('id, name, profile_image_url, title, bio')
+      .select('id, name, profile_image_url, title, bio, title_i18n, bio_i18n, specialties_i18n')
       .eq('id', mentorId)
       .maybeSingle();
 
@@ -123,6 +123,9 @@ Deno.serve(async (req) => {
             name: mentorInfo.name,
             title: mentorInfo.title,
             bio: mentorInfo.bio,
+            title_i18n: (mentorInfo as any).title_i18n ?? mentorData.title_i18n ?? null,
+            bio_i18n: (mentorInfo as any).bio_i18n ?? mentorData.bio_i18n ?? null,
+            specialties_i18n: (mentorInfo as any).specialties_i18n ?? mentorData.specialties_i18n ?? null,
             avatar_url: mentorInfo.profile_image_url
           },
           message: "Error fetching availability slots"
@@ -151,6 +154,9 @@ Deno.serve(async (req) => {
           name: mentorInfo.name,
           title: mentorInfo.title,
           bio: mentorInfo.bio,
+          title_i18n: (mentorInfo as any).title_i18n ?? mentorData.title_i18n ?? null,
+          bio_i18n: (mentorInfo as any).bio_i18n ?? mentorData.bio_i18n ?? null,
+          specialties_i18n: (mentorInfo as any).specialties_i18n ?? mentorData.specialties_i18n ?? null,
           avatar_url: mentorInfo.profile_image_url
         },
         debug: {

@@ -8,6 +8,7 @@ import { RefreshCw } from 'lucide-react';
 import { log } from '@/lib/log';
 import { cn } from '@/lib/utils';
 import { pillarShortName } from '@/components/ximatar-journey/pillarLabels';
+import { localizedMentor } from '@/lib/mentorI18n';
 
 
 interface PillarScore {
@@ -48,12 +49,11 @@ interface FeaturedProfessionalsProps {
 
 /** Title, bio and specialties in the reader's language, falling back to the stored text. */
 const localized = (m: any, locale: string) => {
-  const pick = (obj: any) => (obj && typeof obj === 'object' ? obj[locale] || obj.it || obj.en : null);
-  const bio = pick(m.bio_i18n) || m.bio || '';
+  const { title, bio, specialties } = localizedMentor(m, locale);
   return {
-    title: pick(m.title_i18n) || m.title || '',
+    title,
     locale_bio: { en: bio, it: bio, es: bio } as Record<string, string>,
-    expertise_tags: (pick(m.specialties_i18n) as string[] | null) || m.specialties || [],
+    expertise_tags: specialties,
   };
 };
 
