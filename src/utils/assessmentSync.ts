@@ -177,7 +177,6 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           ximatar_name: derived.name || fallbackLabel.charAt(0).toUpperCase() + fallbackLabel.slice(1),
           ximatar_image: fallbackXimatar.image_url,
           ximatar_assigned_at: new Date().toISOString(),
-          ximatar_level: 1,
           creation_source: 'assessment',
           profile_complete: true,
           pillar_scores: fallbackScores as any,
@@ -330,14 +329,15 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           log.error('[sync] ximatars lookup error (continuing)', ximatarLookupError);
         }
 
+        // pillar_scores and ximatar_level are derived server-side (a trigger
+        // on profiles refuses them from the client): only the reading of the
+        // result is written here.
         const profileUpdate: any = {
           ximatar: resolvedLabel as any,
           ximatar_name: resolvedName,
           ximatar_assigned_at: new Date().toISOString(),
-          ximatar_level: 1,
           creation_source: 'assessment',
           profile_complete: true,
-          pillar_scores: parsedScores,
         };
         if (driveLevel) profileUpdate.drive_level = driveLevel;
         if (strongestPillar) profileUpdate.strongest_pillar = strongestPillar;
@@ -466,8 +466,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
               ximatar_name: derived.name || fallbackLabel.charAt(0).toUpperCase() + fallbackLabel.slice(1),
               ximatar_image: fallbackXimatar.image_url,
               ximatar_assigned_at: new Date().toISOString(),
-              ximatar_level: 1,
-              creation_source: 'assessment',
+                  creation_source: 'assessment',
               profile_complete: true,
               pillar_scores: fallbackScores as any,
               drive_level: derived.driveLevel,

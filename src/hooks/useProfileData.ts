@@ -332,7 +332,9 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
         const derivedAssessment = pillar_scores
           ? selectArchetypeFromAssessmentPillars(pillar_scores as AssessmentPillarScores)
           : null;
-        const hasCv = !!(cvAnalysisRes.data || cvIdentityRes.data || (profile as any)?.cv_scores);
+        // profiles.cv_scores defaults to {} : an empty object is no CV.
+        const cvScoresRaw = (profile as any)?.cv_scores;
+        const hasCv = !!(cvAnalysisRes.data || cvIdentityRes.data || (cvScoresRaw && typeof cvScoresRaw === 'object' && Object.keys(cvScoresRaw).length > 0));
         const cv_pillar_scores = !hasCv ? null : normalizePillars(
           (cvIdentityRes.data?.cv_pillar_scores as any) ||
           (profile?.cv_scores as any) ||
