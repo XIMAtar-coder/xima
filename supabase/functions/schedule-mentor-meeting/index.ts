@@ -173,7 +173,7 @@ serve(async (req) => {
     // Get mentor info
     const { data: mentor, error: mentorError } = await supabase
       .from('mentors')
-      .select('name, user_id, availability')
+      .select('name, user_id, availability, free_intro_duration_minutes')
       .eq('id', mentor_id)
       .single();
 
@@ -238,9 +238,10 @@ serve(async (req) => {
         user_id: user.id,
         mentor_id: mentor_id,
         title: `Mentoring Session with ${mentor.name}`,
-        description: '15-minute evaluation session',
+        // The first call lasts what the mentor set (30 minutes for every mentor).
+        description: `${mentor.free_intro_duration_minutes || 30}-minute introductory session`,
         scheduled_at: start_time,
-        duration_minutes: 15,
+        duration_minutes: mentor.free_intro_duration_minutes || 30,
         status: 'scheduled',
         meeting_link: meetingLink || null,
         notes: googleEventId ? { google_event_id: googleEventId } : null
