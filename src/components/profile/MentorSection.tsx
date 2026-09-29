@@ -686,6 +686,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
                 <div className="border border-border rounded-lg p-4 bg-card">
                   <CalendarComponent
                     mode="single"
+                    locale={dateLocale}
                     selected={selectedDate}
                     onSelect={setSelectedDate}
                     disabled={disabledDates}
