@@ -77,6 +77,7 @@ export default function JobPostDetailDrawer({
   const { t } = useTranslation();
   const { user } = useUser();
   const [activeTab, setActiveTab] = useState<string>('preview');
+  const [consentOpen, setConsentOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<JobPost>>({});
   
@@ -122,8 +123,6 @@ export default function JobPostDetailDrawer({
       setSaving(false);
     }
   };
-
-  const [consentOpen, setConsentOpen] = useState(false);
 
   // Publishing asks for the consent first; taking a listing down does not.
   const handleToggleStatus = async () => {

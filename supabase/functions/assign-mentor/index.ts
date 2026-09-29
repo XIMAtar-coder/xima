@@ -87,7 +87,7 @@ Deno.serve(async (req) => {
     // Verify mentor exists in unified mentors table
     const { data: mentor, error: mentorError } = await supabaseAdmin
       .from('mentors')
-      .select('id, user_id, name, title, profile_image_url, bio, specialties, xima_pillars')
+      .select('id, user_id, name, title, profile_image_url, bio, specialties, xima_pillars, title_i18n, bio_i18n, specialties_i18n')
       .eq('id', professional_id)
       .eq('is_active', true)
       .single();
@@ -175,6 +175,9 @@ Deno.serve(async (req) => {
           bio: mentor.bio,
           specialties: mentor.specialties,
           xima_pillars: mentor.xima_pillars,
+          title_i18n: mentor.title_i18n ?? null,
+          bio_i18n: mentor.bio_i18n ?? null,
+          specialties_i18n: mentor.specialties_i18n ?? null,
         },
       })
       .eq('id', profile.id);
@@ -197,6 +200,9 @@ Deno.serve(async (req) => {
           bio: mentor.bio,
           specialties: mentor.specialties,
           xima_pillars: mentor.xima_pillars,
+          title_i18n: mentor.title_i18n ?? null,
+          bio_i18n: mentor.bio_i18n ?? null,
+          specialties_i18n: mentor.specialties_i18n ?? null,
         },
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

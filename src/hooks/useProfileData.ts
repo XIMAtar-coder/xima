@@ -285,7 +285,15 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
         let mentor_user_id: string | null = null;
 
         if (profile?.mentor) {
-          const m = profile.mentor as any;
+          let m = profile.mentor as any;
+          // Older cached copies predate the i18n columns: read them from the mentor row.
+          if (m?.id && !m.bio_i18n) {
+            const { data: i18nRow } = await (supabase.from('mentors_public') as any)
+              .select('title_i18n, bio_i18n, specialties_i18n')
+              .eq('id', m.id)
+              .maybeSingle();
+            if (i18nRow) m = { ...m, ...i18nRow };
+          }
           mentor_profile = {
             name: m?.name ?? '',
             bio: localizedMentor(m, uiLocale()).bio || null,
