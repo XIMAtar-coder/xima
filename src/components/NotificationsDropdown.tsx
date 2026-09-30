@@ -58,6 +58,16 @@ export const NotificationsDropdown = () => {
         if (relatedId) navigate(`/opportunities/${relatedId}`);
         break;
 
+      // Mentor sessions: the mentor opens the request in the calendar, the
+      // candidate finds the outcome in the mentor block of the dashboard.
+      case 'session_request':
+        navigate(relatedId ? `/mentor/calendar/${relatedId}` : '/mentor/calendar');
+        break;
+      case 'session_confirmed':
+      case 'session_declined':
+        navigate('/profile#mentor');
+        break;
+
       default:
         break;
     }
