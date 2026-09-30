@@ -88,7 +88,9 @@ const ResetPassword = () => {
       navigate(mentorRow ? '/mentor' : '/profile', { replace: true });
     } catch (err) {
       log.error('[ResetPassword] updateUser failed', err);
-      toast({ title: t('resetPassword.failed'), variant: 'destructive' });
+      // Auth's own reason (too weak, same as before, session missing) is the
+      // only way to tell the person what to change.
+      toast({ title: t('resetPassword.failed'), description: (err as Error)?.message, variant: 'destructive' });
     } finally {
       setSubmitting(false);
     }
