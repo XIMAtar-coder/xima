@@ -66,8 +66,10 @@ export default function MentorCalendar() {
 
   const now = new Date();
   const pendingSessions = sessions.filter((s) => s.status === 'requested');
+  // A session that has started but not ended is still "upcoming": that is
+  // exactly when the mentor needs the Join button.
   const upcomingSessions = sessions.filter((s) =>
-    ['confirmed', 'rescheduled'].includes(s.status) && isAfter(parseISO(s.starts_at), now));
+    ['confirmed', 'rescheduled'].includes(s.status) && isAfter(parseISO(s.ends_at), now));
   const pastSessions = sessions.filter((s) =>
     ['completed', 'cancelled', 'rejected'].includes(s.status) || isBefore(parseISO(s.ends_at), now));
 

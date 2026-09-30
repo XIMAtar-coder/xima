@@ -68,6 +68,9 @@ export default function SessionRoom() {
   const [timeMessage, setTimeMessage] = useState<string>('');
   const [readyToJoin, setReadyToJoin] = useState(false);
   const [displayName, setDisplayName] = useState<string>('Participant');
+  // The mentor comes from the calendar and goes back there; the candidate to the session page.
+  const [viewerIsMentor, setViewerIsMentor] = useState(false);
+  const detailPath = viewerIsMentor ? `/mentor/calendar/${sessionId}` : `/sessions/${sessionId}`;
   const [usingFallbackProvider, setUsingFallbackProvider] = useState(false);
   
   const jitsiContainerRef = useRef<HTMLDivElement>(null);
@@ -222,11 +225,11 @@ export default function SessionRoom() {
 
       // Handle conference exit
       api.addListener('videoConferenceLeft', () => {
-        navigate(`/sessions/${sessionId}`);
+        navigate(detailPath);
       });
 
       api.addListener('readyToClose', () => {
-        navigate(`/sessions/${sessionId}`);
+        navigate(detailPath);
       });
 
     } catch (error) {
@@ -278,6 +281,7 @@ export default function SessionRoom() {
       // Check if user is a participant
       const isCandidate = profile?.id === sessionData.candidate_profile_id;
       const isMentor = mentorRecord?.id === sessionData.mentor_id;
+      setViewerIsMentor(isMentor);
 
       if (!isCandidate && !isMentor) {
         log.warn('[SessionRoom] User is not a participant');
@@ -300,7 +304,7 @@ export default function SessionRoom() {
           description: t('sessions.must_be_confirmed', 'The session must be confirmed before joining.'),
           variant: 'destructive',
         });
-        navigate(`/sessions/${sessionId}`);
+        navigate(detailPath);
         return;
       }
 
@@ -393,7 +397,7 @@ export default function SessionRoom() {
             <p className="text-muted-foreground mb-6">
               {t('sessions.not_participant', 'You are not a participant in this session.')}
             </p>
-            <Button onClick={() => navigate('/profile')} variant="outline">
+            <Button onClick={() => navigate(viewerIsMentor ? '/mentor/calendar' : '/profile')} variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" />
               {t('common.back_to_profile', 'Back to Profile')}
             </Button>
@@ -415,7 +419,7 @@ export default function SessionRoom() {
               <p className="text-sm text-muted-foreground">{t('sessions.scheduled_for', 'Session scheduled for:')}</p>
               <p className="font-medium">{format(parseISO(session.starts_at), 'PPp')}</p>
             </div>
-            <Button onClick={() => navigate(`/sessions/${sessionId}`)} variant="outline">
+            <Button onClick={() => navigate(detailPath)} variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" />
               {t('sessions.view_details', 'View Session Details')}
             </Button>
@@ -438,7 +442,7 @@ export default function SessionRoom() {
               jitsiApiRef.current.dispose();
               jitsiApiRef.current = null;
             }
-            navigate(`/sessions/${sessionId}`);
+            navigate(detailPath);
           }}
           className="gap-2"
         >
