@@ -15,6 +15,7 @@ export interface OpenAnswerItem {
 
 export interface MentorProfile {
   name: string;
+  title?: string | null;
   bio?: string | null;
   avatar_url?: string | null;
   calendar_url?: string | null;
@@ -296,6 +297,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           }
           mentor_profile = {
             name: m?.name ?? '',
+            title: localizedMentor(m, uiLocale()).title || null,
             bio: localizedMentor(m, uiLocale()).bio || null,
             avatar_url: m?.avatar_url ?? m?.profile_image_url ?? null,
             calendar_url: m?.calendar_url ?? null,
@@ -318,6 +320,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
 
             mentor_profile = {
               name: mentorData.name || '',
+              title: localizedMentor(mentorData, uiLocale()).title || null,
               // The bio in the interface language when the mentor has one.
               bio: localizedMentor(mentorData, uiLocale()).bio || null,
               avatar_url: mentorData.profile_image_url || null,

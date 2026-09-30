@@ -46,6 +46,7 @@ interface MentorLike {
   name?: string | null;
   full_name?: string | null;
   role?: string | null;
+  title?: string | null;
   bio?: string | null;
   bio_i18n?: Record<string, string> | null;
   title_i18n?: Record<string, string> | null;
