@@ -14,7 +14,8 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
  * own headings, so the third role of XIMA looked like a different product
  * from the company and candidate areas.
  */
-const MentorLayout: React.FC<{ children: React.ReactNode; breadcrumb?: React.ReactNode }> = ({ children, breadcrumb }) => {
+/** `page`: the current page name; the area label precedes it only where there is room. */
+const MentorLayout: React.FC<{ children: React.ReactNode; breadcrumb?: React.ReactNode; page?: string }> = ({ children, breadcrumb, page }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, signOut } = useUser();
@@ -56,7 +57,12 @@ const MentorLayout: React.FC<{ children: React.ReactNode; breadcrumb?: React.Rea
       nav={nav}
       areaLabel={t('mentor.area_label', 'Mentor area')}
       railFooter={railFooter}
-      breadcrumb={breadcrumb ?? <span className="truncate">{t('mentor.area_label', 'Mentor area')}</span>}
+      breadcrumb={breadcrumb ?? (
+        <span>
+          <span className={page ? 'hidden sm:inline' : undefined}>{t('mentor.area_label', 'Mentor area')}</span>
+          {page && <><span className="hidden sm:inline"> / </span>{page}</>}
+        </span>
+      )}
       topRight={<><NotificationsDropdown /><ThemeToggle /><LanguageSwitcher /></>}
       storageKey="xima:mentor:rail-collapsed"
       maxWidthClass="max-w-[1280px]"

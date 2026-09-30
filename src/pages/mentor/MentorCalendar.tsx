@@ -248,7 +248,7 @@ export default function MentorCalendar() {
   );
 
   return (
-    <MentorLayout breadcrumb={<span className="truncate">{t('mentor.nav_portal', 'Mentor portal')} / {t('mentor.calendar_title', 'Calendar and sessions')}</span>}>
+    <MentorLayout page={t('mentor.calendar_title', 'Calendar and sessions')}>
       <PageHeader
         eyebrow={t('mentor.calendar_eyebrow', 'Organise your time')}
         title={t('mentor.calendar_title', 'Calendar and sessions')}

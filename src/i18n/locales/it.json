@@ -625,7 +625,8 @@
     "session_status_rejected": "Rifiutata",
     "session_status_cancelled": "Annullata",
     "session_status_completed": "Conclusa",
-    "session_status_rescheduled": "Riprogrammata"
+    "session_status_rescheduled": "Riprogrammata",
+    "welcome_title": "Ciao, {{name}}"
   },
   "xima_core": {
     "page_subtitle": "Uno strumento decisionale standardizzato con scenario personalizzato dall'AI",

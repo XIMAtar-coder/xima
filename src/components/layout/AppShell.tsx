@@ -144,7 +144,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setDrawerOpen(true)} aria-label={t('a11y.open_menu')}>
             <Menu size={20} />
           </Button>
-          <div className="min-w-0 flex-1 text-sm text-muted-foreground">{breadcrumb}</div>
+          <div className="min-w-0 flex-1 truncate text-sm text-muted-foreground">{breadcrumb}</div>
           <div className="flex items-center gap-1">{topRight}</div>
         </header>
 

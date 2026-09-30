@@ -2712,7 +2712,8 @@
     "session_status_rejected": "Rechazada",
     "session_status_cancelled": "Anulada",
     "session_status_completed": "Finalizada",
-    "session_status_rescheduled": "Reprogramada"
+    "session_status_rescheduled": "Reprogramada",
+    "welcome_title": "Hola, {{name}}"
   },
   "dashboard": {
     "page_label": "DASHBOARD",

@@ -47,7 +47,7 @@ export default function MentorPreview() {
   const doneCount = checklist.filter((c) => c.done).length;
 
   return (
-    <MentorLayout breadcrumb={<span className="truncate">{t('mentor.area_label', 'Mentor area')} / {t('mentor.nav_preview', 'Profile preview')}</span>}>
+    <MentorLayout page={t('mentor.nav_preview', 'Profile preview')}>
       <PageHeader
         eyebrow={`${t('mentor.preview_eyebrow', 'Preview')} / ${t('mentor.preview_side', 'Candidate side')}`}
         title={t('mentor.preview_title', 'This is how they find you')}

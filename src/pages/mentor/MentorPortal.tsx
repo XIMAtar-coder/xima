@@ -35,6 +35,8 @@ export default function MentorPortal() {
   if (!isMentor || !mentorProfile) return <NotAMentor />;
 
   const avatar = mentorAvatarUrl(mentorProfile.profile_image_url);
+  // First name only: the title greets, the rail shows the full name.
+  const name = (mentorProfile.name || '').trim().split(/\s+/)[0] || '';
   const isProfileIncomplete = !mentorProfile.bio || !mentorProfile.title
     || !mentorProfile.profile_image_url || !mentorProfile.xima_pillars?.length;
 
@@ -67,10 +69,10 @@ export default function MentorPortal() {
   ];
 
   return (
-    <MentorLayout breadcrumb={<span className="truncate">{t('mentor.area_label', 'Mentor area')} / {t('mentor.portal_title', 'Mentor portal')}</span>}>
+    <MentorLayout page={t('mentor.portal_title', 'Mentor portal')}>
       <PageHeader
-        eyebrow={`${t('mentor.eyebrow_personal', 'Personal area')} / ${t('mentor.role_label', 'Mentor')}`}
-        title={t('mentor.portal_title', 'Mentor portal')}
+        eyebrow={t('mentor.area_label', 'Mentor area')}
+        title={name ? t('mentor.welcome_title', { name }) : t('mentor.portal_title', 'Mentor portal')}
         subtitle={t('mentor.portal_description', 'Your profile and your meetings with candidates, in one place.')}
         actions={
           <Button variant="outline" asChild>

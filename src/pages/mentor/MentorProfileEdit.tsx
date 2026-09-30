@@ -142,9 +142,9 @@ export default function MentorProfileEdit() {
   );
 
   return (
-    <MentorLayout breadcrumb={<span className="truncate">{t('mentor.area_label', 'Mentor area')} / {t('mentor.nav_profile', 'My profile')}</span>}>
+    <MentorLayout page={t('mentor.nav_profile', 'My profile')}>
       <PageHeader
-        eyebrow={`${t('mentor.eyebrow_personal', 'Personal area')} / ${t('mentor.nav_profile', 'My profile')}`}
+        eyebrow={t('mentor.area_label', 'Mentor area')}
         title={t('mentor.edit_profile', 'Edit profile')}
         subtitle={t('mentor.edit_description', 'Update how candidates see your mentor profile')}
         actions={saveButton}
