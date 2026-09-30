@@ -7,11 +7,17 @@ export interface VerificationStatus {
   hoursLeft: number | null;
 }
 
+/** Google verified the address already: no deadline, no banner. */
+const OAUTH_VERIFIED_PROVIDERS = ['google'];
+
 export function computeVerificationStatus(
   email_verified_at: string | null | undefined,
   verification_required_until: string | null | undefined,
+  providers: string[] | null | undefined = null,
 ): VerificationStatus {
-  if (email_verified_at) return { verified: true, deadline: null, expired: false, hoursLeft: null };
+  if (email_verified_at || providers?.some((p) => OAUTH_VERIFIED_PROVIDERS.includes(p))) {
+    return { verified: true, deadline: null, expired: false, hoursLeft: null };
+  }
   if (!verification_required_until) {
     return { verified: false, deadline: null, expired: false, hoursLeft: null };
   }
@@ -33,7 +39,11 @@ export async function getCurrentVerificationStatus(): Promise<VerificationStatus
     .select('email_verified_at, verification_required_until')
     .eq('user_id', user.id)
     .maybeSingle();
-  return computeVerificationStatus(data?.email_verified_at, data?.verification_required_until);
+  return computeVerificationStatus(
+    data?.email_verified_at,
+    data?.verification_required_until,
+    (user.app_metadata?.providers as string[] | undefined) ?? null,
+  );
 }
 
 /**

@@ -40,7 +40,11 @@ export const EmailVerificationBanner: React.FC<{ slim?: boolean }> = ({ slim = f
       .select('email_verified_at, verification_required_until')
       .eq('user_id', user.id)
       .maybeSingle();
-    setStatus(computeVerificationStatus(data?.email_verified_at, data?.verification_required_until));
+    setStatus(computeVerificationStatus(
+      data?.email_verified_at,
+      data?.verification_required_until,
+      ((user as any).app_metadata?.providers as string[] | undefined) ?? null,
+    ));
   }, [user?.id]);
 
   useEffect(() => {

@@ -22,6 +22,12 @@ const { supabase } = (await import("@/integrations/supabase/client")) as any;
 const { canPerformSensitiveAction, getCurrentVerificationStatus } = await import("../verificationGuard");
 
 describe("computeVerificationStatus (pure)", () => {
+  it("verified when the account signed in with Google, even past the deadline", () => {
+    const past = new Date(Date.now() - 3600 * 1000).toISOString();
+    expect(computeVerificationStatus(null, past, ["email", "google"]).verified).toBe(true);
+    expect(computeVerificationStatus(null, past, ["email"]).expired).toBe(true);
+  });
+
   it("verified when email_verified_at is set", () => {
     const s = computeVerificationStatus("2026-01-01T00:00:00Z", null);
     expect(s.verified).toBe(true);
