@@ -72,7 +72,7 @@ export default function MentorPortal() {
     <MentorLayout page={t('mentor.portal_title', 'Mentor portal')}>
       <PageHeader
         eyebrow={t('mentor.area_label', 'Mentor area')}
-        title={name ? t('mentor.welcome_title', { name }) : t('mentor.portal_title', 'Mentor portal')}
+        title={name ? t('mentor.welcome_title', { name, defaultValue: 'Hi, {{name}}' }) : t('mentor.portal_title', 'Mentor portal')}
         subtitle={t('mentor.portal_description', 'Your profile and your meetings with candidates, in one place.')}
         actions={
           <Button variant="outline" asChild>

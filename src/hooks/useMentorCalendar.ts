@@ -31,6 +31,8 @@ export interface MentorSession {
   created_at: string;
   updated_at: string;
   candidate_name?: string;
+  candidate_ximatar?: string;
+  session_type?: string | null;
   // Reschedule proposal fields
   proposed_start_at: string | null;
   proposed_end_at: string | null;
@@ -80,11 +82,7 @@ export function useMentorCalendar(mentorId: string | null) {
           id, mentor_id, candidate_profile_id, availability_slot_id,
           starts_at, ends_at, status, title, notes_shared,
           created_by, created_at, updated_at,
-          proposed_start_at, proposed_end_at, reschedule_status,
-          profiles!mentor_sessions_candidate_profile_id_fkey (
-            full_name,
-            name
-          )
+          proposed_start_at, proposed_end_at, reschedule_status, session_type
         `)
         .eq('mentor_id', mentorId)
         .order('starts_at', { ascending: true });
@@ -94,6 +92,13 @@ export function useMentorCalendar(mentorId: string | null) {
       // Private notes live in a mentor-only table (candidates must never read them)
       const sessionIds = (sessionsData || []).map((s: any) => s.id);
       const privateNotes = new Map<string, string | null>();
+      // RLS keeps candidate profiles away from mentors; the RPC hands back
+      // only name and XIMAtar for the sessions of this mentor.
+      const candidateNames = new Map<string, { name: string | null; ximatar: string | null }>();
+      if (sessionIds.length > 0) {
+        const { data: namesData } = await (supabase.rpc as any)('mentor_session_candidates', { p_session_ids: sessionIds });
+        (namesData || []).forEach((n: any) => candidateNames.set(n.session_id, { name: n.candidate_name, ximatar: n.ximatar_name }));
+      }
       if (sessionIds.length > 0) {
         const { data: notesData } = await supabase
           .from('mentor_session_private_notes')
@@ -113,7 +118,8 @@ export function useMentorCalendar(mentorId: string | null) {
         created_by: s.created_by as MentorSession['created_by'],
         reschedule_status: (s.reschedule_status || 'none') as MentorSession['reschedule_status'],
         notes_private: privateNotes.get(s.id) ?? null,
-        candidate_name: s.profiles?.full_name || s.profiles?.name || 'Anonymous'
+        candidate_name: candidateNames.get(s.id)?.name || undefined,
+        candidate_ximatar: candidateNames.get(s.id)?.ximatar || undefined,
       })));
     } catch (err: any) {
       log.error('[useMentorCalendar] Error:', err);

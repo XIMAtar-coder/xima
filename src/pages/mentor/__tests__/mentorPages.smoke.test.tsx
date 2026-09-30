@@ -10,7 +10,13 @@ import { MemoryRouter } from 'react-router-dom';
 import React from 'react';
 
 vi.mock('react-i18next', () => {
-  const t = (key: string, opts?: unknown) => (typeof opts === 'string' ? opts : key);
+  // Like the app: the string default, or the defaultValue option with {{name}} filled in.
+  const t = (key: string, opts?: unknown) => {
+    if (typeof opts === 'string') return opts;
+    const o = opts as { defaultValue?: string; name?: string } | undefined;
+    if (o?.defaultValue) return o.defaultValue.replace('{{name}}', o.name ?? '');
+    return key;
+  };
   const i18n = { language: 'it', changeLanguage: vi.fn() };
   return { useTranslation: () => ({ t, i18n }) };
 });
@@ -63,7 +69,7 @@ beforeEach(() => {
 describe('Portale mentore', () => {
   it('shows identity, quick access and the missing-profile step', () => {
     wrap(<MentorPortal />);
-    expect(screen.getByRole('heading', { name: 'Mentor portal' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Hi, Alessandro' })).toBeInTheDocument();
     expect(screen.getByText('Alessandro Del Piero')).toBeInTheDocument();
     // Bio and photo are missing, so the next step is offered.
     expect(screen.getByText('Let candidates find you')).toBeInTheDocument();
