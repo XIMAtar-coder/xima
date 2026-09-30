@@ -111,7 +111,8 @@ const MentorLogin = () => {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
-        redirectTo: `${window.location.origin}/auth/callback`
+        // /auth/callback would just sign the mentor in without a new password.
+        redirectTo: `${window.location.origin}/reset-password`
       });
 
       if (error) throw error;

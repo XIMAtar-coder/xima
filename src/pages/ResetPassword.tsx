@@ -80,7 +80,12 @@ const ResetPassword = () => {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       toast({ title: t('resetPassword.success') });
-      navigate('/profile', { replace: true });
+      // Mentors reset from /mentor/login and belong in their own portal.
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: mentorRow } = user
+        ? await supabase.from('mentors').select('id').eq('user_id', user.id).maybeSingle()
+        : { data: null };
+      navigate(mentorRow ? '/mentor' : '/profile', { replace: true });
     } catch (err) {
       log.error('[ResetPassword] updateUser failed', err);
       toast({ title: t('resetPassword.failed'), variant: 'destructive' });
