@@ -150,8 +150,8 @@ export function ProfilingOptOutSection({ flat = false, audience = 'candidate' }:
         {/* Human review contact */}
         <p className="text-sm text-muted-foreground">
           {t('settings.ai_profiling_human_review')}{' '}
-          <a href="mailto:privacy@xima.app" className="text-primary hover:underline">
-            privacy@xima.app
+          <a href="mailto:privacy@ximatar.com" className="text-primary hover:underline">
+            privacy@ximatar.com
           </a>
         </p>
     </SettingShell>

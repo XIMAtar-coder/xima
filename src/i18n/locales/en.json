@@ -457,7 +457,7 @@
     "mentor_benefit_3": "Manage coaching sessions and availability",
     "go_to_dashboard": "Go to Candidate Dashboard",
     "interested_in_mentoring": "Interested in becoming a mentor?",
-    "contact_us": "Contact us at info@xima.app",
+    "contact_us": "Contact us at info@ximatar.com",
     "back_to_portal": "Back to the portal",
     "sessions_title": "Your sessions",
     "sessions_description": "Manage your coaching sessions with candidates",
@@ -1846,9 +1846,9 @@
       "data_security_title": "Data Security",
       "data_security_content": "We implement industry-standard security measures to protect your data:\n\n• Encryption of data in transit (TLS/SSL) and at rest\n• Secure cloud infrastructure hosted in EU data centers\n• Row-level security ensuring users can only access their own data\n• Regular security audits and vulnerability assessments\n• Strict access controls for our team members\n\nDespite our best efforts, no system is 100% secure. We encourage you to use strong passwords and keep your account credentials confidential.",
       "your_rights_title": "Your Rights (GDPR)",
-      "your_rights_content": "Under the General Data Protection Regulation (GDPR), you have the following rights:\n\n• Right of Access: Request a copy of all personal data we hold about you\n• Right to Rectification: Correct any inaccurate or incomplete data\n• Right to Erasure: Request deletion of your personal data ('right to be forgotten')\n• Right to Restriction: Limit how we process your data in certain circumstances\n• Right to Data Portability: Receive your data in a structured, machine-readable format\n• Right to Object: Object to automated profiling and direct marketing\n• Right to Withdraw Consent: Withdraw consent at any time without affecting prior processing\n\nTo exercise any of these rights, contact our Data Protection Officer at privacy@xima.app.",
+      "your_rights_content": "Under the General Data Protection Regulation (GDPR), you have the following rights:\n\n• Right of Access: Request a copy of all personal data we hold about you\n• Right to Rectification: Correct any inaccurate or incomplete data\n• Right to Erasure: Request deletion of your personal data ('right to be forgotten')\n• Right to Restriction: Limit how we process your data in certain circumstances\n• Right to Data Portability: Receive your data in a structured, machine-readable format\n• Right to Object: Object to automated profiling and direct marketing\n• Right to Withdraw Consent: Withdraw consent at any time without affecting prior processing\n\nTo exercise any of these rights, contact our Data Protection Officer at privacy@ximatar.com.",
       "contact_title": "Contact Information",
-      "contact_content": "For any privacy-related inquiries or to exercise your rights, please contact:\n\nXIMA S.r.l.\nVia Torino, 2\n20123 Milano (MI), Italia\n\nData Protection Officer: privacy@xima.app\nGeneral inquiries: info@xima.app\n\nYou also have the right to lodge a complaint with the Italian Data Protection Authority (Garante per la protezione dei dati personali) if you believe your rights have been violated."
+      "contact_content": "For any privacy-related inquiries or to exercise your rights, please contact:\n\nXIMA S.r.l.\nVia Torino, 2\n20123 Milano (MI), Italia\n\nData Protection Officer: privacy@ximatar.com\nGeneral inquiries: info@ximatar.com\n\nYou also have the right to lodge a complaint with the Italian Data Protection Authority (Garante per la protezione dei dati personali) if you believe your rights have been violated."
     },
     "terms": {
       "title": "Terms of Service",
@@ -1865,7 +1865,7 @@
       "termination_title": "Account Termination",
       "termination_content": "You may delete your account at any time through your account settings. Upon deletion:\n\n• Your profile and personal data will be permanently removed\n• Assessment results and XIMAtar profile will be deleted\n• Challenge submissions will be anonymized\n• Chat messages will be anonymized\n\nWe may suspend or terminate accounts that violate these terms or engage in fraudulent activity. We will provide notice when reasonably possible.",
       "changes_title": "Changes to These Terms",
-      "changes_content": "We may update these Terms of Service from time to time to reflect changes in our services or legal requirements. When we make material changes:\n\n• We will notify you via email or in-app notification\n• The updated terms will be posted with a new 'Last updated' date\n• Continued use of XIMA after changes take effect constitutes acceptance\n\nFor questions about these terms, contact us at info@xima.app."
+      "changes_content": "We may update these Terms of Service from time to time to reflect changes in our services or legal requirements. When we make material changes:\n\n• We will notify you via email or in-app notification\n• The updated terms will be posted with a new 'Last updated' date\n• Continued use of XIMA after changes take effect constitutes acceptance\n\nFor questions about these terms, contact us at info@ximatar.com."
     },
     "imprint": {
       "title": "Impressum",

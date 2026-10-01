@@ -129,7 +129,7 @@ Deno.serve(async (req) => {
     }, correlationId);
 
     // Email to sales team
-    const salesEmail = Deno.env.get("SALES_TEAM_EMAIL") || "sales@xima.com";
+    const salesEmail = Deno.env.get("SALES_TEAM_EMAIL") || "info@ximatar.com";
     try {
       await supabase.rpc("enqueue_email", {
         p_idempotency_key: `contact_sales_${request.id}`,

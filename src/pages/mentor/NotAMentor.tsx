@@ -64,11 +64,11 @@ export default function NotAMentor() {
                 {t('mentor.interested_in_mentoring', 'Interested in becoming a mentor?')}
               </p>
               <a 
-                href="mailto:info@xima.app" 
+                href="mailto:info@ximatar.com" 
                 className="inline-flex items-center gap-2 text-primary hover:underline font-medium text-sm"
               >
                 <Mail className="h-4 w-4" />
-                {t('mentor.contact_us', 'Contact us at info@xima.app')}
+                {t('mentor.contact_us', 'Contact us at info@ximatar.com')}
               </a>
             </div>
           </CardContent>

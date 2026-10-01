@@ -457,7 +457,7 @@
     "mentor_benefit_3": "Gestire sessioni di coaching e disponibilità",
     "go_to_dashboard": "Vai alla dashboard candidato",
     "interested_in_mentoring": "Vuoi diventare mentor?",
-    "contact_us": "Scrivici a info@xima.app",
+    "contact_us": "Scrivici a info@ximatar.com",
     "back_to_portal": "Torna al portale",
     "sessions_title": "Le tue sessioni",
     "sessions_description": "Gestisci le tue sessioni di coaching con i candidati",
@@ -1846,9 +1846,9 @@
       "data_security_title": "Sicurezza dei dati",
       "data_security_content": "Adottiamo misure di sicurezza in linea con gli standard di settore per proteggere i tuoi dati:\n\n• Crittografia dei dati in transito (TLS/SSL) e a riposo\n• Infrastruttura cloud sicura, ospitata in data center nell'UE\n• Sicurezza a livello di riga, che garantisce che ogni utente acceda solo ai propri dati\n• Audit di sicurezza regolari e valutazioni delle vulnerabilità\n• Controlli di accesso rigorosi per i membri del nostro team\n\nNonostante il nostro impegno, nessun sistema è sicuro al 100%. Ti invitiamo a usare password robuste e a mantenere riservate le credenziali del tuo account.",
       "your_rights_title": "I tuoi diritti (GDPR)",
-      "your_rights_content": "Ai sensi del Regolamento generale sulla protezione dei dati (GDPR), hai i seguenti diritti:\n\n• Diritto di accesso: richiedere una copia di tutti i dati personali che conserviamo su di te\n• Diritto di rettifica: correggere dati inesatti o incompleti\n• Diritto alla cancellazione: richiedere la cancellazione dei tuoi dati personali ('diritto all'oblio')\n• Diritto di limitazione: limitare il trattamento dei tuoi dati in determinate circostanze\n• Diritto alla portabilità: ricevere i tuoi dati in un formato strutturato e leggibile da dispositivo automatico\n• Diritto di opposizione: opporti alla profilazione automatizzata e al marketing diretto\n• Diritto di revoca del consenso: revocare il consenso in qualsiasi momento, senza pregiudicare il trattamento già effettuato\n\nPer esercitare uno di questi diritti, contatta il nostro Responsabile della protezione dei dati all'indirizzo privacy@xima.app.",
+      "your_rights_content": "Ai sensi del Regolamento generale sulla protezione dei dati (GDPR), hai i seguenti diritti:\n\n• Diritto di accesso: richiedere una copia di tutti i dati personali che conserviamo su di te\n• Diritto di rettifica: correggere dati inesatti o incompleti\n• Diritto alla cancellazione: richiedere la cancellazione dei tuoi dati personali ('diritto all'oblio')\n• Diritto di limitazione: limitare il trattamento dei tuoi dati in determinate circostanze\n• Diritto alla portabilità: ricevere i tuoi dati in un formato strutturato e leggibile da dispositivo automatico\n• Diritto di opposizione: opporti alla profilazione automatizzata e al marketing diretto\n• Diritto di revoca del consenso: revocare il consenso in qualsiasi momento, senza pregiudicare il trattamento già effettuato\n\nPer esercitare uno di questi diritti, contatta il nostro Responsabile della protezione dei dati all'indirizzo privacy@ximatar.com.",
       "contact_title": "Contatti",
-      "contact_content": "Per qualsiasi richiesta relativa alla privacy o per esercitare i tuoi diritti, contatta:\n\nXIMA S.r.l.\nVia Torino, 2\n20123 Milano (MI), Italia\n\nResponsabile della protezione dei dati: privacy@xima.app\nRichieste generali: info@xima.app\n\nHai inoltre il diritto di presentare un reclamo al Garante per la protezione dei dati personali se ritieni che i tuoi diritti siano stati violati."
+      "contact_content": "Per qualsiasi richiesta relativa alla privacy o per esercitare i tuoi diritti, contatta:\n\nXIMA S.r.l.\nVia Torino, 2\n20123 Milano (MI), Italia\n\nResponsabile della protezione dei dati: privacy@ximatar.com\nRichieste generali: info@ximatar.com\n\nHai inoltre il diritto di presentare un reclamo al Garante per la protezione dei dati personali se ritieni che i tuoi diritti siano stati violati."
     },
     "terms": {
       "title": "Termini di servizio",
@@ -1865,7 +1865,7 @@
       "termination_title": "Chiusura dell'account",
       "termination_content": "Puoi eliminare il tuo account in qualsiasi momento dalle impostazioni dell'account. Al momento dell'eliminazione:\n\n• Il tuo profilo e i tuoi dati personali saranno rimossi in modo permanente\n• I risultati degli assessment e il profilo XIMAtar saranno eliminati\n• Le consegne delle challenge saranno anonimizzate\n• I messaggi della chat saranno anonimizzati\n\nPossiamo sospendere o chiudere gli account che violano questi termini o sono coinvolti in attività fraudolente. Quando ragionevolmente possibile, invieremo un preavviso.",
       "changes_title": "Modifiche a questi termini",
-      "changes_content": "Potremmo aggiornare di tanto in tanto questi Termini di servizio per riflettere cambiamenti nei nostri servizi o nei requisiti di legge. In caso di modifiche sostanziali:\n\n• Ti avviseremo via email o con una notifica in-app\n• I termini aggiornati saranno pubblicati con una nuova data di 'Ultimo aggiornamento'\n• L'uso continuato di XIMA dopo l'entrata in vigore delle modifiche ne costituisce accettazione\n\nPer domande su questi termini, scrivici a info@xima.app."
+      "changes_content": "Potremmo aggiornare di tanto in tanto questi Termini di servizio per riflettere cambiamenti nei nostri servizi o nei requisiti di legge. In caso di modifiche sostanziali:\n\n• Ti avviseremo via email o con una notifica in-app\n• I termini aggiornati saranno pubblicati con una nuova data di 'Ultimo aggiornamento'\n• L'uso continuato di XIMA dopo l'entrata in vigore delle modifiche ne costituisce accettazione\n\nPer domande su questi termini, scrivici a info@ximatar.com."
     },
     "imprint": {
       "title": "Impressum",
