@@ -296,7 +296,7 @@ const DnaPillarSection = () => {
   return (
     <section id="pilastri" className="xs-panel scroll-mt-20">
       <SettingsSectionHeader
-        index="03"
+        index="06"
         eyebrow={t('businessPortal.settings_eyebrow_dna')}
         title={t('business.dna.title', 'DNA Pilastri Aziendali')}
         subtitle={businessProfile?.dna_last_regenerated_at
@@ -356,7 +356,7 @@ const DnaPillarSection = () => {
               <li key={x} className="flex flex-col items-center gap-1 text-xs text-muted-foreground">
                 <img loading="lazy" decoding="async" src={`/ximatars/${x}.webp`} alt="" className="h-10 w-10 rounded-full object-cover"
                   onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
-                <span className="capitalize">{x}</span>
+                <span>{t(`ximatar.${x}.name`, x.charAt(0).toUpperCase() + x.slice(1))}</span>
               </li>
             ))}
           </ul>
@@ -425,7 +425,7 @@ const DnaPillarSection = () => {
 
 // ─── Regenerate DNA Modal ───
 const RegenerateDnaModal = ({ onClose, pillarScores, bestFitXimatars, onSuccess }: { onClose: () => void; pillarScores: any; bestFitXimatars: any; onSuccess: () => void }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useUser();
   const [reason, setReason] = useState('');
   const [regenerating, setRegenerating] = useState(false);
@@ -449,7 +449,7 @@ const RegenerateDnaModal = ({ onClose, pillarScores, bestFitXimatars, onSuccess 
       }
 
       const { data: profileData, error } = await supabase.functions.invoke('generate-company-profile', {
-        body: { company_id: user?.id ?? '', force_regenerate: true, regeneration_reason: reason },
+        body: { company_id: user?.id ?? '', force_regenerate: true, regeneration_reason: reason, language: i18n.language },
       });
       if (error) throw error;
       const partialScan = (profileData as any)?.website_scan_status === 'insufficient';
@@ -839,12 +839,12 @@ const BusinessSettings = () => {
           {/* ─── 02 Editable AI Profile ─── */}
           <EditableAIProfileSection />
 
-          {/* ─── 04 Legal ─── */}
+          {/* ─── 03 Legal ─── */}
           <CompanyLegalSettings />
 
-          {/* ─── 05 Privacy (shared section, wrapped for the index) ─── */}
+          {/* ─── 04 Privacy (shared section) ─── */}
           <div id="privacy" className="scroll-mt-20 space-y-6">
-            <ProfilingOptOutSection />
+            <ProfilingOptOutSection audience="business" />
             <AccountDeletionSection variant="business" />
           </div>
         </div>

@@ -65,7 +65,7 @@ const CompanyLegalSettings: React.FC = () => {
   return (
     <section id="legale" className="xs-panel scroll-mt-20">
       <SettingsSectionHeader
-        index="04"
+        index="03"
         eyebrow={t('businessPortal.settings_eyebrow_legal')}
         title={t('businessPortal.settings_legal_title')}
         subtitle={t('businessPortal.settings_legal_subtitle')}

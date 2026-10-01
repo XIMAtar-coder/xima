@@ -3203,8 +3203,8 @@
     "feature1_body": "La IA cruza a los candidatos por señales conductuales validadas — no por palabras clave del CV. Descubre quiénes son, cómo piensan y cómo rinden bajo presión. Antes incluso de abrir su perfil.",
     "feature2_title": "Un pipeline de tres niveles",
     "feature2_body": "L1 Core Assessment — la misma estructura para todo el mundo, comparable por definición. L2 Challenge específico del puesto — la IA monta una simulación sobre tu oferta real con una rúbrica a medida. L3 Sesión en vídeo — revisión humana. Cada nivel destapa algo más profundo.",
-    "feature3_title": "Trazabilidad completa",
-    "feature3_body": "Cada decisión de la IA queda registrada con hash SHA-256, versión del modelo y latencia. Repetición determinista para auditorías o reclamaciones. Art. 22 del RGPD por arquitectura — no por política. Cero decisiones autónomas: cada contratación exige confirmación humana.",
+    "feature3_title": "Cada elección se puede explicar",
+    "feature3_body": "Siempre sabes por qué un candidato está en la shortlist: cada evaluación queda registrada y se puede revisar, incluso meses después. La IA nunca contrata a nadie: la última palabra es tuya. Conforme al RGPD (art. 22) sin que tengas que hacer nada.",
     "feature4_title": "Al alcance de las pymes",
     "feature4_body": "HireVue y los competidores enterprise exigen contratos de más de 50.000 €. XIMA se prueba gratis; los planes de pago empiezan en 499 €/mes. Sin permanencia. Sin onboarding de pago. Seleccionar por señal conductual — por fin al alcance de cualquiera que contrate de verdad.",
     "pipeline_label": "EL PIPELINE",
@@ -3262,12 +3262,12 @@
     "trust_1_body": "XIMA está clasificado como herramienta de apoyo a la decisión — nunca como quien decide. Cada resultado de la IA necesita confirmación humana. No es un parche de última hora: está en la arquitectura desde el primer día.",
     "trust_2_title": "Cero señales demográficas",
     "trust_2_body": "Sin nombre. Sin foto. Sin universidad. Sin código postal. Los cinco pilares ven conducta — y nada más. A los candidatos se les evalúa por lo que hacen, no por lo que parecen sobre el papel.",
-    "trust_3_title": "Trazabilidad SHA-256",
-    "trust_3_body": "Cada llamada a la IA queda registrada con el hash del prompt, la versión del modelo, la latencia y el esquema de puntuación. Repetición determinista para auditorías o reclamaciones. El pasado se puede verificar.",
+    "trust_3_title": "Evaluaciones registradas",
+    "trust_3_body": "Cada evaluación de la IA queda registrada y puede reabrirse y reconstruirse, para una verificación o una reclamación. Para quien quiera el detalle: firma SHA-256, versión del modelo y criterios usados.",
     "trust_4_title": "Datos alojados en la UE",
     "trust_4_body": "Supabase en región UE. Ningún dato sale del EEE salvo para la inferencia de IA (Gemini API — cubierta por el DPA de Google). Row-Level Security en las 78 tablas de la base de datos.",
     "cta_headline": "¿Listo para transformar\ntu forma de contratar?",
-    "cta_body": "Empieza con una prueba gratuita. Sin tarjeta de crédito. Tu primer candidato evaluado en 24 horas.",
+    "cta_body": "Empieza con la prueba gratuita. Sin tarjeta de crédito. Tu primer candidato evaluado en 72 horas.",
     "cta_primary": "Empieza la prueba gratuita →",
     "cta_secondary": "Habla con el equipo",
     "features_title": "¿Por Qué Elegir XIMA para Empresas?",
@@ -4171,7 +4171,13 @@
       "subtle": "Sutil",
       "strong": "Fuerte",
       "clear_focus": "Quitar foco"
-    }
+    },
+    "hero_proof_no_card": "Sin tarjeta de crédito",
+    "hero_proof_setup": "Listo en 20 minutos",
+    "hero_proof_first_candidate": "Primer candidato en 72 horas",
+    "mock_above_pool": "Por encima de la media del pool",
+    "mock_legend_candidate": "Este candidato",
+    "mock_legend_pool": "Media del pool"
   },
   "not_found": {
     "title": "404 — Página no encontrada",
@@ -6360,7 +6366,22 @@
     "settings_plan_not_included": "No incluidos en el plan {{plan}}",
     "settings_plan_all_included": "Todas las funciones están incluidas en tu plan.",
     "settings_plan_change_cta": "Cambiar plan",
-    "settings_dna_recommended": "XIMAtars recomendados"
+    "settings_dna_recommended": "XIMAtars recomendados",
+    "profile_to_generate": "Por generar",
+    "profile_building_chip": "En construcción",
+    "profile_thin_chip": "Por enriquecer",
+    "profile_review": "Revisar el perfil",
+    "profile_thin_body": "Vuestra web dice poco sobre cómo trabajáis: añade unas líneas y los candidatos leerán un perfil que se os parezca.",
+    "profile_add_info": "Añadir información",
+    "profile_building_body": "Estamos leyendo vuestra web para construir el perfil de empresa. Tarda cerca de un minuto: aparecerá aquí solo.",
+    "first_steps_title": "Tus tres primeros pasos",
+    "first_step_1_title": "Di a quién buscas",
+    "first_step_1_body": "Un objetivo de contratación: puesto, lugar, qué hará la persona.",
+    "first_step_2_title": "XIMA escribe el desafío",
+    "first_step_2_body": "Una situación breve del trabajo real, igual para todos los candidatos.",
+    "first_step_3_title": "Invita desde la shortlist",
+    "first_step_3_body": "Ves cómo razona cada persona antes de abrir un perfil.",
+    "first_steps_note": "Los números de tu selección aparecen aquí en cuanto responde el primer candidato."
   },
   "ximatarJourney": {
     "page_title": "Tu recorrido XIMAtar",
@@ -10696,5 +10717,21 @@
     "final_title": "Lo próximo que descubrir eres tú.",
     "final_body": "Solo necesitas un espacio tranquilo y el tiempo para responder con atención.",
     "business_link": "¿Buscas personas para tu empresa? →"
+  },
+  "contact_sales": {
+    "title": "Hablemos de tu plan",
+    "subtitle": "Cuéntanos qué necesitas: prepararemos un plan a medida para tu empresa.",
+    "name": "Tu nombre",
+    "email": "Correo de trabajo",
+    "company": "Nombre de la empresa",
+    "plan": "Plan que te interesa",
+    "select_plan": "Elige un plan",
+    "seats": "Personas que usarán XIMA",
+    "message": "¿Algo más?",
+    "message_placeholder": "Cuántas personas contratas al año, para qué puestos…",
+    "submit": "Enviar la solicitud",
+    "submit_failed": "No se pudo enviar. Inténtalo de nuevo.",
+    "success_title": "¡Gracias!",
+    "success_message": "Hemos recibido tu solicitud. Te escribiremos en 2 días laborables."
   }
 }

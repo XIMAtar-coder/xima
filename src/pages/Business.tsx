@@ -35,12 +35,14 @@ const HERO_CANDIDATE = {
   name: 'lion',
   archetype: 'Lion',
   code: 'C-2847',
+  // `pool`: the average of the candidate pool on the same scale. XIMA gives no
+  // single grade to a person: the example reads against that reference.
   pillars: [
-    { key: 'drive', value: 8.4 },
-    { key: 'computational', value: 7.2 },
-    { key: 'knowledge', value: 6.8 },
-    { key: 'communication', value: 9.1 },
-    { key: 'creativity', value: 8.6 },
+    { key: 'drive', value: 8.4, pool: 6.1 },
+    { key: 'computational', value: 7.2, pool: 6.4 },
+    { key: 'knowledge', value: 6.8, pool: 6.6 },
+    { key: 'communication', value: 9.1, pool: 6.0 },
+    { key: 'creativity', value: 8.6, pool: 5.8 },
   ],
 } as const;
 
@@ -127,8 +129,8 @@ const Business: React.FC = () => {
             <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
               {[
                 t('business.hero_proof_no_card', 'No credit card'),
-                t('business.hero_proof_setup', 'Set up in 2 minutes'),
-                t('business.hero_proof_first_candidate', 'First candidate in 24h'),
+                t('business.hero_proof_setup', 'Ready in 20 minutes'),
+                t('business.hero_proof_first_candidate', 'First candidate within 72 hours'),
               ].map((s) => (
                 <span key={s} className="flex items-center gap-2">
                   <Check size={16} style={{ color: BLUE }} />
@@ -178,7 +180,7 @@ const Business: React.FC = () => {
                   className="text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap"
                   style={{ background: 'rgba(16,185,129,0.18)', color: '#34D399' }}
                 >
-                  ● 8.6/10
+                  {t('business.mock_above_pool', 'Above the pool average')}
                 </span>
               </div>
 
@@ -200,6 +202,13 @@ const Business: React.FC = () => {
                         .map((_, i) => {
                           const p = point(i, r);
                           return `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+                        })
+                        .join(' ') + 'Z';
+                    const poolPath =
+                      HERO_CANDIDATE.pillars
+                        .map((p, i) => {
+                          const pt = point(i, (p.pool / max) * maxR);
+                          return `${i === 0 ? 'M' : 'L'}${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
                         })
                         .join(' ') + 'Z';
                     const dataPath =
@@ -234,6 +243,13 @@ const Business: React.FC = () => {
                             />
                           );
                         })}
+                        <path
+                          d={poolPath}
+                          fill="none"
+                          stroke="rgba(255,255,255,0.6)"
+                          strokeWidth={1.2}
+                          strokeDasharray="4 4"
+                        />
                         <path
                           d={dataPath}
                           fill="rgba(11,107,255,0.35)"
@@ -297,6 +313,16 @@ const Business: React.FC = () => {
                     );
                   })()}
                 </svg>
+                <p className="mt-1 flex items-center justify-center gap-4 text-[11px]" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                  <span className="flex items-center gap-1.5">
+                    <span aria-hidden="true" className="inline-block h-[2px] w-4" style={{ background: 'rgba(140,190,255,0.95)' }} />
+                    {t('business.mock_legend_candidate', 'This candidate')}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span aria-hidden="true" className="inline-block w-4 border-t border-dashed" style={{ borderColor: 'rgba(255,255,255,0.6)' }} />
+                    {t('business.mock_legend_pool', 'Pool average')}
+                  </span>
+                </p>
               </div>
 
               {/* Bottom stats strip */}

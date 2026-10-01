@@ -26,9 +26,11 @@ const ContactSales: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    name: user?.name || '',
+    // A company account's "name" is the company: it belongs in the company
+    // field, and the person writes their own name.
+    name: '',
     email: user?.email || '',
-    company: '',
+    company: user?.name || '',
     tier: desiredTier,
     seats: '',
     message: '',

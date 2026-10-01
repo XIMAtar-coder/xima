@@ -75,6 +75,34 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
     },
   ];
 
+  // Nothing has happened yet: four zeros say nothing. Show the way in.
+  const untouched = !loading && attentionItems.length === 0
+    && stats.activeChallenges === 0 && stats.pendingReviews === 0 && stats.candidatesInPipeline === 0 && stats.shortlisted === 0;
+  if (untouched) {
+    const steps = [
+      { n: '01', title: t('businessPortal.first_step_1_title', 'Say who you are looking for'), body: t('businessPortal.first_step_1_body', 'One hiring goal: role, place, what the person will do.'), link: hiringGoalId ? `/business/hiring-goals/${hiringGoalId}` : '/business/hiring-goals/new' },
+      { n: '02', title: t('businessPortal.first_step_2_title', 'XIMA writes the challenge'), body: t('businessPortal.first_step_2_body', 'A short situation from the real job, the same for every candidate.'), link: '/business/challenges' },
+      { n: '03', title: t('businessPortal.first_step_3_title', 'Invite from the shortlist'), body: t('businessPortal.first_step_3_body', 'You see how each person reasons before you open a profile.'), link: '/business/candidates' },
+    ];
+    return (
+      <Panel aria-label={t('businessPortal.first_steps_title', 'Your first three steps')}>
+        <Eyebrow>{t('businessPortal.first_steps_title', 'Your first three steps')}</Eyebrow>
+        <ol className="mt-4 grid gap-5 sm:grid-cols-3">
+          {steps.map((s) => (
+            <li key={s.n}>
+              <Link to={s.link} className="group block">
+                <span className="font-mono text-[13px] font-semibold text-primary">{s.n}</span>
+                <h3 className="mt-1 text-[15px] font-semibold text-foreground group-hover:underline">{s.title}</h3>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{s.body}</p>
+              </Link>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-5 border-t border-[hsl(var(--xs-line))] pt-3 text-xs text-muted-foreground">{t('businessPortal.first_steps_note', 'The numbers of your selection appear here as soon as the first candidate answers.')}</p>
+      </Panel>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <Panel className="overflow-hidden p-0" aria-label={t('businessPortal.overview_counters_aria', 'Selection summary')}>

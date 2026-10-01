@@ -1900,8 +1900,8 @@
     "feature1_body": "Il sistema AI abbina i candidati su segnali comportamentali validati — non sulle keyword del CV. Vedi chi sono, come pensano e come reagiscono sotto pressione. Prima ancora di aprire il loro profilo.",
     "feature2_title": "Percorso in tre livelli",
     "feature2_body": "L1 Core Assessment — struttura identica per tutti, comparabile per definizione. L2 challenge specifica per il ruolo — l'AI costruisce una simulazione sul tuo job post reale, con una rubrica di valutazione su misura. L3 sessione video — valutazione umana. Ogni livello rivela qualcosa di più profondo.",
-    "feature3_title": "Audit trail completo",
-    "feature3_body": "Ogni decisione dell'AI è registrata con hash SHA-256, versione del modello e latenza. Replay deterministico per audit o contestazioni. GDPR Art. 22 garantito dall'architettura, non dalle policy. Zero decisioni autonome: ogni assunzione richiede una conferma umana.",
+    "feature3_title": "Ogni scelta si può spiegare",
+    "feature3_body": "Sai sempre perché un candidato è in shortlist: ogni valutazione resta registrata e si può rivedere, anche a distanza di mesi. Nessuna assunzione la decide l’AI: l’ultima parola è la tua. In regola con il GDPR (art. 22) senza che tu debba fare nulla.",
     "feature4_title": "Alla portata delle PMI",
     "feature4_body": "HireVue e i competitor enterprise richiedono contratti da €50.000 in su. XIMA si prova gratis; i piani a pagamento partono da €499/mese. Nessun vincolo a lungo termine. Nessun onboarding a pagamento. La selezione sui segnali comportamentali — finalmente accessibile a chi assume davvero.",
     "pipeline_label": "LA PIPELINE",
@@ -1959,12 +1959,12 @@
     "trust_1_body": "XIMA è classificato come strumento di supporto alle decisioni — non decide al posto tuo. Ogni output dell'AI richiede una conferma umana. Non è un'aggiunta dell'ultimo minuto: è progettato nell'architettura fin dal primo giorno.",
     "trust_2_title": "Zero segnali demografici",
     "trust_2_body": "Niente nome. Niente foto. Niente università. Niente CAP. I cinque pilastri vedono il comportamento — e nient'altro. I candidati sono valutati per quello che fanno, non per chi sono sulla carta.",
-    "trust_3_title": "Audit trail SHA-256",
-    "trust_3_body": "Ogni chiamata AI è registrata con hash del prompt, versione del modello, latenza e schema di scoring. Replay deterministico per audit o contestazioni. Il passato è verificabile.",
+    "trust_3_title": "Valutazioni tracciate",
+    "trust_3_body": "Ogni valutazione dell’AI viene registrata e può essere riaperta e ricostruita, per una verifica o una contestazione. Per chi vuole il dettaglio: firma SHA-256, versione del modello e criteri usati.",
     "trust_4_title": "Dati residenti nell'UE",
     "trust_4_body": "Supabase in region UE. Nessun trasferimento di dati fuori dal SEE, a eccezione dell'inferenza AI (API Gemini — coperta dal DPA di Google). Row-Level Security su tutte le 78 tabelle del database.",
     "cta_headline": "Pronto a trasformare\nil tuo modo di assumere?",
-    "cta_body": "Inizia con una prova gratuita. Nessuna carta di credito richiesta. Il tuo primo candidato valutato entro 24 ore.",
+    "cta_body": "Inizia con la prova gratuita. Nessuna carta di credito. Il tuo primo candidato valutato entro 72 ore.",
     "cta_primary": "Inizia la prova gratuita →",
     "cta_secondary": "Parla con il team",
     "features_title": "Perché Scegliere XIMA per le Aziende?",
@@ -2225,7 +2225,7 @@
         },
         "xima_hr": {
           "title": "Attiva XIMA HR",
-          "description": "Il nostro team gestisce la selezione per te con le sfida XIMA — tu ricevi solo i finalisti"
+          "description": "Il nostro team gestisce la selezione per te con le sfide XIMA — tu ricevi solo i finalisti"
         }
       },
       "profile_generated_partial": "Non siamo riusciti a leggere bene il sito — abbiamo usato i dati che hai inserito; puoi modificare il profilo."
@@ -2868,7 +2868,13 @@
       "subtle": "Sottile",
       "strong": "Forte",
       "clear_focus": "Rimuovi focus"
-    }
+    },
+    "hero_proof_no_card": "Nessuna carta di credito",
+    "hero_proof_setup": "Pronto in 20 minuti",
+    "hero_proof_first_candidate": "Primo candidato entro 72 ore",
+    "mock_above_pool": "Sopra la media del pool",
+    "mock_legend_candidate": "Questo candidato",
+    "mock_legend_pool": "Media del pool"
   },
   "not_found": {
     "title": "404 — Pagina non trovata",
@@ -5028,7 +5034,7 @@
       "scenario_regenerate_confirm": "Vuoi rigenerare lo scenario? Il testo attuale verrà sostituito.",
       "scenario_locked_note": "Una volta attivata la challenge, lo scenario viene bloccato e i candidati possono iniziare.",
       "questions_title": "Domande fisse",
-      "questions_subtitle": "Queste domande sono standardizzate in tutte le sfida XIMA Core",
+      "questions_subtitle": "Queste domande sono standardizzate in tutte le sfide XIMA Core",
       "questions_fixed_badge": "Struttura fissa",
       "config_title": "Configurazione",
       "time_estimate": "Tempo stimato",
@@ -6831,7 +6837,22 @@
     "settings_plan_not_included": "Non inclusi nel piano {{plan}}",
     "settings_plan_all_included": "Tutte le funzionalità sono incluse nel tuo piano.",
     "settings_plan_change_cta": "Cambia piano",
-    "settings_dna_recommended": "XIMAtar consigliati"
+    "settings_dna_recommended": "XIMAtar consigliati",
+    "profile_to_generate": "Da generare",
+    "profile_building_chip": "In costruzione",
+    "profile_thin_chip": "Da arricchire",
+    "profile_review": "Rivedi il profilo",
+    "profile_thin_body": "Il vostro sito dice poco su come lavorate: aggiungi qualche riga e i candidati leggeranno un profilo che vi somiglia.",
+    "profile_add_info": "Aggiungi informazioni",
+    "profile_building_body": "Stiamo leggendo il vostro sito per costruire il profilo aziendale. Ci vuole circa un minuto: comparirà qui da solo.",
+    "first_steps_title": "I tuoi primi tre passi",
+    "first_step_1_title": "Di’ chi stai cercando",
+    "first_step_1_body": "Un obiettivo di assunzione: ruolo, sede, cosa farà la persona.",
+    "first_step_2_title": "XIMA scrive la sfida",
+    "first_step_2_body": "Una situazione breve presa dal lavoro vero, uguale per tutti i candidati.",
+    "first_step_3_title": "Invita dalla shortlist",
+    "first_step_3_body": "Vedi come ragiona ogni persona prima di aprire un profilo.",
+    "first_steps_note": "I numeri della tua selezione compaiono qui appena risponde il primo candidato."
   },
   "ximatarJourney": {
     "page_title": "Il tuo percorso XIMAtar",
@@ -10397,5 +10418,21 @@
     "final_title": "La prossima cosa da scoprire sei tu.",
     "final_body": "Ti basta uno spazio tranquillo e il tempo per rispondere con attenzione.",
     "business_link": "Cerchi persone per la tua azienda? →"
+  },
+  "contact_sales": {
+    "title": "Parliamo del tuo piano",
+    "subtitle": "Raccontaci cosa ti serve: prepariamo un piano su misura per la tua azienda.",
+    "name": "Il tuo nome",
+    "email": "Email di lavoro",
+    "company": "Nome dell’azienda",
+    "plan": "Piano che ti interessa",
+    "select_plan": "Scegli un piano",
+    "seats": "Persone che useranno XIMA",
+    "message": "Altro da dirci?",
+    "message_placeholder": "Quante persone assumi in un anno, per quali ruoli…",
+    "submit": "Invia la richiesta",
+    "submit_failed": "Invio non riuscito. Riprova.",
+    "success_title": "Grazie!",
+    "success_message": "Abbiamo ricevuto la tua richiesta. Ti scriviamo entro 2 giorni lavorativi."
   }
 }

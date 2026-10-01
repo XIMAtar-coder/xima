@@ -144,6 +144,7 @@ const BusinessRegister = () => {
             company_id: authData.user.id,
             company_name: formData.companyName.trim(),
             website: formData.website,
+            language: i18n.language,
           },
         }).then(({ data, error }) => {
           if (error) {

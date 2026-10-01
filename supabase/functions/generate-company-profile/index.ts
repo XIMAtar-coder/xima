@@ -404,9 +404,29 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, serviceKey);
 
 
-    const { company_id, company_name, website } = await req.json();
-    if (!company_id || !company_name || !website) {
-      return errorResponse(400, "MISSING_FIELDS", "company_id, company_name, and website are required");
+    const payload = await req.json();
+    const company_id: string | undefined = payload?.company_id;
+    let company_name: string | undefined = payload?.company_name;
+    let website: string | undefined = payload?.website;
+    // The language the person is using XIMA in: the profile is shown to them
+    // (and to candidates in the shortlist), so it is written in that language.
+    const requestedLang = typeof payload?.language === "string" ? payload.language.split("-")[0].toLowerCase() : null;
+    if (!company_id) {
+      return errorResponse(400, "MISSING_FIELDS", "company_id is required");
+    }
+    // "Regenerate" from the settings sends only the id: the name and the site
+    // are already on the company record.
+    if (!company_name || !website) {
+      const { data: known } = await supabase
+        .from("business_profiles")
+        .select("company_name, website")
+        .eq("user_id", company_id)
+        .maybeSingle();
+      company_name = company_name || known?.company_name || undefined;
+      website = website || known?.website || undefined;
+    }
+    if (!company_name || !website) {
+      return errorResponse(400, "MISSING_FIELDS", "company_name and website are required");
     }
 
     if (company_id !== callerUserId) {
@@ -425,13 +445,19 @@ Deno.serve(async (req) => {
         .eq("user_id", company_id)
         .maybeSingle();
 
-      // Fetch user's preferred language
+      // The language asked for by the page, else the one saved on the
+      // profile. (The column is preferred_lang: this used to read a column
+      // that does not exist, so every profile came out in English.)
       const { data: userProfile } = await supabase
         .from("profiles")
-        .select("preferred_language")
+        .select("preferred_lang")
         .eq("user_id", company_id)
         .maybeSingle();
-      userLang = userProfile?.preferred_language || "en";
+      const SUPPORTED = ["it", "en", "es", "fr", "de"];
+      const saved = typeof userProfile?.preferred_lang === "string" ? userProfile.preferred_lang.split("-")[0].toLowerCase() : null;
+      userLang = (requestedLang && SUPPORTED.includes(requestedLang) ? requestedLang : null)
+        || (saved && SUPPORTED.includes(saved) ? saved : null)
+        || "en";
 
       if (bizProfile) {
         const industry = bizProfile.manual_industry || bizProfile.snapshot_industry;
@@ -470,6 +496,7 @@ Deno.serve(async (req) => {
     // ===== Claude call =====
     const langOverride: Record<string, string> = {
       it: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields (summary, values, operating_style, communication_style, ideal_traits, risk_areas, company_culture, culture_insights) in ITALIAN. Core values and candidate traits must be Italian words/phrases (e.g. "Onestà", "Expertise tecnica"). Do NOT mix English and Italian.`,
+      en: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in ENGLISH, whatever the language of the website.`,
       es: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in SPANISH.`,
       fr: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in FRENCH.`,
       de: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in GERMAN.`,

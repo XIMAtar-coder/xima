@@ -47,7 +47,7 @@ export const BusinessPlanCard: React.FC = () => {
   return (
     <section id="piano" className="xs-glass scroll-mt-20">
       <SettingsSectionHeader
-        index="06"
+        index="05"
         eyebrow={t('businessPortal.settings_eyebrow_plan')}
         title={t('businessPortal.settings_plan_title')}
         subtitle={isFreePlan

@@ -123,7 +123,7 @@ const ActiveGoalPanel: React.FC<{ goal: HiringGoal | null; draftGoal: HiringGoal
 
 const BusinessDashboard = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: businessLoading } = useBusinessRole();
@@ -250,6 +250,25 @@ const BusinessDashboard = () => {
     } catch (error) { log.error('Error loading company profile:', error); } finally { setProfileLoading(false); }
   };
 
+  // Right after registration the profile is still being written from the
+  // website (about half a minute): say so and wait for it, instead of
+  // showing "incomplete" with a button to generate what is already coming.
+  const createdAt = (businessProfile as { created_at?: string } | null | undefined)?.created_at;
+  const justRegistered = !!createdAt && Date.now() - new Date(createdAt).getTime() < 5 * 60 * 1000;
+  const [waitedForProfile, setWaitedForProfile] = useState(false);
+  const profileBuilding = !companyProfile && !profileLoading && justRegistered && !!businessProfile?.website && !waitedForProfile;
+  useEffect(() => {
+    if (!profileBuilding) return;
+    let tries = 0;
+    const timer = window.setInterval(() => {
+      tries += 1;
+      loadCompanyProfile();
+      if (tries >= 24) { window.clearInterval(timer); setWaitedForProfile(true); }
+    }, 5000);
+    return () => window.clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileBuilding]);
+
   const handleGenerateProfile = async () => {
     if (!user?.id || !businessProfile) {
       toast({ title: t('business.dashboard.error'), description: t('business.dashboard.missing_info'), variant: 'destructive' });
@@ -263,6 +282,7 @@ const BusinessDashboard = () => {
           company_id: user.id,
           company_name: businessProfile.company_name,
           website: businessProfile.website,
+          language: i18n.language,
         }
       });
       if (error) throw error;
@@ -390,7 +410,7 @@ const BusinessDashboard = () => {
           <CompanyIdentityCard
             businessProfile={businessProfile ?? null}
             companyProfile={companyProfile}
-            profileStatus={profileLoading ? 'loading' : 'ready'}
+            profileStatus={profileLoading ? 'loading' : profileBuilding ? 'building' : 'ready'}
             onGenerate={handleGenerateProfile}
           />
         </div>

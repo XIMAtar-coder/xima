@@ -38,7 +38,8 @@ interface CompanyIdentityCardProps {
     ideal_traits_override?: any | null;
     risk_areas?: string[] | null;
   } | null;
-  profileStatus: 'ready' | 'incomplete' | 'loading';
+  /** `building`: just registered, XIMA is still reading the website. */
+  profileStatus: 'ready' | 'incomplete' | 'loading' | 'building';
   onGenerate: () => void;
 }
 
@@ -116,7 +117,11 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
   const displayCommunicationStyle = getCompanyDisplayField(companyProfile, 'communication_style');
   const displayIdealTraits: string[] = getCompanyDisplayField(companyProfile, 'ideal_traits') || [];
 
-  const resolvedStatus = profileStatus === 'loading' ? 'loading' : (displaySummary ? 'ready' : 'incomplete');
+  const resolvedStatus = profileStatus === 'loading'
+    ? 'loading'
+    : displaySummary ? 'ready' : profileStatus === 'building' ? 'building' : 'incomplete';
+  // The site said little: the profile exists but is worth a few more lines.
+  const thinProfile = !!companyProfile && (companyProfile as { website_scan_status?: string }).website_scan_status === 'insufficient';
   const metaLine = [
     industry,
     growthStage ? formatGrowthStage(growthStage, t) : null,
@@ -131,11 +136,15 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
       <div className="mb-5 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Eyebrow>{t('businessPortal.company_profile_title')}</Eyebrow>
-          {resolvedStatus === 'incomplete' && <Chip>{t('businessPortal.dashboard_profile_incomplete', 'Incomplete')}</Chip>}
+          {resolvedStatus === 'incomplete' && <Chip>{t('businessPortal.profile_to_generate', 'To generate')}</Chip>}
+          {resolvedStatus === 'building' && <Chip>{t('businessPortal.profile_building_chip', 'In progress')}</Chip>}
+          {resolvedStatus === 'ready' && thinProfile && <Chip>{t('businessPortal.profile_thin_chip', 'To enrich')}</Chip>}
         </div>
-        <Link to="/business/settings" className="text-xs font-medium text-primary hover:underline">
-          {t('common.edit')} <span aria-hidden="true">↗</span>
-        </Link>
+        {resolvedStatus === 'ready' && (
+          <Link to="/business/settings" className="text-xs font-medium text-primary hover:underline">
+            {t('businessPortal.profile_review', 'Review the profile')} <span aria-hidden="true">↗</span>
+          </Link>
+        )}
       </div>
 
       <div className="flex items-center gap-3">
@@ -185,7 +194,7 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
             {recommendedXimatars.map((x) => (
               <div key={x} className="flex items-center gap-2 text-xs text-foreground">
                 <img loading="lazy" decoding="async" src={`/ximatars/${x}.webp`} className="h-9 w-9 object-contain" alt="" />
-                <span>{t(`about.archetypes.name_${x}`, capitalize(x))}</span>
+                <span>{t(`ximatar.${x}.name`, capitalize(x))}</span>
               </div>
             ))}
           </div>
@@ -218,7 +227,22 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
         </details>
       )}
 
-      {!companyProfile && resolvedStatus !== 'loading' && (
+      {resolvedStatus === 'ready' && thinProfile && (
+        <div className="mt-5 border-t border-[hsl(var(--xs-line))] pt-4">
+          <p className="text-xs leading-relaxed text-muted-foreground">{t('businessPortal.profile_thin_body', 'Your website said little about how you work: add a few lines and candidates will read a profile that sounds like you.')}</p>
+          <Button asChild size="sm" variant="outline" className="mt-3">
+            <Link to="/business/settings">{t('businessPortal.profile_add_info', 'Add information')}</Link>
+          </Button>
+        </div>
+      )}
+
+      {resolvedStatus === 'building' && (
+        <div className="mt-5 border-t border-[hsl(var(--xs-line))] pt-4" role="status">
+          <p className="text-xs leading-relaxed text-muted-foreground">{t('businessPortal.profile_building_body', 'We are reading your website to build the company profile. It takes about a minute: it will appear here by itself.')}</p>
+        </div>
+      )}
+
+      {!companyProfile && resolvedStatus === 'incomplete' && (
         <div className="mt-5 border-t border-[hsl(var(--xs-line))] pt-4">
           <p className="text-xs leading-relaxed text-muted-foreground">{t('business.profile.generate_description')}</p>
           <Button onClick={onGenerate} size="sm" variant="outline" className="mt-3">

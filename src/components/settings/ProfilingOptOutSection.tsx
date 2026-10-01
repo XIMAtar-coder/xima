@@ -11,7 +11,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { log } from '@/lib/log';
 
-export function ProfilingOptOutSection({ flat = false }: { flat?: boolean }) {
+/** `audience`: a company reads about its own data (profile, job posts), not about "your CV". */
+export function ProfilingOptOutSection({ flat = false, audience = 'candidate' }: { flat?: boolean; audience?: 'candidate' | 'business' }) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user } = useUser();
@@ -99,7 +100,7 @@ export function ProfilingOptOutSection({ flat = false }: { flat?: boolean }) {
           <AlertDescription>
             <p className="font-medium mb-2">{t('settings.ai_profiling_what_title')}</p>
             <p className="text-sm text-muted-foreground mb-2">
-              {t('settings.ai_profiling_what_body')}
+              {audience === 'business' ? t('businessPortal.settings_ai_what_body') : t('settings.ai_profiling_what_body')}
             </p>
             <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
               <li>{t('settings.ai_profiling_item_1')}</li>

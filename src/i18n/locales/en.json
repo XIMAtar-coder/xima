@@ -2216,8 +2216,8 @@
     "feature1_body": "The AI system matches candidates on validated behavioral signals — not on CV keywords. See who they are, how they think and how they perform under pressure. Before you even open their profile.",
     "feature2_title": "Three-Level Pipeline",
     "feature2_body": "L1 Core Assessment — identical structure for everyone, comparable by definition. L2 Role-Specific Challenge — AI builds a simulation on your real job post with a custom rubric. L3 Video Session — human review. Every level reveals something deeper.",
-    "feature3_title": "Complete Audit Trail",
-    "feature3_body": "Every AI decision is logged with SHA-256 hash, model version and latency. Deterministic replay for audit or dispute. GDPR Art. 22 by architecture — not by policy. Zero autonomous decisions: every hire requires human confirmation.",
+    "feature3_title": "Every choice can be explained",
+    "feature3_body": "You always know why a candidate is on the shortlist: every evaluation is recorded and can be reviewed, even months later. The AI never hires anyone: the last word is yours. GDPR (Art. 22) compliant without you doing anything.",
     "feature4_title": "Accessible to SMEs",
     "feature4_body": "HireVue and enterprise competitors require €50,000+ contracts. You can start XIMA free; paid plans from €499/month. No long-term lock-in. No paid onboarding. Behavioral-signal selection — finally within reach of anyone who actually hires.",
     "pipeline_label": "THE PIPELINE",
@@ -2275,12 +2275,12 @@
     "trust_1_body": "XIMA is classified as a decision-support tool — not a decision-maker. Every AI output requires human confirmation. Not bolted on at the end: designed into the architecture from day one.",
     "trust_2_title": "Zero Demographic Signals",
     "trust_2_body": "No name. No photo. No university. No ZIP code. The five pillars see behavior — and nothing else. Candidates are evaluated on what they do, not on who they are on paper.",
-    "trust_3_title": "SHA-256 Audit Trail",
-    "trust_3_body": "Every AI call logged with prompt hash, model version, latency and scoring schema. Deterministic replay for audit or dispute. The past is verifiable.",
+    "trust_3_title": "Recorded evaluations",
+    "trust_3_body": "Every AI evaluation is recorded and can be reopened and reconstructed, for a check or a dispute. For those who want the detail: SHA-256 signature, model version and criteria used.",
     "trust_4_title": "EU Data Residency",
     "trust_4_body": "Supabase EU region. No data transfer outside the EEA except for AI inference (Gemini API — covered by Google DPA). Row-Level Security on all 78 database tables.",
     "cta_headline": "Ready to Transform\nYour Hiring?",
-    "cta_body": "Start with a free trial. No credit card required. Your first evaluated candidate within 24 hours.",
+    "cta_body": "Start with the free trial. No credit card. Your first evaluated candidate within 72 hours.",
     "cta_primary": "Start the Free Trial →",
     "cta_secondary": "Talk to the Team",
     "mock_candidate_m": "Candidate",
@@ -2868,7 +2868,13 @@
       "subtle": "Subtle",
       "strong": "Strong",
       "clear_focus": "Remove focus"
-    }
+    },
+    "hero_proof_no_card": "No credit card",
+    "hero_proof_setup": "Ready in 20 minutes",
+    "hero_proof_first_candidate": "First candidate within 72 hours",
+    "mock_above_pool": "Above the pool average",
+    "mock_legend_candidate": "This candidate",
+    "mock_legend_pool": "Pool average"
   },
   "not_found": {
     "title": "404 - Page Not Found",
@@ -6832,7 +6838,22 @@
     "settings_plan_not_included": "Not included in the {{plan}} plan",
     "settings_plan_all_included": "All features are included in your plan.",
     "settings_plan_change_cta": "Change plan",
-    "settings_dna_recommended": "Recommended XIMAtars"
+    "settings_dna_recommended": "Recommended XIMAtars",
+    "profile_to_generate": "To generate",
+    "profile_building_chip": "In progress",
+    "profile_thin_chip": "To enrich",
+    "profile_review": "Review the profile",
+    "profile_thin_body": "Your website said little about how you work: add a few lines and candidates will read a profile that sounds like you.",
+    "profile_add_info": "Add information",
+    "profile_building_body": "We are reading your website to build the company profile. It takes about a minute: it will appear here by itself.",
+    "first_steps_title": "Your first three steps",
+    "first_step_1_title": "Say who you are looking for",
+    "first_step_1_body": "One hiring goal: role, place, what the person will do.",
+    "first_step_2_title": "XIMA writes the challenge",
+    "first_step_2_body": "A short situation from the real job, the same for every candidate.",
+    "first_step_3_title": "Invite from the shortlist",
+    "first_step_3_body": "You see how each person reasons before you open a profile.",
+    "first_steps_note": "The numbers of your selection appear here as soon as the first candidate answers."
   },
   "ximatarJourney": {
     "page_title": "Your XIMAtar Journey",
@@ -10397,5 +10418,21 @@
     "final_title": "The next thing to discover is you.",
     "final_body": "All you need is a quiet space and the time to answer carefully.",
     "business_link": "Looking for people for your company? →"
+  },
+  "contact_sales": {
+    "title": "Let’s talk about your plan",
+    "subtitle": "Tell us what you need: we will prepare a plan tailored to your company.",
+    "name": "Your name",
+    "email": "Work email",
+    "company": "Company name",
+    "plan": "Plan you are interested in",
+    "select_plan": "Select a plan",
+    "seats": "People who will use XIMA",
+    "message": "Anything else?",
+    "message_placeholder": "How many people you hire in a year, for which roles…",
+    "submit": "Send the request",
+    "submit_failed": "Could not send. Please try again.",
+    "success_title": "Thank you!",
+    "success_message": "We have received your request. We will write to you within 2 business days."
   }
 }
