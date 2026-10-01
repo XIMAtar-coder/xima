@@ -79,7 +79,9 @@ function validateXimaCoreResult(parsed: unknown): XimaCoreResult | null {
   if (!parsed || typeof parsed !== "object") return null;
   const obj = parsed as Record<string, unknown>;
 
-  if (typeof obj.scenario !== "string" || obj.scenario.length < 50 || obj.scenario.length > 1200) return null;
+  // The narrative is asked at 80-150 words; Italian and Spanish run longer
+  // than English, and a few hundred characters more is not an invalid result.
+  if (typeof obj.scenario !== "string" || obj.scenario.length < 50 || obj.scenario.length > 2400) return null;
   if (typeof obj.business_type !== "string" || obj.business_type.length === 0) return null;
   if (typeof obj.context_tag !== "string" || obj.context_tag.length === 0) return null;
 
@@ -93,8 +95,11 @@ function validateXimaCoreResult(parsed: unknown): XimaCoreResult | null {
 
   if (!Array.isArray(obj.expected_tensions) || (obj.expected_tensions as unknown[]).length < 1) return null;
 
-  const time = obj.estimated_time_minutes;
-  if (typeof time !== "number" || time < 5 || time > 60) return null;
+  // "20", 20 or "20 minuti": read the number and keep it in range.
+  const rawTime = typeof obj.estimated_time_minutes === "number"
+    ? obj.estimated_time_minutes
+    : parseFloat(String(obj.estimated_time_minutes ?? "").replace(",", "."));
+  const time = Number.isFinite(rawTime) ? Math.min(60, Math.max(5, rawTime)) : 20;
 
   return {
     scenario: String(obj.scenario),
@@ -116,7 +121,7 @@ function validateXimaCoreResult(parsed: unknown): XimaCoreResult | null {
 function getLanguageInstruction(locale: string): string {
   const normalizedLocale = ['en', 'it', 'es'].includes(locale) ? locale : 'it';
   const targetLanguage = LANGUAGE_NAMES[normalizedLocale];
-  return `Write ALL text values in ${targetLanguage}. JSON keys remain English.`;
+  return `Write ALL text values in ${targetLanguage}. JSON keys remain English. Inside a string value never use the straight double quote: for a quoted word use « » or single quotes.`;
 }
 
 // =====================================================
@@ -1220,12 +1225,31 @@ Restituisci SOLO JSON valido:
         model,
         inputSummary: `l1_gen:locale=${locale},has_company=${!!companyProfile},has_goal=${!!body.hiring_goal_id}`,
         temperature: 0.8,
-        maxTokens: 2048,
+        maxTokens: 3000,
       });
       // Accrue per-user cap after a successful model hit (skip service-role internal).
       if (!isServiceRoleCall) await recordAiCallSafe(user.id, 'generate-challenge');
 
-      const parsed = extractJsonFromAiContent<Record<string, any>>(aiResp.content);
+      let parsed = extractJsonFromAiContent<Record<string, any>>(aiResp.content);
+
+      // The answer came but cannot be read or is incomplete: this stopped the
+      // whole flow (no scenario, no invitations). Ask once more, colder and
+      // with the format spelled out, before giving up.
+      if (!parsed || !validateXimaCoreResult(parsed)) {
+        console.warn(JSON.stringify({ type: 'l1_gen_retry', correlation_id: correlationId, reason: parsed ? 'invalid_shape' : 'unparseable' }));
+        const retryResp = await callAnthropicApi({
+          system: systemPrompt,
+          userMessage: `${userPrompt}\n\nIMPORTANT: your previous answer could not be read. Return ONE JSON object and nothing else: no text before or after, no code fences. Every key of the schema must be present. Keep "scenario" under 1100 characters. Inside string values never use the straight double quote character.`,
+          correlationId,
+          functionName: 'generate-challenge',
+          model,
+          inputSummary: `l1_gen_retry:locale=${locale},has_goal=${!!body.hiring_goal_id}`,
+          temperature: 0.3,
+          maxTokens: 3000,
+        });
+        if (!isServiceRoleCall) await recordAiCallSafe(user.id, 'generate-challenge');
+        parsed = extractJsonFromAiContent<Record<string, any>>(retryResp.content);
+      }
 
       // QUALITY CHECK: detect when the model echoed the prompt template instead of generating actual content.
       const META_MARKERS = [

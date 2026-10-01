@@ -386,6 +386,55 @@ export type ParsedAiJson = Record<string, unknown> | unknown[];
  * if (!parsed) return errorResponse(502, 'AI_PARSE_FAILED', 'No parseable JSON.');
  * const validated = validateMySchema(parsed); // use `parsed` directly
  */
+/**
+ * Best-effort repair of almost-JSON from a model: raw line breaks and tabs
+ * inside strings, double quotes used inside a string value, trailing commas.
+ * A quote closes a string only when what follows can follow a string
+ * (`,` `}` `]` `:` or the end); any other quote is part of the text.
+ */
+export function repairJsonText(input: string): string {
+  let out = "";
+  let inString = false;
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
+    if (!inString) {
+      if (ch === '"') inString = true;
+      out += ch;
+      continue;
+    }
+    if (ch === "\\") {
+      out += ch + (input[i + 1] ?? "");
+      i++;
+      continue;
+    }
+    if (ch === "\n") { out += "\\n"; continue; }
+    if (ch === "\r") { continue; }
+    if (ch === "\t") { out += "\\t"; continue; }
+    if (ch === '"') {
+      let j = i + 1;
+      while (j < input.length && /\s/.test(input[j])) j++;
+      const next = input[j];
+      // After a comma a new string, object or array must start: "ok", poi" is text.
+      let closes = next === undefined || next === "}" || next === "]" || next === ":";
+      if (next === ",") {
+        let k = j + 1;
+        while (k < input.length && /\s/.test(input[k])) k++;
+        // ...or the list or object ends there (a trailing comma, removed below).
+        closes = input[k] === '"' || input[k] === "{" || input[k] === "[" || input[k] === "]" || input[k] === "}";
+      }
+      if (closes) {
+        inString = false;
+        out += ch;
+      } else {
+        out += '\\"';
+      }
+      continue;
+    }
+    out += ch;
+  }
+  return out.replace(/,\s*([}\]])/g, "$1");
+}
+
 export function extractJsonFromAiContent<T extends ParsedAiJson = Record<string, unknown>>(
   content: string,
 ): T | null {
@@ -410,8 +459,16 @@ export function extractJsonFromAiContent<T extends ParsedAiJson = Record<string,
   try {
     parsed = JSON.parse(text);
   } catch {
-    console.error("[extractJsonFromAiContent] Parse failed. Preview:", text.substring(0, 500));
-    return null;
+    // Models writing prose in Italian or Spanish often put a quoted word or a
+    // line break inside a string value: valid text, invalid JSON. Repair the
+    // two usual faults before giving up.
+    try {
+      parsed = JSON.parse(repairJsonText(text));
+      console.warn("[extractJsonFromAiContent] Parsed after repair.");
+    } catch {
+      console.error("[extractJsonFromAiContent] Parse failed. Preview:", text.substring(0, 500));
+      return null;
+    }
   }
 
   // Enforce the ParsedAiJson contract: a bare primitive is a failure, not a payload.
