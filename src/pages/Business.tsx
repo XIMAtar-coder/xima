@@ -150,8 +150,8 @@ const Business: React.FC = () => {
                 boxShadow: '0 30px 70px rgba(7,30,58,0.35)',
               }}
             >
-              {/* Header */}
-              <div className="flex items-start justify-between gap-4 relative z-10">
+              {/* Header: the badge drops under the name on a phone instead of running off the card */}
+              <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 relative z-10">
                 <div className="flex items-center gap-3">
                   <div
                     className="w-12 h-12 rounded-full overflow-hidden"
