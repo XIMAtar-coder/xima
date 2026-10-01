@@ -72,9 +72,26 @@ describe("extractJsonFromAiContent", () => {
     expect(extractJsonFromAiContent("")).toBeNull();
   });
 
-  it("returns null for malformed JSON", () => {
-    expect(extractJsonFromAiContent('{"score": 42,}')).toBeNull();
+  it("returns null for JSON that cannot be repaired", () => {
     expect(extractJsonFromAiContent('```json\n{"unterminated": \n```')).toBeNull();
+    expect(extractJsonFromAiContent('{"a": [1, 2')).toBeNull();
+  });
+
+  // The XIMA Core scenario failed for a real hiring goal because Italian prose
+  // puts quoted words and line breaks inside values: valid text, invalid JSON.
+  it("repairs the usual faults of model output before giving up", () => {
+    expect(extractJsonFromAiContent('{"score": 42,}')).toEqual({ score: 42 });
+    expect(extractJsonFromAiContent('{"scenario": "Il cliente dice "ferma tutto" e tu decidi.", "n": 3}'))
+      .toEqual({ scenario: 'Il cliente dice "ferma tutto" e tu decidi.', n: 3 });
+    expect(extractJsonFromAiContent('{"scenario": "Rispondi "ok", poi chiami il fornitore.", "tags": ["x", "y"]}'))
+      .toEqual({ scenario: 'Rispondi "ok", poi chiami il fornitore.', tags: ["x", "y"] });
+    expect(extractJsonFromAiContent('{"scenario": "Riga uno\nRiga due", "list": ["a", "b",]}'))
+      .toEqual({ scenario: "Riga uno\nRiga due", list: ["a", "b"] });
+  });
+
+  it("leaves valid JSON untouched", () => {
+    expect(extractJsonFromAiContent('{"a": "plain \\"quoted\\" text", "b": [1, 2], "c": {"d": "e"}}'))
+      .toEqual({ a: 'plain "quoted" text', b: [1, 2], c: { d: "e" } });
   });
 
   it("returns null for bare primitives, so a string can never escape", () => {
