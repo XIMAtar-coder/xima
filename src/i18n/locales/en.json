@@ -7527,7 +7527,7 @@
     "invite_goal_label": "Invite candidates to a hiring goal",
     "select_goal": "Choose a hiring goal…",
     "invite_failed": "The invitation could not be sent.",
-    "level_short": "L{{n}}",
+    "level_short": "Lv. {{n}}",
     "five_pillars": "The five pillars",
     "pillars_scale": "Assessment values · scale 0–10",
     "protected_identity": "Protected identity",
@@ -7551,7 +7551,8 @@
       "knowledge": "Know."
     },
     "eyebrow_explore": "Exploration",
-    "eyebrow_anonymous": "Anonymous talents"
+    "eyebrow_anonymous": "Anonymous talents",
+    "legend_3": "Lv. = the candidate’s XIMAtar level: it rises with completed challenges and verified growth. Everyone starts at 1."
   },
   "anonymous": {
     "candidate_label": "Candidate #{{number}}",

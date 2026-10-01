@@ -557,6 +557,7 @@ const BusinessCandidates = () => {
             <div className="space-y-1 text-[12px] leading-relaxed text-muted-foreground">
               <p>{t('candidate_pool.legend')}</p>
               <p>{t('candidate_pool.legend_2')}</p>
+              <p>{t('candidate_pool.legend_3', 'Lv. = the candidate\'s XIMAtar level: it rises with completed challenges and verified growth. Everyone starts at 1.')}</p>
             </div>
           </WithContext>
         )}

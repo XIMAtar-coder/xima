@@ -112,7 +112,10 @@ serve(async (req) => {
          subscriber_code`,
         { count: "exact" }
       )
-      .or("ximatar.not.is.null,ximatar_id.not.is.null,ximatar_name.not.is.null,pillar_scores.not.is.null")
+      // Only people who finished the assessment: a profile with an account
+      // and no scores opened the list with five dashes and made the pool
+      // look empty.
+      .not("pillar_scores->>drive", "is", null)
       .or("profiling_opt_out.is.null,profiling_opt_out.eq.false");
 
     // ── Filter: ximatars[] (array of archetype names) ──

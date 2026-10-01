@@ -7526,7 +7526,7 @@
     "invite_goal_label": "Invita i candidati a un obiettivo di assunzione",
     "select_goal": "Scegli un obiettivo…",
     "invite_failed": "Non è stato possibile inviare l’invito.",
-    "level_short": "L{{n}}",
+    "level_short": "Liv. {{n}}",
     "five_pillars": "I cinque pilastri",
     "pillars_scale": "Valori dell’assessment · scala da 0 a 10",
     "protected_identity": "Identità protetta",
@@ -7550,7 +7550,8 @@
       "knowledge": "Conosc."
     },
     "eyebrow_explore": "Esplorazione",
-    "eyebrow_anonymous": "Talenti anonimi"
+    "eyebrow_anonymous": "Talenti anonimi",
+    "legend_3": "Liv. = livello XIMAtar del candidato: sale con le sfide completate e la crescita verificata. Tutti partono da 1."
   },
   "anonymous": {
     "candidate_label": "Candidato #{{number}}",
