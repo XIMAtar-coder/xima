@@ -24,16 +24,15 @@ const NAVY_DEEP = '#0A2A5E';
 const BLUE = '#0B6BFF';
 
 const XIMATAR_CANDIDATES = [
-  { name: 'lion', archetype: 'Lion', code: 'C-2847', score: 92, tier: 'Alto', gender: 'f' as const },
-  { name: 'fox', archetype: 'Fox', code: 'C-3194', score: 88, tier: 'Alto', gender: 'm' as const },
-  { name: 'owl', archetype: 'Owl', code: 'C-1762', score: 76, tier: 'Medio', gender: 'f' as const },
-  { name: 'dolphin', archetype: 'Dolphin', code: 'C-4081', score: 64, tier: 'Medio', gender: 'm' as const },
-  { name: 'bear', archetype: 'Bear', code: 'C-2509', score: 48, tier: 'Basso', gender: 'f' as const },
+  { name: 'lion', code: 'C-2847', score: 92, tier: 'high', gender: 'f' as const },
+  { name: 'fox', code: 'C-3194', score: 88, tier: 'high', gender: 'm' as const },
+  { name: 'owl', code: 'C-1762', score: 76, tier: 'medium', gender: 'f' as const },
+  { name: 'dolphin', code: 'C-4081', score: 64, tier: 'medium', gender: 'm' as const },
+  { name: 'bear', code: 'C-2509', score: 48, tier: 'low', gender: 'f' as const },
 ] as const;
 
 const HERO_CANDIDATE = {
   name: 'lion',
-  archetype: 'Lion',
   code: 'C-2847',
   // `pool`: the average of the candidate pool on the same scale. XIMA gives no
   // single grade to a person: the example reads against that reference.
@@ -59,8 +58,8 @@ const Label: React.FC<{ children: React.ReactNode; className?: string }> = ({
 );
 
 const tierColor = (tier: string) => {
-  if (tier === 'Alto') return '#10B981';
-  if (tier === 'Medio') return '#F59E0B';
+  if (tier === 'high') return '#10B981';
+  if (tier === 'medium') return '#F59E0B';
   return '#EF4444';
 };
 
@@ -162,7 +161,7 @@ const Business: React.FC = () => {
                   >
                     <img
                       src={`/ximatars/${HERO_CANDIDATE.name}.webp`}
-                      alt={HERO_CANDIDATE.archetype}
+                      alt={t(`ximatar.${HERO_CANDIDATE.name}.name`)}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
@@ -172,7 +171,7 @@ const Business: React.FC = () => {
                       {t('business.mock_candidate_m')} #{HERO_CANDIDATE.code}
                     </div>
                     <div className="text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
-                      XIMAtar · {HERO_CANDIDATE.archetype} — {t('business.mock_anonymous_suffix')}
+                      XIMAtar · {t(`ximatar.${HERO_CANDIDATE.name}.name`)} — {t('business.mock_anonymous_suffix')}
                     </div>
                   </div>
                 </div>
@@ -380,6 +379,32 @@ const Business: React.FC = () => {
       </section>
 
 
+      {/* SECTION — The starting point: what a CV and an interview cannot show */}
+      <section className="px-6 lg:px-10 pb-16 md:pb-20">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+          <div>
+            <Label>{t('business.start_label')}</Label>
+            <h2
+              className="font-bold text-foreground whitespace-pre-line"
+              style={{ fontSize: 'clamp(26px, 3.4vw, 36px)', lineHeight: 1.15, letterSpacing: '-0.01em' }}
+            >
+              {t('business.start_headline')}
+            </h2>
+          </div>
+          <ul className="divide-y divide-border border-y border-border">
+            {[1, 2, 3].map((n) => (
+              <li
+                key={n}
+                className={n === 3 ? 'py-4 font-semibold text-foreground' : 'py-4 text-muted-foreground'}
+                style={{ fontSize: 17, lineHeight: 1.5 }}
+              >
+                {t(`business.start_line${n}`)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       {/* SECTION 2 — Why XIMA */}
       <section className="px-6 lg:px-10 pb-16 md:pb-20">
         <div className="max-w-[1200px] mx-auto">
@@ -512,7 +537,7 @@ const Business: React.FC = () => {
                   <div className="w-10 h-10 rounded-full overflow-hidden border border-border bg-muted shrink-0">
                     <img
                       src={`/ximatars/${c.name}.webp`}
-                      alt={c.archetype}
+                      alt={t(`ximatar.${c.name}.name`)}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
@@ -522,7 +547,7 @@ const Business: React.FC = () => {
                       {c.gender === 'f' ? t('business.mock_candidate_f') : t('business.mock_candidate_m')} #{c.code}
                     </div>
                     <div className="text-xs text-muted-foreground truncate">
-                      XIMAtar · {c.archetype}
+                      XIMAtar · {t(`ximatar.${c.name}.name`)}
                     </div>
                   </div>
                   <span className="text-sm font-semibold text-foreground tabular-nums">
@@ -532,7 +557,7 @@ const Business: React.FC = () => {
                     className="text-xs font-semibold w-16 text-right"
                     style={{ color: tierColor(c.tier) }}
                   >
-                    ● {c.tier}
+                    ● {t(`business.mock_${c.tier}`)}
                   </span>
                 </li>
               ))}
@@ -542,6 +567,63 @@ const Business: React.FC = () => {
             >
               {t('business.mock_compare')}
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION — What you see of a candidate: five pillars, then one answer read all the way to the interview */}
+      <section className="px-6 lg:px-10 pb-16 md:pb-20">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          <div>
+            <Label>{t('business.see_label')}</Label>
+            <h2
+              className="font-bold text-foreground whitespace-pre-line"
+              style={{ fontSize: 'clamp(26px, 3.4vw, 36px)', lineHeight: 1.15, letterSpacing: '-0.01em' }}
+            >
+              {t('business.see_headline')}
+            </h2>
+            <p className="mt-4 text-muted-foreground" style={{ fontSize: 16, lineHeight: 1.6, maxWidth: 520 }}>
+              {t('business.see_body')}
+            </p>
+            <ol className="mt-6 divide-y divide-border border-y border-border">
+              {(['drive', 'computational', 'knowledge', 'communication', 'creativity'] as const).map((k, i) => (
+                <li key={k} className="grid grid-cols-[34px_1fr] gap-2 py-3.5">
+                  <span className="font-mono text-sm font-semibold" style={{ color: BLUE }}>0{i + 1}</span>
+                  <div>
+                    <h3 className="font-bold text-foreground" style={{ fontSize: 15, lineHeight: 1.35 }}>{k === 'computational' ? t('pillars.computational_power.name') : t(`business.pillar_${k}`)}</h3>
+                    <p className="mt-0.5 text-muted-foreground" style={{ fontSize: 13.5, lineHeight: 1.55 }}>{t(`business.see_pillar_${k}`)}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div
+            className="rounded-[28px] p-6 md:p-7"
+            style={{
+              background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_DEEP} 100%)`,
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '0 30px 70px rgba(7,30,58,0.35)',
+            }}
+          >
+            <p className="text-xs font-mono uppercase tracking-[0.2em]" style={{ color: '#8CBEFF' }}>{t('business.see_example_label')}</p>
+            <p className="mt-2 text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>{t('business.see_example_tag')}</p>
+            <h3 className="mt-4 font-bold text-white" style={{ fontSize: 22, lineHeight: 1.25, letterSpacing: '-0.01em' }}>
+              {t('business.see_example_question')}
+            </h3>
+            <dl className="mt-6 space-y-4">
+              {(['observe', 'why', 'ask'] as const).map((k) => (
+                <div
+                  key={k}
+                  className="rounded-2xl p-4"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}
+                >
+                  <dt className="text-xs font-semibold" style={{ color: '#8CBEFF' }}>{t(`business.see_${k}_title`)}</dt>
+                  <dd className="mt-1.5 text-white" style={{ fontSize: 14.5, lineHeight: 1.55 }}>{t(`business.see_${k}_body`)}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-5 text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>{t('business.see_levels')}</p>
           </div>
         </div>
       </section>
