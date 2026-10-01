@@ -16,6 +16,8 @@ import { useSSEStream, SSE_SUPABASE_URL, type SSEEvent } from "./useSSEStream";
 export interface StreamChatRequest {
   message: string;
   context?: Record<string, unknown>;
+  /** The last turns of the conversation, oldest first. */
+  history?: { role: 'user' | 'assistant'; content: string }[];
 }
 
 export interface UseStreamingChatOptions {

@@ -4493,7 +4493,16 @@
     },
     "open": "Abrir",
     "quick_actions": "Acciones rápidas",
-    "action_comparison": "Ver comparación"
+    "action_comparison": "Ver comparación",
+    "ask_business_1": "¿Qué hago ahora?",
+    "ask_business_2": "Explícame la compatibilidad de la shortlist",
+    "ask_business_3": "¿Cómo funciona el desafío XIMA Core?",
+    "ask_candidate_1": "¿Cómo se lee mi perfil?",
+    "ask_candidate_2": "¿Cómo elijo al mentor?",
+    "ask_candidate_3": "¿Qué hago ahora?",
+    "ask_mentor_1": "¿Tengo solicitudes por confirmar?",
+    "ask_mentor_2": "¿Cómo funciona la primera llamada?",
+    "ask_mentor_3": "¿Qué ve el candidato de mí?"
   },
   "chat": {
     "title": "XIMA Chat",

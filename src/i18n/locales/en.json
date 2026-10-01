@@ -3210,7 +3210,16 @@
       "dev_plan": "Questions about tests or priorities?",
       "opportunity": "Want tips on this role or company?",
       "chat": "Get conversation tips or find the best mentor."
-    }
+    },
+    "ask_business_1": "What should I do now?",
+    "ask_business_2": "Explain the shortlist compatibility",
+    "ask_business_3": "How does the XIMA Core challenge work?",
+    "ask_candidate_1": "How do I read my profile?",
+    "ask_candidate_2": "How do I choose a mentor?",
+    "ask_candidate_3": "What do I do now?",
+    "ask_mentor_1": "Do I have requests to confirm?",
+    "ask_mentor_2": "How does the first call work?",
+    "ask_mentor_3": "What does the candidate see of me?"
   },
   "ximai_preview": {},
   "opportunity": {

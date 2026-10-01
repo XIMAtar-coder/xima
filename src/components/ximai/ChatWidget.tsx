@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MessageSquareIcon, Bot, X, Trash, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -22,10 +22,40 @@ interface Message {
   kind?: 'text' | 'auth-cta';
 }
 
+/** The assistant writes plain text with **bold** and "- " lists: show them as such, not as asterisks. */
+const AssistantText: React.FC<{ text: string }> = ({ text }) => {
+  const bold = (line: string, key: string) =>
+    line.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+      part.startsWith('**') && part.endsWith('**') && part.length > 4
+        ? <strong key={`${key}-${i}`} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>
+        : <span key={`${key}-${i}`}>{part}</span>);
+  const blocks: React.ReactNode[] = [];
+  let list: string[] = [];
+  const flush = (key: string) => {
+    if (list.length === 0) return;
+    blocks.push(<ul key={key} className="my-1.5 list-disc space-y-1 pl-5">{list.map((item, i) => <li key={i}>{bold(item, `${key}-${i}`)}</li>)}</ul>);
+    list = [];
+  };
+  text.split('\n').forEach((raw, i) => {
+    const line = raw.trimEnd();
+    const item = line.match(/^\s*[-•*]\s+(.*)$/);
+    if (item) { list.push(item[1]); return; }
+    flush(`l${i}`);
+    if (line.trim() === '') return;
+    blocks.push(<p key={`p${i}`} className="my-1 first:mt-0 last:mb-0">{bold(line.replace(/^#+\s*/, ''), `p${i}`)}</p>);
+  });
+  flush('end');
+  return <>{blocks}</>;
+};
+
 export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (open: boolean) => void; hideLauncher?: boolean }> = ({ controlledOpen, onOpenChange, hideLauncher = true }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  
+  const { pathname } = useLocation();
+  // Which area the person is in decides what XIM-AI offers: a company never
+  // gets the candidate's shortcuts, and the other way round.
+  const area: 'business' | 'mentor' | 'candidate' = pathname.startsWith('/business') ? 'business' : pathname.startsWith('/mentor') ? 'mentor' : 'candidate';
+
   const { user, isAuthenticated } = useUser();
   const xim = useXimAI();
 
@@ -137,9 +167,9 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
     }
   };
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-    const text = input.trim();
+  const sendMessage = async (preset?: string) => {
+    const text = (preset ?? input).trim();
+    if (!text) return;
 
     // Simple deep-link commands (/go /dashboard, /chat, /development-plan, /opportunity <id>, /booking)
     const cmd = text.toLowerCase();
@@ -191,7 +221,12 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
 
     let fullReply = '';
     try {
-      fullReply = await streamSend({ message: text, context: contextPayload });
+      // The last turns go with the question, so "and the second one?" has a subject.
+      const history = messages
+        .filter((m) => m.kind !== 'auth-cta' && m.content)
+        .slice(-6)
+        .map((m) => ({ role: m.role, content: m.content }));
+      fullReply = await streamSend({ message: text, context: contextPayload, history });
     } catch (e) {
       log.error('AI stream failed', e);
     } finally {
@@ -330,7 +365,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                             : 'bg-muted/40 text-foreground/90 mr-8'
                           }`}
                       >
-                        {m.content}
+                        {m.role === 'assistant' ? <AssistantText text={m.content} /> : m.content}
                       </div>
                     )}
                   </div>
@@ -362,7 +397,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                              placeholder:text-muted-foreground/60"
                 />
                 <Button 
-                  onClick={sendMessage} 
+                  onClick={() => sendMessage()} 
                   disabled={!input.trim() || sending} 
                   aria-label={t('ximai.send')}
                   className="rounded-2xl px-4 py-2.5 ximai-tap-scale bg-primary hover:bg-primary/90 
@@ -375,42 +410,21 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
               <div className="flex flex-wrap gap-2 min-h-8">
                 {isAuthenticated ? (
                   <>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => navigate('/ximatar-journey?open=booking')}
-                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
-                                 ximai-tap-scale transition-all duration-150"
-                    >
-                      {t('ximai.action_booking')}
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => navigate('/development-plan')}
-                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
-                                 ximai-tap-scale transition-all duration-150"
-                    >
-                      {t('ximai.action_tests')}
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => navigate('/chat')}
-                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
-                                 ximai-tap-scale transition-all duration-150"
-                    >
-                      {t('ximai.action_chat')}
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => navigate('/dashboard')}
-                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
-                                 ximai-tap-scale transition-all duration-150"
-                    >
-                      {t('dashboard.title')}
-                    </Button>
+                    {[1, 2, 3].map((n) => {
+                      const question = t(`ximai.ask_${area}_${n}`);
+                      return (
+                        <Button
+                          key={n}
+                          variant="outline"
+                          size="sm"
+                          disabled={sending}
+                          onClick={() => sendMessage(question)}
+                          className="h-auto whitespace-normal rounded-2xl border-border/20 bg-background/60 py-1.5 text-left text-xs font-medium hover:bg-muted/50 ximai-tap-scale transition-all duration-150"
+                        >
+                          {question}
+                        </Button>
+                      );
+                    })}
                   </>
                 ) : (
                   <>
