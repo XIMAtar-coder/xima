@@ -128,6 +128,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
   const fetchAvailability = async () => {
     setIsLoadingSlots(true);
     setAvailabilityState('loading');
+    setAvailabilityMessage(null);
     try {
       const session = await supabase.auth.getSession();
       if (!session.data.session?.access_token) {
@@ -193,7 +194,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
         if (data.mentor) {
           setMentorInfo(data.mentor);
         }
-        setAvailabilityMessage(data.message || null);
+        setAvailabilityMessage(null);
         
         if (!data.slots || data.slots.length === 0) {
           if (data.message?.includes('not published')) {
@@ -207,6 +208,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
       }
     } catch (error) {
       log.error('[MentorSection] Exception fetching availability:', error);
+      setAvailabilityMessage(t('profile.error_fetching_availability', 'Error loading availability'));
       setAvailabilityState('no_availability');
       // Silently handle — don't show error toast for mentor availability
     } finally {
@@ -620,12 +622,15 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
                   <Calendar className="h-12 w-12 text-muted-foreground/30" />
                 </div>
                 <div className="space-y-2">
+                  {/* A failed request is not an empty calendar: say which one it is. */}
                   <p className="text-muted-foreground font-medium">
-                    {t('profile.no_availability_yet', 'Your mentor has not published availability yet')}
+                    {availabilityMessage || t('profile.no_availability_yet', 'Your mentor has not published availability yet')}
                   </p>
-                  <p className="text-sm text-muted-foreground/70">
-                    {t('profile.check_back_later_desc', 'Check back soon or use external booking if available')}
-                  </p>
+                  {!availabilityMessage && (
+                    <p className="text-sm text-muted-foreground/70">
+                      {t('profile.check_back_later_desc', 'Check back soon or use external booking if available')}
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 justify-center pt-2">
                   <Button variant="outline" size="sm" onClick={fetchAvailability}>

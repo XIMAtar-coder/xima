@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import { RouteTitle } from '@/components/RouteTitle';
+import { FreshBuild } from '@/components/FreshBuild';
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -140,6 +141,7 @@ const RoutesTree = () => {
   return (
     <ChunkErrorBoundary>
       <RouteTitle />
+      <FreshBuild />
       <Suspense key={location.pathname} fallback={<RouteSkeleton />}>
         <Routes location={location}>
           <Route path="/" element={<Index />} />
