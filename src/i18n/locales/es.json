@@ -7091,7 +7091,10 @@
     "custom_use_cases": "Ideal para: pruebas técnicas, simulaciones de proyecto y ejercicios específicos del puesto",
     "xima_core_desc_v2": "Reto estándar de soft skills generado por XIMA a partir del objetivo y del ADN de la empresa. Comparable entre candidatos. Elígelo cuando quieras la referencia canónica de XIMA.",
     "custom_desc_v2": "La misma profundidad que Core (motor de IA + ADN + contexto), orientada por ti: elige pilares a destacar, un escenario concreto, dificultad, idioma, duración y número de preguntas.",
-    "custom_use_cases_v2": "Elígelo cuando tengas un foco concreto (ej. un puesto muy particular o una soft skill prioritaria). El perfil de 5 pilares siempre está completo."
+    "custom_use_cases_v2": "Elígelo cuando tengas un foco concreto (ej. un puesto muy particular o una soft skill prioritaria). El perfil de 5 pilares siempre está completo.",
+    "pick_goal_title": "¿Para qué puesto es el desafío?",
+    "pick_goal_body": "XIMA escribe el desafío sobre el objetivo de contratación: elige uno.",
+    "new_goal": "Crear un nuevo objetivo"
   },
   "interpretation": {
     "status": {

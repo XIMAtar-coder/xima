@@ -25,6 +25,8 @@ const ChallengeTypeSelector = () => {
   const [loading, setLoading] = useState(true);
   const [hasActiveXimaCore, setHasActiveXimaCore] = useState(false);
   const [contextLabel, setContextLabel] = useState<string | null>(null);
+  // Opened without a goal: the challenge is written for a role, so ask which one.
+  const [goalChoices, setGoalChoices] = useState<{ id: string; role_title: string | null }[] | null>(null);
 
   // Build downstream context query string preserving goal/from_listing/no_context.
   const buildContextParams = (extra = '') => {
@@ -69,11 +71,30 @@ const ChallengeTypeSelector = () => {
       return;
     }
 
-    // Legacy: no context provided at all → fall back to direct XIMA Core (preserves old behavior)
+    // No goal: this used to jump to the XIMA Core page, which wrote a scenario
+    // for "your next professional role" and spent an AI call on a placeholder.
+    // A challenge belongs to a goal: pick it, or create the first one.
     if (!goalId) {
-      navigate('/business/challenges/xima-core');
+      const { data: goals } = await supabase
+        .from('hiring_goal_drafts')
+        .select('id, role_title')
+        .eq('business_id', user?.id ?? '')
+        .order('updated_at', { ascending: false })
+        .limit(20);
+      const list = (goals || []).filter((g) => g.role_title);
+      if (list.length === 0) {
+        navigate('/business/hiring-goals/new', { replace: true });
+        return;
+      }
+      if (list.length === 1) {
+        navigate(`/business/challenges/select?goal=${list[0].id}`, { replace: true });
+        return;
+      }
+      setGoalChoices(list);
+      setLoading(false);
       return;
     }
+    setGoalChoices(null);
 
     // Get hiring goal title
     const { data: goalData } = await supabase
@@ -117,6 +138,36 @@ const ChallengeTypeSelector = () => {
       <BusinessLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </BusinessLayout>
+    );
+  }
+
+  if (goalChoices) {
+    return (
+      <BusinessLayout>
+        <div className="mx-auto max-w-xl space-y-6 py-8">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">{t('challenge_type.pick_goal_title', 'Which role is the challenge for?')}</h1>
+            <p className="mt-2 text-muted-foreground">{t('challenge_type.pick_goal_body', 'XIMA writes the challenge on the hiring goal: choose one.')}</p>
+          </div>
+          <ul className="divide-y divide-border rounded-xl border border-border bg-card">
+            {goalChoices.map((g) => (
+              <li key={g.id}>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/business/challenges/select?goal=${g.id}`)}
+                  className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-sm font-medium text-foreground hover:bg-muted/40"
+                >
+                  <span className="truncate">{g.role_title}</span>
+                  <span aria-hidden="true" className="text-primary">→</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <Button variant="outline" onClick={() => navigate('/business/hiring-goals/new')}>
+            {t('challenge_type.new_goal', 'Create a new hiring goal')}
+          </Button>
         </div>
       </BusinessLayout>
     );

@@ -208,6 +208,13 @@ const CreateXimaCoreChallenge = () => {
       return;
     }
 
+    // Without a goal or a listing there is no role to write a scenario for:
+    // go and choose one instead of generating for a placeholder.
+    if (!goalIdParam && !fromListingParam && !noContextFlag) {
+      navigate('/business/challenges/select', { replace: true });
+      return;
+    }
+
     if (!businessLoading && user?.id) {
       loadData();
     }

@@ -4898,7 +4898,10 @@
     "custom_use_cases": "Ideale per: valutazioni tecniche, simulazioni di progetto, esercizi specifici per il ruolo",
     "xima_core_desc_v2": "Sfida soft-skills standard generata da XIMA su obiettivo + DNA aziendale. Comparabile tra candidati. Scegli quando vuoi il benchmark canonico XIMA.",
     "custom_desc_v2": "Stessa profondità della Core (motore AI + DNA + contesto), ma orientata dal business: scegli pilastri da enfatizzare, scenario specifico, difficoltà, lingua, durata e numero di domande.",
-    "custom_use_cases_v2": "Scegli quando hai un focus specifico (es. ruolo molto particolare o una soft-skill prioritaria). Profilo 5 pilastri sempre completo."
+    "custom_use_cases_v2": "Scegli quando hai un focus specifico (es. ruolo molto particolare o una soft-skill prioritaria). Profilo 5 pilastri sempre completo.",
+    "pick_goal_title": "Per quale ruolo è la sfida?",
+    "pick_goal_body": "XIMA scrive la sfida sull’obiettivo di assunzione: scegline uno.",
+    "new_goal": "Crea un nuovo obiettivo"
   },
   "challenge_builder": {
     "page_title": "Crea una challenge",
