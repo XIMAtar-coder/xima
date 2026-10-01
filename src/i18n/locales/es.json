@@ -402,7 +402,10 @@
     "requesting_with": "Estás solicitando una sesión con",
     "one_free_intro_note": "Es tu única llamada de presentación gratis. Tu mentor tendrá que confirmarla.",
     "requesting": "Enviando la solicitud…",
-    "request_session": "Solicitar la sesión"
+    "request_session": "Solicitar la sesión",
+    "change_mentor": "Cambiar de mentor",
+    "change_mentor_cancel": "Seguir con {{name}}",
+    "change_mentor_blocked": "Tienes una sesión abierta con tu mentor actual: termínala o cancélala primero."
   },
   "results": {
     "title": "Tus resultados",
@@ -2751,7 +2754,19 @@
     "action_candidate_accepted_reschedule": "Nuevo horario aceptado por el candidato",
     "action_candidate_rejected_reschedule": "Nuevo horario rechazado por el candidato",
     "action_video_room_created": "Sala de vídeo abierta",
-    "action_video_room_joined": "Entrada en la sala de vídeo"
+    "action_video_room_joined": "Entrada en la sala de vídeo",
+    "toast_slot_created": "Disponibilidad añadida",
+    "toast_slot_deleted": "Disponibilidad eliminada",
+    "toast_slot_blocked": "Horario bloqueado",
+    "toast_slot_reopened": "Horario reabierto",
+    "toast_session_confirmed": "Sesión confirmada",
+    "toast_session_rejected": "Sesión rechazada",
+    "toast_session_cancelled": "Sesión cancelada",
+    "toast_session_rescheduled": "Nuevo horario propuesto al candidato",
+    "toast_session_completed": "Sesión marcada como realizada",
+    "toast_notes_saved": "Notas guardadas",
+    "action_request_expired": "Solicitud caducada sin respuesta",
+    "action_no_show": "Sesión no realizada"
   },
   "dashboard": {
     "page_label": "DASHBOARD",

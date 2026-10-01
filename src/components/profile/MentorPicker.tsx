@@ -33,6 +33,10 @@ export const MentorPicker: React.FC<Props> = ({ pillarScores, ximatar, onAssigne
     setBusy(mentor.id);
     try {
       const { data, error } = await supabase.functions.invoke('assign-mentor', { body: { professional_id: mentor.id } });
+      if (data?.error === 'ACTIVE_SESSION') {
+        toast({ title: t('profile.change_mentor_blocked', 'You have a session open with your current mentor: finish or cancel it first.'), variant: 'destructive' });
+        return;
+      }
       if (error || !data?.success) throw error || new Error('assign failed');
       toast({ title: t('results2.mentor_assigned', { name: mentor.full_name.split(/\s+/)[0] }) });
       onAssigned();

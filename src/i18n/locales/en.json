@@ -325,7 +325,10 @@
     "requesting_with": "You are requesting a session with",
     "one_free_intro_note": "This is your one free intro call. Your mentor will need to confirm it.",
     "requesting": "Sending the request…",
-    "request_session": "Request the session"
+    "request_session": "Request the session",
+    "change_mentor": "Change mentor",
+    "change_mentor_cancel": "Stay with {{name}}",
+    "change_mentor_blocked": "You have a session open with your current mentor: finish or cancel it first."
   },
   "sessions": {
     "session_not_found": "Session not found",
@@ -675,7 +678,19 @@
     "action_candidate_accepted_reschedule": "New time accepted by the candidate",
     "action_candidate_rejected_reschedule": "New time declined by the candidate",
     "action_video_room_created": "Video room opened",
-    "action_video_room_joined": "Joined the video room"
+    "action_video_room_joined": "Joined the video room",
+    "toast_slot_created": "Availability added",
+    "toast_slot_deleted": "Availability removed",
+    "toast_slot_blocked": "Time blocked",
+    "toast_slot_reopened": "Time reopened",
+    "toast_session_confirmed": "Session confirmed",
+    "toast_session_rejected": "Session declined",
+    "toast_session_cancelled": "Session cancelled",
+    "toast_session_rescheduled": "New time proposed to the candidate",
+    "toast_session_completed": "Session marked as held",
+    "toast_notes_saved": "Notes saved",
+    "action_request_expired": "Request expired without an answer",
+    "action_no_show": "Session not held"
   },
   "xima_core": {
     "page_subtitle": "A standardized decision-making instrument with AI-personalized scenario",

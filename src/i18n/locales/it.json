@@ -325,7 +325,10 @@
     "requesting_with": "Stai richiedendo una sessione con",
     "one_free_intro_note": "È la tua chiamata conoscitiva gratuita, una sola. Il mentor dovrà confermarla.",
     "requesting": "Invio della richiesta…",
-    "request_session": "Richiedi la sessione"
+    "request_session": "Richiedi la sessione",
+    "change_mentor": "Cambia mentor",
+    "change_mentor_cancel": "Resta con {{name}}",
+    "change_mentor_blocked": "Hai una sessione aperta con il tuo mentor attuale: prima concludila o annullala."
   },
   "sessions": {
     "session_not_found": "Sessione non trovata",
@@ -675,7 +678,19 @@
     "action_candidate_accepted_reschedule": "Nuovo orario accettato dal candidato",
     "action_candidate_rejected_reschedule": "Nuovo orario rifiutato dal candidato",
     "action_video_room_created": "Stanza video aperta",
-    "action_video_room_joined": "Ingresso nella stanza video"
+    "action_video_room_joined": "Ingresso nella stanza video",
+    "toast_slot_created": "Disponibilità aggiunta",
+    "toast_slot_deleted": "Disponibilità rimossa",
+    "toast_slot_blocked": "Orario bloccato",
+    "toast_slot_reopened": "Orario riaperto",
+    "toast_session_confirmed": "Sessione confermata",
+    "toast_session_rejected": "Sessione rifiutata",
+    "toast_session_cancelled": "Sessione annullata",
+    "toast_session_rescheduled": "Nuovo orario proposto al candidato",
+    "toast_session_completed": "Sessione segnata come svolta",
+    "toast_notes_saved": "Note salvate",
+    "action_request_expired": "Richiesta scaduta senza risposta",
+    "action_no_show": "Sessione non svolta"
   },
   "xima_core": {
     "page_subtitle": "Uno strumento decisionale standardizzato con scenario personalizzato dall'AI",

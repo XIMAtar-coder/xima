@@ -105,6 +105,22 @@ Deno.serve(async (req) => {
     // Use mentor.id as mentor_user_id
     const mentorUserId = mentor.id;
 
+    // A session still open with another mentor has to end first: changing
+    // mentor under it would leave that mentor with a request from a stranger.
+    const { data: openSessions } = await supabaseAdmin
+      .from('mentor_sessions')
+      .select('id, mentor_id')
+      .eq('candidate_profile_id', profile.id)
+      .in('status', ['requested', 'confirmed', 'rescheduled'])
+      .neq('mentor_id', mentor.id)
+      .limit(1);
+    if (openSessions && openSessions.length > 0) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'ACTIVE_SESSION' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Check if mentor match already exists
     const { data: existingMatch } = await supabaseAdmin
       .from('mentor_matches')

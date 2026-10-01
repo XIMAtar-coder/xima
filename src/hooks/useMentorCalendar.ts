@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 import { log } from '@/lib/log';
 
 export interface AvailabilitySlot {
@@ -51,6 +52,7 @@ export interface SessionAuditLog {
 
 export function useMentorCalendar(mentorId: string | null) {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
   const [sessions, setSessions] = useState<MentorSession[]>([]);
   const [loading, setLoading] = useState(true);
@@ -200,11 +202,11 @@ export function useMentorCalendar(mentorId: string | null) {
 
       if (error) throw error;
 
-      toast({ title: 'Slot created', description: 'Availability slot added successfully' });
+      toast({ title: t('mentor.toast_slot_created', 'Availability added') });
       await fetchData();
       return { success: true };
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: t('common.error', 'Error'), description: err.message, variant: 'destructive' });
       return { success: false, error: err.message };
     }
   };
@@ -219,11 +221,11 @@ export function useMentorCalendar(mentorId: string | null) {
 
       if (error) throw error;
 
-      toast({ title: 'Slot deleted' });
+      toast({ title: t('mentor.toast_slot_deleted', 'Availability removed') });
       await fetchData();
       return { success: true };
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: t('common.error', 'Error'), description: err.message, variant: 'destructive' });
       return { success: false, error: err.message };
     }
   };
@@ -238,11 +240,11 @@ export function useMentorCalendar(mentorId: string | null) {
 
       if (error) throw error;
 
-      toast({ title: newStatus === 'blocked' ? 'Slot blocked' : 'Slot reopened' });
+      toast({ title: newStatus === 'blocked' ? t('mentor.toast_slot_blocked', 'Time blocked') : t('mentor.toast_slot_reopened', 'Time reopened') });
       await fetchData();
       return { success: true };
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: t('common.error', 'Error'), description: err.message, variant: 'destructive' });
       return { success: false, error: err.message };
     }
   };
@@ -258,11 +260,11 @@ export function useMentorCalendar(mentorId: string | null) {
       const result = data as { success: boolean; error?: string };
       if (!result?.success) throw new Error(result?.error || 'Failed to confirm');
 
-      toast({ title: 'Session confirmed' });
+      toast({ title: t('mentor.toast_session_confirmed', 'Session confirmed') });
       await fetchData();
       return { success: true };
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: t('common.error', 'Error'), description: err.message, variant: 'destructive' });
       return { success: false, error: err.message };
     }
   };
@@ -278,11 +280,11 @@ export function useMentorCalendar(mentorId: string | null) {
       const result = data as { success: boolean; error?: string };
       if (!result?.success) throw new Error(result?.error || 'Failed to reject');
 
-      toast({ title: 'Session rejected' });
+      toast({ title: t('mentor.toast_session_rejected', 'Session declined') });
       await fetchData();
       return { success: true };
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: t('common.error', 'Error'), description: err.message, variant: 'destructive' });
       return { success: false, error: err.message };
     }
   };
@@ -298,11 +300,11 @@ export function useMentorCalendar(mentorId: string | null) {
       const result = data as { success: boolean; error?: string };
       if (!result?.success) throw new Error(result?.error || 'Failed to cancel');
 
-      toast({ title: 'Session cancelled' });
+      toast({ title: t('mentor.toast_session_cancelled', 'Session cancelled') });
       await fetchData();
       return { success: true };
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: t('common.error', 'Error'), description: err.message, variant: 'destructive' });
       return { success: false, error: err.message };
     }
   };
@@ -320,11 +322,11 @@ export function useMentorCalendar(mentorId: string | null) {
       const result = data as { success: boolean; error?: string };
       if (!result?.success) throw new Error(result?.error || 'Failed to reschedule');
 
-      toast({ title: 'Session rescheduled' });
+      toast({ title: t('mentor.toast_session_rescheduled', 'New time proposed to the candidate') });
       await fetchData();
       return { success: true };
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: t('common.error', 'Error'), description: err.message, variant: 'destructive' });
       return { success: false, error: err.message };
     }
   };
@@ -340,11 +342,11 @@ export function useMentorCalendar(mentorId: string | null) {
       const result = data as { success: boolean; error?: string };
       if (!result?.success) throw new Error(result?.error || 'Failed to complete');
 
-      toast({ title: 'Session marked as completed' });
+      toast({ title: t('mentor.toast_session_completed', 'Session marked as held') });
       await fetchData();
       return { success: true };
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: t('common.error', 'Error'), description: err.message, variant: 'destructive' });
       return { success: false, error: err.message };
     }
   };
@@ -387,11 +389,11 @@ export function useMentorCalendar(mentorId: string | null) {
       if (privateError) throw privateError;
 
 
-      toast({ title: 'Notes saved' });
+      toast({ title: t('mentor.toast_notes_saved', 'Notes saved') });
       await fetchData();
       return { success: true };
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: t('common.error', 'Error'), description: err.message, variant: 'destructive' });
       return { success: false, error: err.message };
     }
   };

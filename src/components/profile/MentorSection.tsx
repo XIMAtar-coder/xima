@@ -98,6 +98,8 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
   const { toast } = useToast();
   const navigate = useNavigate();
   const [slots, setSlots] = useState<Slot[]>([]);
+  // The candidate can pick another mentor while no session is open with this one.
+  const [changingMentor, setChangingMentor] = useState(false);
   const [mentorInfo, setMentorInfo] = useState<MentorInfo | null>(null);
   const [isLoadingSlots, setIsLoadingSlots] = useState(true);
   const [isBooking, setIsBooking] = useState(false);
@@ -453,13 +455,39 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
     );
   }
 
+  if (changingMentor) {
+    return (
+      <Card>
+        <CardContent className="space-y-4 pt-6">
+          <MentorPicker
+            pillarScores={pillarScores ?? null}
+            ximatar={ximatar}
+            onAssigned={() => { setChangingMentor(false); onMentorAssigned?.(); }}
+          />
+          <Button variant="ghost" size="sm" onClick={() => setChangingMentor(false)}>
+            {t('profile.change_mentor_cancel', { name: displayName || '', defaultValue: 'Keep {{name}}' })}
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const canChangeMentor = !isLoadingSlots && availabilityState !== 'has_pending_session' && availabilityState !== 'loading';
+
   return (
     <>
       <Card>
         <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            {t('profile.your_mentor', 'Your Mentor')}
+          <CardTitle className="flex items-center justify-between gap-2">
+            <span className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              {t('profile.your_mentor', 'Your Mentor')}
+            </span>
+            {canChangeMentor && (
+              <Button variant="ghost" size="sm" className="h-8 text-[13px] font-medium text-muted-foreground" onClick={() => setChangingMentor(true)}>
+                {t('profile.change_mentor', 'Change mentor')}
+              </Button>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
