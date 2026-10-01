@@ -2749,7 +2749,9 @@
     "action_completed": "Sesión realizada",
     "action_mentor_proposed_reschedule": "Nuevo horario propuesto",
     "action_candidate_accepted_reschedule": "Nuevo horario aceptado por el candidato",
-    "action_candidate_rejected_reschedule": "Nuevo horario rechazado por el candidato"
+    "action_candidate_rejected_reschedule": "Nuevo horario rechazado por el candidato",
+    "action_video_room_created": "Sala de vídeo abierta",
+    "action_video_room_joined": "Entrada en la sala de vídeo"
   },
   "dashboard": {
     "page_label": "DASHBOARD",
@@ -7089,7 +7091,9 @@
     "next_join": "Entrar en la sala",
     "next_details": "Detalles",
     "next_your_mentor": "tu mentor",
-    "next_the_candidate": "el candidato"
+    "next_the_candidate": "el candidato",
+    "video_not_configured": "La sala de vídeo aún no está activa. Escríbenos y lo arreglamos.",
+    "video_room": "Sala de vídeo"
   },
   "import_job": {
     "title": "Importar una oferta de empleo",

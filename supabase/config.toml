@@ -36,6 +36,8 @@ project_id = "iyckvvnecpnldrxqmzta"
     verify_jwt = false
   [functions.fetch-mentor-availability]
     verify_jwt = true
+  [functions.session-room-token]
+    verify_jwt = true
   [functions.fetch-opportunities]
     verify_jwt = true
   [functions.fetch-user-challenges]

@@ -397,7 +397,9 @@
     "next_join": "Join the room",
     "next_details": "Details",
     "next_your_mentor": "your mentor",
-    "next_the_candidate": "the candidate"
+    "next_the_candidate": "the candidate",
+    "video_not_configured": "The video room is not set up yet. Write to us and we will sort it out.",
+    "video_room": "Video room"
   },
   "mentor": {
     "title": "Start Your Xima Journey",
@@ -671,7 +673,9 @@
     "action_completed": "Session held",
     "action_mentor_proposed_reschedule": "New time proposed",
     "action_candidate_accepted_reschedule": "New time accepted by the candidate",
-    "action_candidate_rejected_reschedule": "New time declined by the candidate"
+    "action_candidate_rejected_reschedule": "New time declined by the candidate",
+    "action_video_room_created": "Video room opened",
+    "action_video_room_joined": "Joined the video room"
   },
   "xima_core": {
     "page_subtitle": "A standardized decision-making instrument with AI-personalized scenario",

@@ -397,7 +397,9 @@
     "next_join": "Entra nella stanza",
     "next_details": "Dettagli",
     "next_your_mentor": "il tuo mentor",
-    "next_the_candidate": "il candidato"
+    "next_the_candidate": "il candidato",
+    "video_not_configured": "La stanza video non è ancora attiva. Scrivici e la sistemiamo subito.",
+    "video_room": "Stanza video"
   },
   "mentor": {
     "title": "Inizia il tuo percorso XIMA",
@@ -671,7 +673,9 @@
     "action_completed": "Sessione svolta",
     "action_mentor_proposed_reschedule": "Nuovo orario proposto",
     "action_candidate_accepted_reschedule": "Nuovo orario accettato dal candidato",
-    "action_candidate_rejected_reschedule": "Nuovo orario rifiutato dal candidato"
+    "action_candidate_rejected_reschedule": "Nuovo orario rifiutato dal candidato",
+    "action_video_room_created": "Stanza video aperta",
+    "action_video_room_joined": "Ingresso nella stanza video"
   },
   "xima_core": {
     "page_subtitle": "Uno strumento decisionale standardizzato con scenario personalizzato dall'AI",
