@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { formatMoneyRange } from '@/lib/money';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
@@ -484,7 +485,7 @@ const CreateXimaCoreChallenge = () => {
   }
 
   const hasPayData = !!(hiringGoal?.ral_min || hiringGoal?.ral_max || hiringGoal?.ccnl);
-  const ralText = `${hiringGoal?.ral_min ? `€${hiringGoal.ral_min.toLocaleString('it-IT')}` : '—'} – ${hiringGoal?.ral_max ? `€${hiringGoal.ral_max.toLocaleString('it-IT')}` : '—'}`;
+  const ralText = formatMoneyRange(hiringGoal?.ral_min, hiringGoal?.ral_max, (hiringGoal as { salary_currency?: string } | null | undefined)?.salary_currency, i18n.language) ?? '—';
 
   return (
     <BusinessLayout>

@@ -56,7 +56,40 @@ export const reasonGlyph = (r: Reason): 'up' | 'warn' | 'none' => {
   return 'none';
 };
 
+/** Which kinds of evidence a compatibility was computed on ("identity", "challenges", …). */
+export const evidenceOf = (raw?: string | null): string[] => {
+  const e = parseReasons(raw).find((r) => r.k === 'evidence');
+  return e ? String(e.v ?? '').split(',').filter(Boolean) : [];
+};
+
+/**
+ * Same order as the server, except that candidates on the same score are
+ * taken one XIMAtar at a time: five equal scores should not read as five
+ * copies of one animal when the next five are just as close.
+ */
+export const interleaveTies = <T extends { total_score: number; ximatar_archetype: string }>(rows: T[]): T[] => {
+  const out: T[] = [];
+  let i = 0;
+  while (i < rows.length) {
+    const score = Math.round(rows[i].total_score);
+    const group: T[] = [];
+    while (i < rows.length && Math.round(rows[i].total_score) === score) group.push(rows[i++]);
+    const byArchetype = new Map<string, T[]>();
+    for (const r of group) {
+      const k = (r.ximatar_archetype || '').toLowerCase();
+      if (!byArchetype.has(k)) byArchetype.set(k, []);
+      byArchetype.get(k)!.push(r);
+    }
+    const queues = [...byArchetype.values()];
+    while (queues.some((q) => q.length > 0)) {
+      for (const q of queues) { const next = q.shift(); if (next) out.push(next); }
+    }
+  }
+  return out;
+};
+
 export const reasonText = (t: TFunction, r: Reason): string => {
+  if (r.k === 'evidence') return '';
   const pillarName = (key: string) => t(`shortlist.pillar.${key}`, key);
   return t(`shortlist.reason.${r.k}`, {
     defaultValue: '',

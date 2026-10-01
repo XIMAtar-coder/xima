@@ -6741,7 +6741,19 @@
     "company_reference": "Perfil de la empresa: {{value}}",
     "facts_challenges_done": "Desafíos completados",
     "facts_credentials": "Credenciales (sobre 10)",
-    "score_breakdown": "Cómo se compone la puntuación"
+    "score_breakdown": "Cómo se compone la puntuación",
+    "score_basis_note": "La compatibilidad se calcula con lo que sabemos hoy de cada candidato: se afina cuando llegan las respuestas al desafío.",
+    "score_basis": "Basada en: {{list}}",
+    "score_basis_missing": "Aún faltan las respuestas al desafío.",
+    "score_basis_old": "Calculada con la escala anterior: regenera la shortlist para actualizarla.",
+    "evidence": {
+      "identity": "identidad (pilares y XIMAtar)",
+      "challenges": "respuestas a los desafíos",
+      "trajectory": "crecimiento en el tiempo",
+      "engagement": "actividad",
+      "location": "ubicación",
+      "credentials": "experiencia y títulos"
+    }
   },
   "candidate_pool": {
     "title": "Pool de candidatos",

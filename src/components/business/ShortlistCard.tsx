@@ -4,7 +4,7 @@ import { Panel, Eyebrow } from '@/components/layout/PageHeader';
 import { Chip, PillarBars } from '@/components/business/XsBits';
 import { PillarScoreBar, formatRoundedScore } from './PillarScoreBar';
 import { MemberCodeBadge } from './MemberCodeBadge';
-import { parseReasons, reasonGlyph, reasonText, getArchetypeImageUrl, archetypeDisplayName, type ShortlistCandidate } from './shortlistHelpers';
+import { parseReasons, reasonGlyph, reasonText, getArchetypeImageUrl, archetypeDisplayName, type ShortlistCandidate, evidenceOf } from './shortlistHelpers';
 
 interface ShortlistCardProps {
   candidate: ShortlistCandidate;
@@ -26,6 +26,7 @@ const glyphChar = { up: '↗', warn: '!', none: '—' } as const;
 export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, invited = false, companyPillars, onViewProfile }) => {
   const { t } = useTranslation();
   const reasons = parseReasons(candidate.match_narrative);
+  const evidence = evidenceOf(candidate.match_narrative);
   const unavailable = t('shortlist.not_available', 'Not available');
   const archetypeName = archetypeDisplayName(t, candidate.ximatar_archetype);
   const recommended = reasons.some((r) => r.k === 'archetype_recommended');
@@ -87,9 +88,15 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, i
 
       <div className="mt-5 flex items-baseline gap-1.5">
         <b className="font-mono text-[54px] font-normal leading-[1.1] tracking-[-3px] text-foreground tabular-nums">{formatRoundedScore(candidate.total_score)}</b>
-        <span className="text-sm text-muted-foreground">/100</span>
+        <span className="text-sm text-muted-foreground">%</span>
       </div>
-      <p className="mb-4 text-xs text-muted-foreground">{t('shortlist.score_caption', 'Compatibility with the goal')}</p>
+      <p className="text-xs text-muted-foreground">{t('shortlist.score_caption', 'Compatibility with the goal')}</p>
+      <p className="mb-4 mt-1 text-[11px] text-muted-foreground">
+        {evidence.length > 0
+          ? t('shortlist.score_basis', { list: evidence.map((e) => t(`shortlist.evidence.${e}`, e)).join(', '), defaultValue: 'Based on: {{list}}' })
+          : t('shortlist.score_basis_old', 'Computed with the previous scale: regenerate the shortlist to update it.')}
+        {evidence.length > 0 && !evidence.includes('challenges') && <> {t('shortlist.score_basis_missing', 'Challenge answers are still missing.')}</>}
+      </p>
 
       {reasons.length > 0 && (
         <ul className="grid gap-2.5 text-xs text-muted-foreground" aria-label={t('shortlist.reasons_label', 'Why this candidate')}>

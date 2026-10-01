@@ -314,8 +314,15 @@ serve(async (req) => {
       engagementByUser.set(e.user_id, (engagementByUser.get(e.user_id) || 0) + 1);
     }
 
+    // A profile with no assessment has nothing to match on: it is not a
+    // weak candidate, it is not a candidate yet.
+    const assessed = candidates.filter((c) => {
+      const ps = (c.pillar_scores || {}) as Record<string, unknown>;
+      return Object.values(ps).some((v) => Number(v) > 0);
+    });
+
     // Score candidates
-    const scoredCandidates = candidates.map(candidate => {
+    const scoredCandidates = assessed.map(candidate => {
       const pillarScores = (candidate.pillar_scores || {}) as Record<string, number>;
       const ximatarKey = ((candidate.ximatar as string) || "").toString().toLowerCase();
 
@@ -353,7 +360,7 @@ serve(async (req) => {
       // as no fit at all.
       const fitDistance = Math.sqrt(5 * (5 ** 2));
       const pillarFit = Math.max(0, 1 - distance / fitDistance);
-      identityScore += 25 * pillarFit;
+      identityScore += 28 * pillarFit;
       reasons.push({ k: "pillar_fit", v: Math.round(pillarFit * 100) });
       const gaps = (Object.keys(companyPillarNorm) as (keyof typeof companyPillarNorm)[])
         .map((key) => ({ key, gap: candidatePillars[key] - companyPillarNorm[key] }))
@@ -364,7 +371,11 @@ serve(async (req) => {
 
       if (recommendedXimatars.includes(ximatarKey)) {
         const rank = recommendedXimatars.indexOf(ximatarKey);
-        identityScore += rank === 0 ? 15 : rank === 1 ? 10 : 5;
+        // Was 15/10/5: with pillar fits a point apart, the ten points between
+        // the first and the third recommended XIMAtar decided the whole list
+        // and the top five were five of the same animal. The order among the
+        // recommended ones now nudges, it does not decide.
+        identityScore += rank === 0 ? 12 : rank === 1 ? 10 : 8;
         reasons.push({ k: "archetype_recommended", v: ximatarKey });
       }
 
@@ -532,7 +543,21 @@ serve(async (req) => {
       }
 
       // 40 identity + 20 demonstrated + 10 trajectory + 5 engagement + 15 location + 10 credentials
-      const totalScore = identityScore + (performanceScore ?? 0) + trajectoryScore + engagementScore + locationScore + (credentialScore ?? 0);
+      const rawScore = identityScore + (performanceScore ?? 0) + trajectoryScore + engagementScore + locationScore + (credentialScore ?? 0);
+
+      // The compatibility shown is the share of the points this candidate
+      // could have earned WITH WHAT WE KNOW about them. Out of a fixed 100, a
+      // candidate nobody has challenged yet topped out at 34 and a company
+      // read that as a poor pool; an axis with no data is unknown, not zero.
+      const evidence: string[] = ["identity"];
+      let evidenceMax = 40;
+      if (performanceScore != null) { evidence.push("challenges"); evidenceMax += 20; }
+      if (userTrajectory.length > 0) { evidence.push("trajectory"); evidenceMax += 10; }
+      if (engCount > 0) { evidence.push("engagement"); evidenceMax += 5; }
+      if (locationMatch !== "unknown" && (goalWorkMode === "remote" || goalCity || goalCountry)) { evidence.push("location"); evidenceMax += 15; }
+      if (credentialScore != null) { evidence.push("credentials"); evidenceMax += 10; }
+      const totalScore = Math.min(100, (rawScore / evidenceMax) * 100);
+      reasons.push({ k: "evidence", v: evidence.join(",") });
 
       let availability = "unknown";
       if (candidate.availability_date) {
@@ -545,7 +570,7 @@ serve(async (req) => {
 
       return {
         candidate_user_id: candidate.user_id,
-        total_score: Math.round(totalScore * 10) / 10,
+        total_score: Math.round(totalScore),
         identity_score: Math.round(identityScore * 10) / 10,
         performance_score: performanceScore == null ? null : Math.round(performanceScore * 10) / 10,
         performance_summary: performanceSummary,

@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import SuggestFieldButton from '@/components/business/SuggestFieldButton';
 import { CCNL_OPTIONS, CCNL_HELPER_IT, defaultPayMonths } from '@/lib/business/ccnl';
+import { formatMoneyRange } from '@/lib/money';
 import { log } from '@/lib/log';
 import { useBusinessProfile } from '@/hooks/useBusinessProfile';
 import {
@@ -319,7 +320,7 @@ const HiringGoalCreate = () => {
         salary_period: formData.salary_period,
         ral_min: ral.ral_min || null,
         ral_max: ral.ral_max || null,
-        ccnl: formData.ccnl || null,
+        ccnl: (formData.country || 'IT') === 'IT' ? (formData.ccnl || null) : null,
         required_skills: formData.required_skills as any,
         nice_to_have_skills: formData.nice_to_have_skills as any,
         years_experience_min: formData.years_experience_min,
@@ -377,7 +378,8 @@ const HiringGoalCreate = () => {
         navigate('/business/dashboard');
       } else {
         toast.success(t('hiring_goal.created', 'Obiettivo creato con successo'));
-        navigate(`/business/hiring-goals/${goal.id}/shortlist`);
+        // One button, one result: the shortlist page generates on arrival.
+        navigate(`/business/hiring-goals/${goal.id}/shortlist?generate=1`);
       }
     } catch (err: any) {
       toast.error(err.message);
@@ -576,7 +578,7 @@ const HiringGoalCreate = () => {
 
 // ── Live summary ("Il tuo obiettivo") ──
 const GoalSummaryPanel = ({ formData }: { formData: FormData }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const seniorityLabel: Record<string, string> = {
     first_time: t('hiring_goal.seniority_first_time', 'Prima esperienza'),
     independent: t('hiring_goal.seniority_independent', 'Autonomo'),
@@ -591,7 +593,7 @@ const GoalSummaryPanel = ({ formData }: { formData: FormData }) => {
   const payMonths = formData.pay_months ?? defaultPayMonths(formData.country, formData.ccnl);
   const ral = deriveRal(formData.salary_min, formData.salary_max, formData.salary_period, payMonths);
   const ralText = ral.ral_min > 0
-    ? `${ral.ral_min.toLocaleString()}–${(ral.ral_max || ral.ral_min).toLocaleString()} ${formData.salary_currency}`
+    ? (formatMoneyRange(ral.ral_min, ral.ral_max || ral.ral_min, formData.salary_currency, i18n.language) ?? tbd)
     : tbd;
   const rows: [string, React.ReactNode][] = [
     [t('hiring_goal.seniority', 'Seniority'), seniorityLabel[formData.experience_level] || tbd],
@@ -1042,7 +1044,8 @@ const Step3Location = ({ formData, updateField }: StepProps) => {
 
 // ── STEP 4 — Salary + Review + XIMA HR ──
 const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isItalianRole = (formData.country || 'IT') === 'IT';
   const isYearly = formData.salary_period === 'yearly';
   const salaryLabel = isYearly
     ? t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL')
@@ -1102,7 +1105,7 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
           <p className="xs-eyebrow">{t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL')}</p>
           <p className="xs-num mt-1 text-[22px] font-semibold leading-none text-foreground">
             {derivedRal.ral_min > 0
-              ? `${derivedRal.ral_min.toLocaleString()}–${(derivedRal.ral_max || derivedRal.ral_min).toLocaleString()} ${formData.salary_currency}`
+              ? formatMoneyRange(derivedRal.ral_min, derivedRal.ral_max || derivedRal.ral_min, formData.salary_currency, i18n.language)
               : '—'}
           </p>
           <p className="text-xs text-muted-foreground mt-1.5">
@@ -1134,21 +1137,26 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
             </div>
           )}
         </div>
-        <label htmlFor="goal-ccnl" className={fieldLabel}>
-          {t('businessPortal.hiring_goal.pay_transparency.ccnl_label')}
-        </label>
-        <select
-          id="goal-ccnl"
-          value={formData.ccnl}
-          onChange={(e) => updateField('ccnl', e.target.value)}
-          className={inputClass}
-        >
-          <option value="">{t('businessPortal.hiring_goal.pay_transparency.ccnl_placeholder')}</option>
-          {CCNL_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
-        <p className="text-xs text-muted-foreground mt-2">{CCNL_HELPER_IT}</p>
+        {/* The CCNL is an Italian contract: a role in another country has none. */}
+        {isItalianRole && (
+          <>
+            <label htmlFor="goal-ccnl" className={fieldLabel}>
+              {t('businessPortal.hiring_goal.pay_transparency.ccnl_label')}
+            </label>
+            <select
+              id="goal-ccnl"
+              value={formData.ccnl}
+              onChange={(e) => updateField('ccnl', e.target.value)}
+              className={inputClass}
+            >
+              <option value="">{t('businessPortal.hiring_goal.pay_transparency.ccnl_placeholder')}</option>
+              {CCNL_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+            <p className="text-xs text-muted-foreground mt-2">{CCNL_HELPER_IT}</p>
+          </>
+        )}
       </div>
 
       {/* Review (the live summary sits beside the form; this stays for the mobile reader) */}
@@ -1164,7 +1172,7 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
             <div className="flex justify-between"><span className="text-muted-foreground">{t('businessPortal.hiring_goal.advanced.required_skills', 'Competenze richieste')}:</span><span className="font-medium text-foreground">{formData.required_skills.length}</span></div>
           )}
           {formData.salary_min > 0 && (
-            <div className="flex justify-between"><span className="text-muted-foreground">{salaryLabel}:</span><span className="font-medium text-foreground">{formData.salary_min.toLocaleString()}–{formData.salary_max.toLocaleString()} {formData.salary_currency}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{salaryLabel}:</span><span className="font-medium text-foreground">{formatMoneyRange(formData.salary_min, formData.salary_max, formData.salary_currency, i18n.language)}</span></div>
           )}
         </div>
       </details>

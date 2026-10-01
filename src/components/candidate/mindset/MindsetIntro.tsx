@@ -1,4 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
+import { formatMoneyRange } from '@/lib/money';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Building2, Target, Euro, TrendingUp } from 'lucide-react';
@@ -13,17 +14,11 @@ type Props = {
   onStart: () => void;
 };
 
-function formatRal(min?: number | null, max?: number | null, currency = 'EUR'): string | null {
-  if (!min && !max) return null;
-  const sym = currency === 'EUR' ? '€' : currency + ' ';
-  const fmt = (n: number) => n.toLocaleString('it-IT');
-  if (min && max) return `${sym}${fmt(min)} – ${sym}${fmt(max)}`;
-  if (min) return `da ${sym}${fmt(min)}`;
-  return `fino a ${sym}${fmt(max!)}`;
-}
+const formatRal = (min?: number | null, max?: number | null, currency = 'EUR', lang?: string): string | null =>
+  formatMoneyRange(min, max, currency, lang);
 
 export function MindsetIntro({ guideName, intro, introContext, onStart }: Props) {
-  const ral = formatRal(introContext?.compensation?.ral_min, introContext?.compensation?.ral_max, introContext?.compensation?.currency);
+  const ral = formatRal(introContext?.compensation?.ral_min, introContext?.compensation?.ral_max, introContext?.compensation?.currency, typeof document !== 'undefined' ? document.documentElement.lang : 'it');
   const ccnl = labelForCcnl(introContext?.compensation?.ccnl);
   const hasComp = ral || (introContext?.compensation?.ccnl ?? null);
   const growthLine =
