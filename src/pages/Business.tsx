@@ -611,7 +611,27 @@ const Business: React.FC = () => {
             <h3 className="mt-4 font-bold text-white" style={{ fontSize: 22, lineHeight: 1.25, letterSpacing: '-0.01em' }}>
               {t('business.see_example_question')}
             </h3>
-            <dl className="mt-6 space-y-4">
+            {/* The same candidate as the card at the top: the answer is read on the pillars it shows. */}
+            <ul className="mt-4 flex flex-wrap gap-2" aria-label={t('business.see_read_title')}>
+              {(['communication', 'creativity', 'knowledge'] as const).map((k) => {
+                const pillar = HERO_CANDIDATE.pillars.find((x) => x.key === k)!;
+                const above = pillar.value - pillar.pool >= 1;
+                return (
+                  <li
+                    key={k}
+                    className="rounded-full px-3 py-1 text-xs"
+                    style={{
+                      background: above ? 'rgba(16,185,129,0.16)' : 'rgba(255,255,255,0.08)',
+                      color: above ? '#6EE7B7' : 'rgba(255,255,255,0.8)',
+                      border: '1px solid rgba(255,255,255,0.10)',
+                    }}
+                  >
+                    {t(`business.pillar_${k}`)} {pillar.value.toFixed(1)} · {above ? t('business.see_above_pool') : t('business.see_in_pool')}
+                  </li>
+                );
+              })}
+            </ul>
+            <dl className="mt-5 space-y-4">
               {(['observe', 'why', 'ask'] as const).map((k) => (
                 <div
                   key={k}
