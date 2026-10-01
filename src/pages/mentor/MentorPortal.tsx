@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMentorProfile } from '@/hooks/useMentorProfile';
+import { NextSessionBanner } from '@/components/sessions/NextSessionBanner';
 import MentorLayout from '@/components/mentor/MentorLayout';
 import { PageHeader, Panel, Eyebrow } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/button';
@@ -70,6 +71,7 @@ export default function MentorPortal() {
 
   return (
     <MentorLayout page={t('mentor.portal_title', 'Mentor portal')}>
+      <NextSessionBanner role="mentor" mentorId={mentorProfile.id} />
       <PageHeader
         eyebrow={t('mentor.area_label', 'Mentor area')}
         title={name ? t('mentor.welcome_title', { name, defaultValue: 'Hi, {{name}}' }) : t('mentor.portal_title', 'Mentor portal')}

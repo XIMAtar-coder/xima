@@ -21,6 +21,7 @@ import { ChallengesForYouSection } from '@/components/profile/ChallengesForYouSe
 import { MemberCodeBadge } from '@/components/business/MemberCodeBadge';
 import { XimaJourneyGuideModal } from '@/components/onboarding/XimaJourneyGuideModal';
 import { EmailVerificationBanner } from '@/components/auth/EmailVerificationBanner';
+import { NextSessionBanner } from '@/components/sessions/NextSessionBanner';
 import { PillarBars, formatScore, pillarName, readPillar, type PillarKey } from '@/components/candidate/PillarBars';
 import { useOnboardingState } from '@/hooks/useOnboardingState';
 import { supabase } from '@/integrations/supabase/client';
@@ -233,6 +234,7 @@ const Profile = () => {
       />
 
       <EmailVerificationBanner slim />
+      <NextSessionBanner role="candidate" />
 
       <PageHeader
         eyebrow={t('dashboard.eyebrow', 'Your personal space')}

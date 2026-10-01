@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { format, parseISO, addHours, startOfHour, isBefore, isAfter } from 'date-fns';
 import { useMentorProfile } from '@/hooks/useMentorProfile';
+import { NextSessionBanner } from '@/components/sessions/NextSessionBanner';
 import { useMentorCalendar, MentorSession } from '@/hooks/useMentorCalendar';
 import MentorLayout from '@/components/mentor/MentorLayout';
 import { PageHeader, Panel, Eyebrow } from '@/components/layout/PageHeader';
@@ -251,6 +252,7 @@ export default function MentorCalendar() {
 
   return (
     <MentorLayout page={t('mentor.calendar_title', 'Calendar and sessions')}>
+      <NextSessionBanner role="mentor" mentorId={mentorProfile.id} />
       <PageHeader
         eyebrow={t('mentor.calendar_eyebrow', 'Organise your time')}
         title={t('mentor.calendar_title', 'Calendar and sessions')}

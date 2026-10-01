@@ -24,6 +24,8 @@ vi.mock('react-i18next', () => {
 vi.mock('@/components/mentor/MentorLayout', () => ({
   default: ({ children }: { children: React.ReactNode }) => <div data-testid="mentor-shell">{children}</div>,
 }));
+// The banner reads the signed-in user and the next session: not what these pages are tested for.
+vi.mock('@/components/sessions/NextSessionBanner', () => ({ NextSessionBanner: () => null }));
 vi.mock('@/components/mentor/MentorCVAccessSection', () => ({ MentorCVAccessSection: () => <div data-testid="cv-access" /> }));
 vi.mock('@/components/mentor/MentorAvatarUpload', () => ({ MentorAvatarUpload: () => <div data-testid="avatar-upload" /> }));
 vi.mock('@/hooks/use-toast', () => ({ useToast: () => ({ toast: vi.fn() }) }));

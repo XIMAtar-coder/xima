@@ -265,7 +265,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
           <h1 className="xs-title">{t('guestJourney.cv.title')}</h1>
           <p className="mt-2.5 max-w-[590px] text-[15px] text-muted-foreground">{t('guestJourney.cv.subtitle')}</p>
         </div>
-        <div className="shrink-0 sm:pt-1">{skipLink}</div>
+        <div className="hidden shrink-0 sm:block sm:pt-1">{skipLink}</div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_290px] lg:items-start">
@@ -439,6 +439,17 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
                   {!canAnalyse && !uploading && (
                     <small className="text-center text-xs text-muted-foreground">{t('guestJourney.cv.cta_requirements')}</small>
                   )}
+                  {/* The other way forward, where the thumb is: on a phone the
+                      link in the header is far above the fold of this card. */}
+                  <Button
+                    variant="outline"
+                    onClick={handleSkip}
+                    disabled={uploading}
+                    className="min-h-[48px] w-full rounded-[7px] px-5 text-[15px]"
+                  >
+                    {t('baseline.continue_without_cv')}
+                    <ArrowRight size={16} aria-hidden />
+                  </Button>
                 </div>
               </>
             ) : (

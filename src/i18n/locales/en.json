@@ -388,7 +388,16 @@
     "video_error": "Video Error",
     "failed_to_load_video": "Failed to load video service. Please refresh.",
     "failed_to_create_video": "Failed to create video meeting. Please refresh.",
-    "using_default_provider": "Using XIMA default room provider"
+    "using_default_provider": "Using XIMA default room provider",
+    "next_live": "Your session with {{name}} is on now",
+    "next_soon": "Your session with {{name}} starts in {{minutes}} min",
+    "next_scheduled": "Session with {{name}} · {{when}}",
+    "next_room_open": "The video room is open: you can join.",
+    "next_room_opens": "The video room opens 10 minutes before.",
+    "next_join": "Join the room",
+    "next_details": "Details",
+    "next_your_mentor": "your mentor",
+    "next_the_candidate": "the candidate"
   },
   "mentor": {
     "title": "Start Your Xima Journey",

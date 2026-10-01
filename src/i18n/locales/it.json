@@ -388,7 +388,16 @@
     "video_error": "Errore video",
     "failed_to_load_video": "Impossibile caricare il servizio video. Ricarica la pagina.",
     "failed_to_create_video": "Impossibile creare la videochiamata. Ricarica la pagina.",
-    "using_default_provider": "Stanza video gestita da XIMA"
+    "using_default_provider": "Stanza video gestita da XIMA",
+    "next_live": "La sessione con {{name}} è in corso",
+    "next_soon": "La sessione con {{name}} inizia tra {{minutes}} min",
+    "next_scheduled": "Sessione con {{name}} · {{when}}",
+    "next_room_open": "La stanza video è aperta: puoi entrare.",
+    "next_room_opens": "La stanza video si apre 10 minuti prima.",
+    "next_join": "Entra nella stanza",
+    "next_details": "Dettagli",
+    "next_your_mentor": "il tuo mentor",
+    "next_the_candidate": "il candidato"
   },
   "mentor": {
     "title": "Inizia il tuo percorso XIMA",

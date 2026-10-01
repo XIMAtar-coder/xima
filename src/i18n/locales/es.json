@@ -7080,7 +7080,16 @@
     "video_error": "Error de vídeo",
     "failed_to_load_video": "No se pudo cargar el servicio de vídeo. Recarga la página.",
     "failed_to_create_video": "No se pudo crear la videollamada. Recarga la página.",
-    "using_default_provider": "Usando la sala predeterminada de XIMA"
+    "using_default_provider": "Usando la sala predeterminada de XIMA",
+    "next_live": "La sesión con {{name}} está en curso",
+    "next_soon": "La sesión con {{name}} empieza en {{minutes}} min",
+    "next_scheduled": "Sesión con {{name}} · {{when}}",
+    "next_room_open": "La sala de vídeo está abierta: puedes entrar.",
+    "next_room_opens": "La sala de vídeo se abre 10 minutos antes.",
+    "next_join": "Entrar en la sala",
+    "next_details": "Detalles",
+    "next_your_mentor": "tu mentor",
+    "next_the_candidate": "el candidato"
   },
   "import_job": {
     "title": "Importar una oferta de empleo",
