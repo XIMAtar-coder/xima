@@ -789,7 +789,9 @@
     "previous": "Indietro",
     "retry": "Riprova",
     "read_only": "solo lettura",
-    "saving": "Salvataggio…"
+    "saving": "Salvataggio…",
+    "no": "No",
+    "yes_cancel": "Sì, annulla"
   },
   "tutorial": {
     "dont_show_again": "Non mostrare più"

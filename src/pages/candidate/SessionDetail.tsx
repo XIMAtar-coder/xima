@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import MainLayout from '@/components/layout/MainLayout';
+import CandidateLayout from '@/components/layout/CandidateLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -331,17 +331,17 @@ export default function SessionDetail() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <CandidateLayout breadcrumb={<span className="block truncate">{t('sessions.intro_session', 'Session with your mentor')}</span>}>
         <div className="container max-w-2xl py-8 flex items-center justify-center min-h-[50vh]">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
-      </MainLayout>
+      </CandidateLayout>
     );
   }
 
   if (!session) {
     return (
-      <MainLayout>
+      <CandidateLayout breadcrumb={<span className="block truncate">{t('sessions.intro_session', 'Session with your mentor')}</span>}>
         <div className="container max-w-2xl py-8">
           <Card>
             <CardContent className="py-12 text-center">
@@ -353,15 +353,15 @@ export default function SessionDetail() {
             </CardContent>
           </Card>
         </div>
-      </MainLayout>
+      </CandidateLayout>
     );
   }
 
   return (
-    <MainLayout>
+    <CandidateLayout breadcrumb={<span className="block truncate">{t('sessions.intro_session', 'Session with your mentor')}</span>}>
       <div className="container max-w-2xl py-8 space-y-6">
         {/* Back button */}
-        <Button variant="ghost" size="sm" onClick={() => navigate('/profile')} className="gap-2">
+        <Button variant="ghost" size="sm" onClick={() => navigate('/profile#mentor')} className="gap-2">
           <ArrowLeft className="h-4 w-4" />
           {t('common.back', 'Back')}
         </Button>
@@ -687,6 +687,6 @@ export default function SessionDetail() {
           </CardContent>
         </Card>
       </div>
-    </MainLayout>
+    </CandidateLayout>
   );
 }

@@ -206,7 +206,9 @@
     "previous": "Anterior",
     "retry": "Reintentar",
     "read_only": "solo lectura",
-    "saving": "Guardando…"
+    "saving": "Guardando…",
+    "no": "No",
+    "yes_cancel": "Sí, cancelar"
   },
   "nav": {
     "home": "Inicio",
