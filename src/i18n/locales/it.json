@@ -1701,7 +1701,9 @@
     "resume_title": "Riprendere il percorso?",
     "resume_description": "Hai dei progressi salvati da una sessione precedente. Vuoi riprendere da dove avevi lasciato?",
     "resume": "Riprendi",
-    "start_over": "Ricomincia da capo"
+    "start_over": "Ricomincia da capo",
+    "signed_in_as": "Stai facendo il test come",
+    "not_you": "Non sei tu? Esci"
   },
   "login": {
     "title": "Bentornato in XIMA",

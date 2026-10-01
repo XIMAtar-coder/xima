@@ -3001,7 +3001,9 @@
     "resume_title": "¿Retomamos tu recorrido?",
     "resume_description": "Tienes progreso guardado de una sesión anterior. ¿Quieres continuar donde lo dejaste?",
     "resume": "Continuar",
-    "start_over": "Empezar de cero"
+    "start_over": "Empezar de cero",
+    "signed_in_as": "Estás haciendo el test como",
+    "not_you": "¿No eres tú? Salir"
   },
   "ximatar_journey": {
     "title": "Tu Viaje XIMAtar",

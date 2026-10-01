@@ -1701,7 +1701,9 @@
     "resume_title": "Resume Your Journey?",
     "resume_description": "You have saved progress from a previous session. Would you like to continue where you left off?",
     "resume": "Resume",
-    "start_over": "Start Over"
+    "start_over": "Start Over",
+    "signed_in_as": "You are taking the test as",
+    "not_you": "Not you? Sign out"
   },
   "login": {
     "title": "Welcome back",
