@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.12 (cd3cf9e)"
+    PostgrestVersion: "12.2.12"
   }
   public: {
     Tables: {
@@ -460,6 +460,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      assessment_completions: {
+        Row: {
+          communication: number
+          computational_power: number
+          created_at: string
+          creativity: number
+          drive: number
+          duration_seconds: number | null
+          field_key: string
+          id: number
+          knowledge: number
+          version: string
+        }
+        Insert: {
+          communication: number
+          computational_power: number
+          created_at?: string
+          creativity: number
+          drive: number
+          duration_seconds?: number | null
+          field_key: string
+          id?: never
+          knowledge: number
+          version: string
+        }
+        Update: {
+          communication?: number
+          computational_power?: number
+          created_at?: string
+          creativity?: number
+          drive?: number
+          duration_seconds?: number | null
+          field_key?: string
+          id?: never
+          knowledge?: number
+          version?: string
+        }
+        Relationships: []
       }
       assessment_cv_analysis: {
         Row: {
@@ -4315,6 +4354,7 @@ export type Database = {
           availability: Json | null
           badges: string[] | null
           bio: string | null
+          bio_i18n: Json | null
           can_host_video_sessions: boolean | null
           can_reschedule_sessions: boolean | null
           can_view_candidate_cv: boolean | null
@@ -4322,6 +4362,7 @@ export type Database = {
           created_at: string
           email: string | null
           experience_years: number | null
+          fields: string[]
           first_session_expectations: string | null
           free_intro_duration_minutes: number | null
           free_intro_enabled: boolean | null
@@ -4337,8 +4378,10 @@ export type Database = {
           rating: number | null
           requires_candidate_cv_consent: boolean | null
           specialties: string[]
+          specialties_i18n: Json | null
           strength_vector: string | null
           title: string | null
+          title_i18n: Json | null
           total_coached_profiles_count: number
           total_sessions: number | null
           updated_at: string
@@ -4350,6 +4393,7 @@ export type Database = {
           availability?: Json | null
           badges?: string[] | null
           bio?: string | null
+          bio_i18n?: Json | null
           can_host_video_sessions?: boolean | null
           can_reschedule_sessions?: boolean | null
           can_view_candidate_cv?: boolean | null
@@ -4357,6 +4401,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           experience_years?: number | null
+          fields?: string[]
           first_session_expectations?: string | null
           free_intro_duration_minutes?: number | null
           free_intro_enabled?: boolean | null
@@ -4372,8 +4417,10 @@ export type Database = {
           rating?: number | null
           requires_candidate_cv_consent?: boolean | null
           specialties: string[]
+          specialties_i18n?: Json | null
           strength_vector?: string | null
           title?: string | null
+          title_i18n?: Json | null
           total_coached_profiles_count?: number
           total_sessions?: number | null
           updated_at?: string
@@ -4385,6 +4432,7 @@ export type Database = {
           availability?: Json | null
           badges?: string[] | null
           bio?: string | null
+          bio_i18n?: Json | null
           can_host_video_sessions?: boolean | null
           can_reschedule_sessions?: boolean | null
           can_view_candidate_cv?: boolean | null
@@ -4392,6 +4440,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           experience_years?: number | null
+          fields?: string[]
           first_session_expectations?: string | null
           free_intro_duration_minutes?: number | null
           free_intro_enabled?: boolean | null
@@ -4407,8 +4456,10 @@ export type Database = {
           rating?: number | null
           requires_candidate_cv_consent?: boolean | null
           specialties?: string[]
+          specialties_i18n?: Json | null
           strength_vector?: string | null
           title?: string | null
+          title_i18n?: Json | null
           total_coached_profiles_count?: number
           total_sessions?: number | null
           updated_at?: string
@@ -6062,7 +6113,9 @@ export type Database = {
           active_coached_profiles_count: number | null
           badges: string[] | null
           bio: string | null
+          bio_i18n: Json | null
           can_host_video_sessions: boolean | null
+          fields: string[] | null
           first_session_expectations: string | null
           free_intro_duration_minutes: number | null
           free_intro_enabled: boolean | null
@@ -6076,7 +6129,9 @@ export type Database = {
           profile_image_url: string | null
           rating: number | null
           specialties: string[] | null
+          specialties_i18n: Json | null
           title: string | null
+          title_i18n: Json | null
           total_coached_profiles_count: number | null
           updated_at: string | null
           user_id: string | null
@@ -6086,7 +6141,9 @@ export type Database = {
           active_coached_profiles_count?: number | null
           badges?: string[] | null
           bio?: string | null
+          bio_i18n?: Json | null
           can_host_video_sessions?: boolean | null
+          fields?: string[] | null
           first_session_expectations?: string | null
           free_intro_duration_minutes?: number | null
           free_intro_enabled?: boolean | null
@@ -6100,7 +6157,9 @@ export type Database = {
           profile_image_url?: string | null
           rating?: number | null
           specialties?: string[] | null
+          specialties_i18n?: Json | null
           title?: string | null
+          title_i18n?: Json | null
           total_coached_profiles_count?: number | null
           updated_at?: string | null
           user_id?: string | null
@@ -6110,7 +6169,9 @@ export type Database = {
           active_coached_profiles_count?: number | null
           badges?: string[] | null
           bio?: string | null
+          bio_i18n?: Json | null
           can_host_video_sessions?: boolean | null
+          fields?: string[] | null
           first_session_expectations?: string | null
           free_intro_duration_minutes?: number | null
           free_intro_enabled?: boolean | null
@@ -6124,7 +6185,9 @@ export type Database = {
           profile_image_url?: string | null
           rating?: number | null
           specialties?: string[] | null
+          specialties_i18n?: Json | null
           title?: string | null
+          title_i18n?: Json | null
           total_coached_profiles_count?: number | null
           updated_at?: string | null
           user_id?: string | null
@@ -6291,6 +6354,10 @@ export type Database = {
         Returns: undefined
       }
       apply_referral_on_signup: { Args: { invite_code: string }; Returns: Json }
+      assessment_benchmarks: {
+        Args: { p_field?: string; p_version?: string }
+        Returns: Json
+      }
       assign_role_to_user: {
         Args: {
           target_role: Database["public"]["Enums"]["app_role"]
@@ -6334,6 +6401,7 @@ export type Database = {
       cleanup_email_outbox: { Args: never; Returns: number }
       cleanup_email_send_log: { Args: never; Returns: number }
       cleanup_guest_rate_limit: { Args: never; Returns: undefined }
+      close_past_mentor_sessions: { Args: never; Returns: number }
       compute_ai_cost_usd: {
         Args: {
           _input_tokens: number
@@ -6623,6 +6691,18 @@ export type Database = {
         }
         Returns: Json
       }
+      mentor_session_candidates: {
+        Args: { p_session_ids: string[] }
+        Returns: {
+          candidate_name: string
+          session_id: string
+          ximatar_name: string
+        }[]
+      }
+      mentor_session_notify: {
+        Args: { p_event: string; p_session_id: string }
+        Returns: undefined
+      }
       ops_check_assessment_wow_drop: {
         Args: never
         Returns: {
@@ -6664,6 +6744,15 @@ export type Database = {
       }
       recompute_matches: { Args: { p_user: string }; Returns: undefined }
       recompute_user_scores: { Args: { p_user: string }; Returns: undefined }
+      record_assessment_completion: {
+        Args: {
+          p_duration_seconds: number
+          p_field: string
+          p_scores: Json
+          p_version: string
+        }
+        Returns: undefined
+      }
       record_business_interest: {
         Args: { p_feed_item_id: string; p_hiring_goal_id?: string }
         Returns: string
