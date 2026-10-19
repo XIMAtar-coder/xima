@@ -7,6 +7,8 @@ import { log } from '@/lib/log';
 
 export interface GrowthResource {
   id: string;
+  /** Set only when the resource was picked from the verified catalogue. */
+  catalog_id?: string;
   title: string;
   platform?: string;
   url?: string;

@@ -4451,6 +4451,7 @@
     "open_course": "Abrir curso",
     "open_book": "Leer",
     "open_podcast": "Escuchar",
+    "link_pending": "Enlace en verificación",
     "mark_complete": "Marcar como completado",
     "take_test": "Haz la prueba",
     "tests_note": "Las pruebas verifican lo aprendido: no modifican las puntuaciones del assessment.",

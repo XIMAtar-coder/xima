@@ -29,7 +29,9 @@ const ResourceEntry: React.FC<{
   testLoading: boolean;
 }> = ({ index, resource, type, progress, onMarkComplete, onTakeTest, testLoading }) => {
   const { t } = useTranslation();
-  const url = resource.url || resource.read_url || '';
+  // Links written by the model (paths generated before the catalogue) are
+  // not shown: they led to wrong or missing pages.
+  const url = resource.catalog_id ? (resource.url || resource.read_url || '') : '';
   const isPassed = progress?.status === 'test_passed';
   const canMarkComplete = progress && ['not_started', 'in_progress'].includes(progress.status);
   const canTakeTest = progress && ['completed', 'test_ready', 'test_failed'].includes(progress.status);
@@ -68,12 +70,12 @@ const ResourceEntry: React.FC<{
         <span className="rounded-md border border-[hsl(var(--xs-line))] px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
           {pillarName(t, resource.primary_pillar as PillarKey)}
         </span>
-        {resource.estimated_hours ? (
+        {resource.catalog_id && resource.estimated_hours ? (
           <span className="rounded-md border border-[hsl(var(--xs-line))] px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
             <Clock className="mr-1 inline h-3 w-3" />{resource.estimated_hours}h
           </span>
         ) : null}
-        {resource.episode_length_minutes ? (
+        {resource.catalog_id && resource.episode_length_minutes ? (
           <span className="rounded-md border border-[hsl(var(--xs-line))] px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
             <Clock className="mr-1 inline h-3 w-3" />{resource.episode_length_minutes}min
           </span>
@@ -89,10 +91,12 @@ const ResourceEntry: React.FC<{
           {isPassed && progress?.test_score != null ? ` · ${progress.test_score}/100` : ''}
         </span>
         <span className="flex-1" />
-        {url && (
+        {url ? (
           <a href={url} target="_blank" rel="noopener noreferrer" className="text-[14px] font-semibold text-primary hover:underline">
             {openLabel} <ExternalLink className="inline h-3.5 w-3.5" />
           </a>
+        ) : (
+          <span className="text-[13px] text-muted-foreground">{t('developmentPlan.link_pending', 'Link being checked')}</span>
         )}
         {canMarkComplete && (
           <button type="button" onClick={() => onMarkComplete(progress!.id)} className="text-[14px] font-semibold text-primary hover:underline">

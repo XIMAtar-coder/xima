@@ -3174,6 +3174,7 @@
     "open_course": "Open course",
     "open_book": "Read",
     "open_podcast": "Listen",
+    "link_pending": "Link being checked",
     "mark_complete": "Mark as completed",
     "take_test": "Take the test",
     "tests_note": "Tests check what you have learnt: they do not change your assessment scores.",
